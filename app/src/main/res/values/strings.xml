@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Vítejte ve Trusí appce</string>
+    <string name="nav_piva">domů</string>
+    <string name="nav_plus">přidat</string>
+    <string name="nav_settings">nastavení</string>
+    <string name="nav_notification">oznámení</string>
+    <string name="zobrazit_kalendar">kalendář</string>
+    <string name="jmenoHrace">jméno hráče</string>
+    <string name="uprava_hrace">upravit hráče</string>
+    <string name="datum_format">dd/mm/yyyy</string>
+    <string name="jeFanousek">fanoušek?</string>
+    <string name="uprav_hrace">upravit</string>
+    <string name="smaz_hrace">smazat hráče</string>
+    <string name="statistika">statistiky</string>
+</resources>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <TextView
+        android:id="@+id/tv_nadpis"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="upravit zápas"
+        android:textAlignment="center"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <EditText
+        android:id="@+id/et_jmeno"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:hint="jméno soupeře"
+        android:inputType="textPersonName"
+        app:layout_constraintTop_toBottomOf="@+id/tv_nadpis"/>
+
+    <Button
+        android:id="@+id/btn_kalendar"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/zobrazit_kalendar"
+        android:textSize="10sp"
+        app:layout_constraintTop_toBottomOf="@+id/et_jmeno"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="5dp" />
+
+    <EditText
+        android:id="@+id/et_datum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:hint="@string/datum_format"
+        android:textSize="20sp"
+        android:inputType="date"
+        app:layout_constraintStart_toEndOf="@+id/btn_kalendar"
+        app:layout_constraintTop_toBottomOf="@+id/et_jmeno" />
+
+    <Spinner
+        android:id="@+id/sp_seasons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_datum" />
+
+    <Switch
+        android:id="@+id/sw_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sp_seasons"
+        android:text="@string/jeFanousek" />
+
+    <Button
+        android:id="@+id/btn_players"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/cervena"
+        style="?android:attr/borderlessButtonStyle"
+        android:text="vybrat hráče"
+        app:layout_constraintTop_toBottomOf="@+id/sw_switch"/>
+
+    <Button
+        android:id="@+id/btn_potvrdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/zluta"
+        style="?android:attr/borderlessButtonStyle"
+        android:text="ok"
+        app:layout_constraintTop_toBottomOf="@+id/btn_players"/>
+
+    <Button
+        android:id="@+id/btn_smazat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="smazat zápas"
+        android:textColor="@color/zluta"
+        style="?android:attr/borderlessButtonStyle"
+        app:layout_constraintTop_toTopOf="@+id/btn_potvrdit"
+        app:layout_constraintEnd_toStartOf="@+id/btn_potvrdit"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

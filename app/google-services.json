@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "250417335865",
+    "project_id": "lisci-trus",
+    "storage_bucket": "lisci-trus.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:250417335865:android:a3330e912724f9e621c7e8",
+        "android_client_info": {
+          "package_name": "com.jumbo.trus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "250417335865-ik3tcver0l2kiso224hk0neiuap8u487.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jumbo.trus",
+            "certificate_hash": "6c321fc97d430804a80fcb8a598bc2f7456402e2"
+          }
+        },
+        {
+          "client_id": "250417335865-l5umtjfnn59rfj1uaicmpgvsbnq303dp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATQROo2VUNTCyj5dkmnpmddkPjpA51ju4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "250417335865-l5umtjfnn59rfj1uaicmpgvsbnq303dp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

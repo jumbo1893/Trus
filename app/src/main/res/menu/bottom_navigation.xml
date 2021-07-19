@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_home"
+        android:title="@string/nav_piva" />
+
+    <item
+        android:id="@+id/nav_plus"
+        android:icon="@drawable/ic_plus"
+        android:title="@string/nav_plus" />
+
+    <item
+        android:id="@+id/nav_settings"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/nav_settings" />
+
+    <item
+        android:id="@+id/nav_statistics"
+        android:icon="@drawable/ic_dashboard"
+        android:title="@string/statistika" />
+
+    <item
+        android:id="@+id/nav_notification"
+        android:icon="@drawable/ic_notification"
+        android:title="@string/nav_notification" />
+
+</menu>

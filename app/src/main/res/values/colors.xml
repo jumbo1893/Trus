@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#F4A460</color>
+    <color name="colorPrimaryDark">#8B4513</color>
+    <color name="colorAccent">#F5EE29</color>
+    <color name="tmaveSeda">#222222</color>
+    <color name="zluta">#F5EE29</color>
+    <color name="oranzova">#FF8303</color>
+    <color name="bila">#FFFFFF</color>
+    <color name="hneda">#8B4513</color>
+    <color name="cervena">#FF0000</color>
+
+
+</resources>

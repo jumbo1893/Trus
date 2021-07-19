@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/player"
+        android:title="Přidat hráče"/>
+    <item
+        android:id="@+id/match"
+        android:title="Přidat zápas"/>
+    <item
+        android:id="@+id/beer"
+        android:title="Přidat pivo"/>
+
+    <item
+        android:id="@+id/penalty"
+        android:title="Přidat pokutu"/>
+</menu>
