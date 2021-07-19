@@ -228,9 +228,4 @@ public class HomeViewModel extends ViewModel implements ChangeListener {
     public void alertSent(String message) {
 
     }
-
-    @Override
-    public void notificationAdded() {
-
-    }
 }

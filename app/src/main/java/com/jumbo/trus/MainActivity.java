@@ -43,10 +43,6 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
     private ViewPager viewPager;
     private BottomNavigationView navigation;
-    private PlayerViewModel playerViewModel;
-    private SeasonsViewModel seasonsViewModel;
-    private MatchViewModel matchViewModel;
-    private FineViewModel fineViewModel;
     private NotificationViewModel notificationViewModel;
 
     public User user = new User("test");
@@ -100,62 +96,6 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             public void onChanged(List<Notification> notifications) {
                 Log.d(TAG, "onChanged: nacetly se notifikace " + notifications);
                 notificationAdded();
-            }
-        });
-        playerViewModel = new ViewModelProvider(this).get(PlayerViewModel.class);
-        playerViewModel.getNotification().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean) {
-                    notificationAdded();
-                    Log.d(TAG, "onChanged: true");
-                }
-                else {
-                    notificationRead();
-                    Log.d(TAG, "onChanged: false");
-                }
-            }
-        });
-        seasonsViewModel = new ViewModelProvider(this).get(SeasonsViewModel.class);
-        seasonsViewModel.getNotification().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean) {
-                    notificationAdded();
-                    Log.d(TAG, "onChanged: true");
-                }
-                else {
-                    notificationRead();
-                    Log.d(TAG, "onChanged: false");
-                }
-            }
-        });
-        matchViewModel = new ViewModelProvider(this).get(MatchViewModel.class);
-        matchViewModel.getNotification().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean) {
-                    notificationAdded();
-                    Log.d(TAG, "onChanged: true");
-                }
-                else {
-                    notificationRead();
-                    Log.d(TAG, "onChanged: false");
-                }
-            }
-        });
-        fineViewModel = new ViewModelProvider(this).get(FineViewModel.class);
-        fineViewModel.getNotification().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean) {
-                    notificationAdded();
-                    Log.d(TAG, "onChanged: true");
-                }
-                else {
-                    notificationRead();
-                    Log.d(TAG, "onChanged: false");
-                }
             }
         });
 

@@ -8,5 +8,4 @@ public interface ChangeListener {
     void itemDeleted(Model model);
     void itemListLoaded(List<Model> models, Flag flag);
     void alertSent(String message);
-    void notificationAdded();
 }

@@ -26,7 +26,6 @@ public class FineViewModel extends ViewModel implements ChangeListener {
     private MutableLiveData<List<Fine>> fines;
     private MutableLiveData<Boolean> isUpdating = new MutableLiveData<>();
     private MutableLiveData<String> alert = new MutableLiveData<>();
-    private MutableLiveData<Boolean> isNewNotification = new MutableLiveData<>();
     private FirebaseRepository firebaseRepository;
 
 
@@ -160,15 +159,6 @@ public class FineViewModel extends ViewModel implements ChangeListener {
         return alert;
     }
 
-    public LiveData<Boolean> getNotification() {
-        return isNewNotification;
-    }
-
-    public void setNewNotificationAsFalse() {
-        isNewNotification.setValue(false);
-    }
-
-
     @Override
     public void itemAdded(Model model) {
         setFineAsAdded((Fine) model, Flag.FINE_PLUS);
@@ -195,9 +185,4 @@ public class FineViewModel extends ViewModel implements ChangeListener {
         alert.setValue(message);
     }
 
-    @Override
-    public void notificationAdded() {
-        Log.d(TAG, "notificationAdded: ");
-        isNewNotification.setValue(true);
-    }
 }

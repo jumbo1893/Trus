@@ -30,7 +30,6 @@ public class SeasonsViewModel extends ViewModel implements ChangeListener {
     private MutableLiveData<List<Season>> seasons;
     private MutableLiveData<Boolean> isUpdating = new MutableLiveData<>();
     private MutableLiveData<String> alert = new MutableLiveData<>();
-    private MutableLiveData<Boolean> isNewNotification = new MutableLiveData<>();
     private FirebaseRepository firebaseRepository;
 
 
@@ -183,14 +182,6 @@ public class SeasonsViewModel extends ViewModel implements ChangeListener {
         return alert;
     }
 
-    public LiveData<Boolean> getNotification() {
-        return isNewNotification;
-    }
-
-    public void setNewNotificationAsFalse() {
-        isNewNotification.setValue(false);
-    }
-
 
     @Override
     public void itemAdded(Model model) {
@@ -227,9 +218,4 @@ public class SeasonsViewModel extends ViewModel implements ChangeListener {
         alert.setValue(message);
     }
 
-    @Override
-    public void notificationAdded() {
-        Log.d(TAG, "notificationAdded: ");
-        isNewNotification.setValue(true);
-    }
 }

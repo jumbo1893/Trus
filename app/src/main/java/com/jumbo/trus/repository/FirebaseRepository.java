@@ -243,7 +243,6 @@ public class FirebaseRepository {
             public void onComplete(@NonNull Task<Void> task) {
                 Log.d(TAG, "onComplete: " + task.isSuccessful());
                 if (task.isSuccessful()) {
-                    changeListener.notificationAdded();
                 }
                 else {
                     changeListener.alertSent("Chyba při přidání notifikace " + notification + " do db");
