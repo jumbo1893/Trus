@@ -219,9 +219,6 @@ public class MatchViewModel extends ViewModel implements ChangeListener {
                 firebaseRepository.editModel(match);
             }
         }
-        if (matchList.size() > 0) {
-            alert.setValue("Celkem u " + matchList.size() + " zápasů byla změněna sezona");
-        }
         return matchList;
     }
 

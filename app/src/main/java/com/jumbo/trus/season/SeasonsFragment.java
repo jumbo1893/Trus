@@ -1,6 +1,7 @@
 package com.jumbo.trus.season;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -91,16 +92,6 @@ public class SeasonsFragment extends Fragment implements OnListListener, ISeason
             }
         });
 
-        matchViewModel.getAlert().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                //podmínka aby se upozornění nezobrazovalo vždy když se mění fragment
-                if (getViewLifecycleOwner().getLifecycle().getCurrentState() == Lifecycle.State.RESUMED) {
-                    Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
         fab_plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -172,14 +163,23 @@ public class SeasonsFragment extends Fragment implements OnListListener, ISeason
     public boolean deleteModel(Model model) {
         Result removeSeasonFromRepositoryResult = seasonsViewModel.removeSeasonFromRepository((Season)model);
         if (removeSeasonFromRepositoryResult.isTrue()) {
+            Toast.makeText(getActivity(), removeSeasonFromRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
             List <Season> seasonList = seasonsViewModel.getSeasons().getValue();
             seasonList.remove(model);
-            List<Match> matchList = matchViewModel.recalculateMatchSeason((Season) model, seasonList);
+            final List<Match> matchList = matchViewModel.recalculateMatchSeason((Season) model, seasonList);
             Notification notification = new Notification().prepareNotificationAboutChangedSeasons(matchList);
             notification.setUser(user);
             matchViewModel.sendNotificationToRepository(notification);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    Toast.makeText(getActivity(), "Změněno " + matchList.size() + " sezon", Toast.LENGTH_SHORT).show();
+                }
+            }, 2000);
         }
-        Toast.makeText(getActivity(), removeSeasonFromRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
         return removeSeasonFromRepositoryResult.isTrue();
     }
 }
