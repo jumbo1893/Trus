@@ -134,7 +134,8 @@ public class SeasonDialog extends Dialog {
                     }
                     case R.id.btn_delete: {
                         Log.d(TAG, "onClick: kliknuti na smazat hráče");
-                        displayDeleteConfirmationDialog(model, iSeasonFragment, "Opravdu chceš smazat sezonu?");
+                        displayDeleteConfirmationDialog(model, iSeasonFragment, "Opravdu chceš smazat sezonu?", "Zápasům obsahující tuto" +
+                                " sezonu se automaticky přiřadí nová sezona podle data, případně sezona Ostatní");
                         break;
                     }
                 }

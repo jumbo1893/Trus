@@ -135,7 +135,7 @@ public class FineDialog extends Dialog {
                     }
                     case R.id.btn_delete: {
                         Log.d(TAG, "onClick: kliknuti na smazat pokutu");
-                        displayDeleteConfirmationDialog(model, iFineFragment, "Opravdu chceš smazat pokutu?");
+                        displayDeleteConfirmationDialog(model, iFineFragment, "Opravdu chceš smazat pokutu?", null);
                         break;
                     }
                     case R.id.btn_cancel: {

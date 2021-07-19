@@ -181,7 +181,7 @@ public class MatchDialog extends Dialog implements AdapterView.OnItemSelectedLis
                     }
                     case R.id.btn_smazat: {
                         Log.d(TAG, "onClick: kliknuti na smazat zápas");
-                        displayDeleteConfirmationDialog(model, iMatchFragment, "Opravdu chceš smazat zápas?");
+                        displayDeleteConfirmationDialog(model, iMatchFragment, "Opravdu chceš smazat zápas?", null);
                         break;
                     }
                     case R.id.btn_kalendar: {

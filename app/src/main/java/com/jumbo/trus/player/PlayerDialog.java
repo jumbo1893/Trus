@@ -134,7 +134,7 @@ public class PlayerDialog extends Dialog {
                     }
                     case R.id.btn_smazat: {
                         Log.d(TAG, "onClick: kliknuti na smazat hráče");
-                        displayDeleteConfirmationDialog(model, iPlayerFragment, "Opravdu chceš smazat hráče?");
+                        displayDeleteConfirmationDialog(model, iPlayerFragment, "Opravdu chceš smazat hráče?", null);
                         break;
                     }
                     case R.id.btn_kalendar: {

@@ -51,10 +51,11 @@ public abstract class Dialog extends DialogFragment implements View.OnClickListe
         Log.d(TAG, "zobrazuji kalendář");
     }
 
-    protected void displayDeleteConfirmationDialog(final Model model, final IFragment iFragment, String title) {
+    protected void displayDeleteConfirmationDialog(final Model model, final IFragment iFragment, String title, String message) {
         Log.d(TAG, "displayDeleteConfirmationDialog zobrazen");
         final AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
         alert.setTitle(title);
+        alert.setMessage(message);
 
         alert.setPositiveButton("Ano", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
