@@ -78,7 +78,7 @@ public class PlayerFragment extends Fragment implements OnListListener, IPlayerF
                 @Override
                 public void onChanged(String s) {
                     //podmínka aby se upozornění nezobrazovalo vždy když se mění fragment
-                    if (getViewLifecycleOwner().getLifecycle().getCurrentState()== Lifecycle.State.RESUMED) {
+                    if (getViewLifecycleOwner().getLifecycle().getCurrentState() == Lifecycle.State.RESUMED) {
                         Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
                     }
                 }

@@ -87,19 +87,19 @@ public class HomeViewModel extends ViewModel implements ChangeListener {
         Log.d(TAG, "setRandomFacts: ");
         randomFacts.clear();
         String zajimavost = "Náhodná zajímavost: ";
-        //randomFacts.add(zajimavost + fact.getPlayerWithMostBeers()); //vrátí hráče (1 či víc) co za celou historii vypil nejvíce piv
-        //randomFacts.add(zajimavost + fact.getMatchWithMostBeers()); // vrátí zápas(y), ve kterých padlo nejvíce piv
-        //randomFacts.add(zajimavost + fact.getNumberOfBeersInCurrentSeason()); //vrátí počet piv v aktuální sezoně dle data
-        //randomFacts.add(zajimavost + fact.getMatchWithMostBeersInCurrentSeason()); //vrátí zápas aktuální sezony kde se nejvíc pilo
-        //randomFacts.add(zajimavost + fact.getSeasonWithMostBeers()); //vrátí sezonu s nejvíce pivy
-        //randomFacts.add(zajimavost + fact.getAverageNumberOfBeersInMatchForPlayersAndFans()); //vrátí průměrný počet piv na hráče a fanouška
-        //randomFacts.add(zajimavost + fact.getAverageNumberOfBeersInMatchForPlayers()); //vrátí průměrný počet vypitejch piv na hráče
-        //randomFacts.add(zajimavost + fact.getAverageNumberOfBeersInMatchForFans()); //vrátí průměrný počet vypitejch piv na fanouška
-        //randomFacts.add(zajimavost + fact.getAverageNumberOfBeersInMatch()); //vrátí průměrný počet vypitejch piv v jednom zápase
-        //randomFacts.add(zajimavost + fact.getMatchWithHighestAverageBeers()); //vrátí zápas s nejvyšším průměrem piv
-        //randomFacts.add(zajimavost + fact.getMatchWithLowestAverageBeers()); //vrátí zápas s nejnižším průměrem piv
-        //randomFacts.add(zajimavost + fact.getHighestAttendanceInMatch()); //vrátí zápas s nejvyšší účastí
-        //randomFacts.add(zajimavost + fact.getLowestAttendanceInMatch()); //vrátí zápas s nejnižší účastí
+        randomFacts.add(zajimavost + fact.getPlayerWithMostBeers()); //vrátí hráče (1 či víc) co za celou historii vypil nejvíce piv
+        randomFacts.add(zajimavost + fact.getMatchWithMostBeers()); // vrátí zápas(y), ve kterých padlo nejvíce piv
+        randomFacts.add(zajimavost + fact.getNumberOfBeersInCurrentSeason()); //vrátí počet piv v aktuální sezoně dle data
+        randomFacts.add(zajimavost + fact.getMatchWithMostBeersInCurrentSeason()); //vrátí zápas aktuální sezony kde se nejvíc pilo
+        randomFacts.add(zajimavost + fact.getSeasonWithMostBeers()); //vrátí sezonu s nejvíce pivy
+        randomFacts.add(zajimavost + fact.getAverageNumberOfBeersInMatchForPlayersAndFans()); //vrátí průměrný počet piv na hráče a fanouška
+        randomFacts.add(zajimavost + fact.getAverageNumberOfBeersInMatchForPlayers()); //vrátí průměrný počet vypitejch piv na hráče
+        randomFacts.add(zajimavost + fact.getAverageNumberOfBeersInMatchForFans()); //vrátí průměrný počet vypitejch piv na fanouška
+        randomFacts.add(zajimavost + fact.getAverageNumberOfBeersInMatch()); //vrátí průměrný počet vypitejch piv v jednom zápase
+        randomFacts.add(zajimavost + fact.getMatchWithHighestAverageBeers()); //vrátí zápas s nejvyšším průměrem piv
+        randomFacts.add(zajimavost + fact.getMatchWithLowestAverageBeers()); //vrátí zápas s nejnižším průměrem piv
+        randomFacts.add(zajimavost + fact.getHighestAttendanceInMatch()); //vrátí zápas s nejvyšší účastí
+        randomFacts.add(zajimavost + fact.getLowestAttendanceInMatch()); //vrátí zápas s nejnižší účastí
         randomFacts.add(zajimavost + fact.getMatchWithBirthday()); //vrátí zápas na kterém někdo slavil narozky
     }
 

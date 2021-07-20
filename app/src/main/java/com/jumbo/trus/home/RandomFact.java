@@ -496,10 +496,10 @@ public class RandomFact {
         else {
             String result = "Největší účast na zápase Liščího Trusu proběhla se soupeři ";
             for (int i = 0; i < returnMatches.size(); i++) {
-                result += returnMatches.get(0).getOpponent() + ", hraný " + returnMatches.get(0).getDateOfMatchInStringFormat() +
+                result += returnMatches.get(i).getOpponent() + ", hraný " + returnMatches.get(0).getDateOfMatchInStringFormat() +
                         ", kdy celkový počet účastníků byl " +
-                        (matchAttendance-returnMatches.get(0).getNumberOfPlayersInMatch()) + " fanoušků a "  + returnMatches.get(0).getNumberOfPlayersInMatch() +
-                        " hráčů s počtem " + returnMatches.get(0).getNumberOfBeersInMatch() + ". vypitých piv";
+                        (matchAttendance-returnMatches.get(i).getNumberOfPlayersInMatch()) + " fanoušků a "  + returnMatches.get(i).getNumberOfPlayersInMatch() +
+                        " hráčů s počtem " + returnMatches.get(i).getNumberOfBeersInMatch() + ". vypitých piv";
                 if (i == returnMatches.size()-1) {
                     result += ".";
                 }
@@ -543,10 +543,10 @@ public class RandomFact {
         else {
             String result = "Nejnižší účast na zápase Liščího Trusu proběhla se soupeři ";
             for (int i = 0; i < returnMatches.size(); i++) {
-                result += returnMatches.get(0).getOpponent() + ", hraný " + returnMatches.get(0).getDateOfMatchInStringFormat() +
+                result += returnMatches.get(i).getOpponent() + ", hraný " + returnMatches.get(0).getDateOfMatchInStringFormat() +
                         ", kdy celkový počet účastníků byl " +
-                        (matchAttendance-returnMatches.get(0).getNumberOfPlayersInMatch()) + " fanoušků a "  + returnMatches.get(0).getNumberOfPlayersInMatch() +
-                        " hráčů s počtem " + returnMatches.get(0).getNumberOfBeersInMatch() + ". vypitých piv";
+                        (matchAttendance-returnMatches.get(i).getNumberOfPlayersInMatch()) + " fanoušků a "  + returnMatches.get(i).getNumberOfPlayersInMatch() +
+                        " hráčů s počtem " + returnMatches.get(i).getNumberOfBeersInMatch() + ". vypitých piv";
                 if (i == returnMatches.size()-1) {
                     result += ".";
                 }

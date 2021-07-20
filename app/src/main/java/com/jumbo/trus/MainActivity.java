@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.notification.NotificationViewModel;
@@ -31,10 +33,12 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -44,6 +48,11 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     private ViewPager viewPager;
     private BottomNavigationView navigation;
     private NotificationViewModel notificationViewModel;
+    private BottomNavigationItemView itemView;
+    private boolean firstInit = true;
+
+    private Notification lastReadNotification;
+    private Notification lastNotification;
 
     public User user = new User("test");
 
@@ -75,7 +84,9 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 case R.id.nav_notification:
                     viewPager.setCurrentItem(3);
                     setTitle("Notifikace");
-                    notificationRead();
+                    removeBadge();
+                    lastReadNotification = lastNotification;
+                    //badge.setVisibility(View.GONE);
                     Log.d(TAG, "Přepnuto na navigaci notifikací");
                     return true;
             }
@@ -89,23 +100,46 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        viewPager = findViewById(R.id.viewpager);
+        setupViewPager(viewPager);
+        navigation = findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        initNotificationBadge();
         notificationViewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
         notificationViewModel.init();
         notificationViewModel.getNotifications().observe(this, new Observer<List<Notification>>() {
             @Override
             public void onChanged(List<Notification> notifications) {
                 Log.d(TAG, "onChanged: nacetly se notifikace " + notifications);
-                notificationAdded();
+                lastNotification = notifications.get(0); //uložíme první načtenou modifikaci
+                if (firstInit) {
+                    Log.d(TAG, "firstinit: ");
+                    lastReadNotification = lastNotification; //první modifikaci označíme při startu jako poslední přečtenou - od této počítáme
+                    firstInit = false;
+                }
+                int unread = 0;
+                for (Notification notification : notifications) {
+                    if (!notification.equals(lastReadNotification)) {
+                        unread++;
+                    }
+                    else {
+                        break;
+                    }
+                }
+                if (unread == 1) {
+                    showBadge(unread); //to znamená, že se badge předtím odebíral nebo ještě nebyl načten
+                }
+                else if (unread > 1) { //musíme předtím odebrat aby nebyl 2x
+                    showBadge(unread);
+                    removeBadge();
+                }
             }
+
         });
 
         // Hide the activity toolbar
         //getSupportActionBar().hide();
         //Initializing viewPager
-        viewPager = findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
-        navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -179,19 +213,25 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         popup.show();
     }
 
-
-    @SuppressLint("ResourceType")
-    private void notificationAdded() {
-        Log.d(TAG, "notificationAdded: zavolano");
-        navigation.getMenu().getItem(4).setIcon(R.drawable.ic_notification_active);
-        Drawable unwrappedDrawable = AppCompatResources.getDrawable(this, R.drawable.ic_notification_active);
-        Drawable drawableWrap = DrawableCompat.wrap(unwrappedDrawable);
-        DrawableCompat.setTint(drawableWrap, ContextCompat.getColor(this, R.color.nav_item_colors_notification));
+    private void initNotificationBadge() {
+        BottomNavigationMenuView bottomNavigationMenuView = (BottomNavigationMenuView) navigation.getChildAt(0);
+        View v = bottomNavigationMenuView.getChildAt(4);
+        itemView = (BottomNavigationItemView) v;
+    }
+    private void showBadge(int numberUnread) {
+        View badge = LayoutInflater.from(this).inflate(R.layout.notification_badge, itemView, true);
+        TextView textView = badge.findViewById(R.id.notificationsbbadge);
+        if (numberUnread > 8) {
+            textView.setText("9+");
+        }
+        else {
+            textView.setText(" " + numberUnread + " ");
+        }
     }
 
-    @SuppressLint("ResourceType")
-    private void notificationRead() {
-        navigation.getMenu().getItem(4).setIcon(R.drawable.ic_notification);
+    public void removeBadge() {
+        itemView.removeViewAt(itemView.getChildCount()-1);
+
     }
 
     @Override
