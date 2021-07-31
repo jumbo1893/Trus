@@ -20,12 +20,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.INotificationSender;
-import com.jumbo.trus.MainActivity;
 import com.jumbo.trus.OnListListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.Result;
 import com.jumbo.trus.SimpleDividerItemDecoration;
-import com.jumbo.trus.User;
+import com.jumbo.trus.user.User;
 import com.jumbo.trus.fine.ReceivedFine;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.adapters.SimpleRecycleViewAdapter;

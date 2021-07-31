@@ -20,6 +20,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.jumbo.trus.ChangeListener;
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.NotificationListener;
+import com.jumbo.trus.user.User;
 import com.jumbo.trus.fine.Fine;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.player.Player;
@@ -54,10 +55,6 @@ public class FirebaseRepository {
         db = FirebaseFirestore.getInstance();
         collectionReference = db.collection(keyword);
         this.notificationListener = notificationListener;
-    }
-
-    public void setCollectionDB(String keyword) {
-        collectionReference = db.collection(keyword);
     }
 
     public void insertNewModel(final Model model) {
@@ -208,6 +205,30 @@ public class FirebaseRepository {
         });
     }
 
+    public void loadUsersFromRepository() {
+        modelsDataSet = new ArrayList<>();
+        CollectionReference collectionReference = db.collection("user");
+        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.e(TAG, "onGetMatchesEvent: nastala chyba při načítání uživatelů z db", error);
+                    return;
+                }
+                modelsDataSet.clear();
+                for(QueryDocumentSnapshot documentSnapshot : value) {
+                    User user = documentSnapshot.toObject(User.class);
+                    user.setId(documentSnapshot.getId());
+                    modelsDataSet.add(user);
+
+                }
+                Log.d(TAG, "Automaticky načten seznam uživatelů z db ");
+                changeListener.itemListLoaded(modelsDataSet, Flag.USER);
+
+            }
+        });
+    }
+
     public void loadNotificationsFromRepository() {
         modelsDataSet = new ArrayList<>();
         CollectionReference crNotification = db.collection("notification");
@@ -216,7 +237,7 @@ public class FirebaseRepository {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error != null) {
-                    Log.e(TAG, "onGetPlayersEvent: nastala chyba při načítání hráčů z db", error);
+                    Log.e(TAG, "onGetPlayersEvent: nastala chyba při načítání notifikací z db", error);
                     return;
                 }
                 modelsDataSet.clear();

@@ -1,7 +1,5 @@
 package com.jumbo.trus;
 
-import android.annotation.SuppressLint;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
@@ -11,22 +9,16 @@ import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.notification.NotificationViewModel;
 import com.jumbo.trus.playerlist.MatchListFragment;
 import com.jumbo.trus.fine.FineFragment;
-import com.jumbo.trus.fine.FineViewModel;
 import com.jumbo.trus.home.HomeFragment;
 import com.jumbo.trus.match.MatchFragment;
-import com.jumbo.trus.match.MatchViewModel;
 import com.jumbo.trus.notification.NotificationFragment;
 import com.jumbo.trus.player.PlayerFragment;
-import com.jumbo.trus.player.PlayerViewModel;
 import com.jumbo.trus.season.SeasonsFragment;
-import com.jumbo.trus.season.SeasonsViewModel;
 import com.jumbo.trus.statistics.BeerStatisticsFragment;
 import com.jumbo.trus.statistics.FineStatisticsFragment;
+import com.jumbo.trus.user.User;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
@@ -53,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
     private Notification lastReadNotification;
     private Notification lastNotification;
+    private int notificationsUnread;
 
     public User user = new User("test");
 
@@ -84,7 +77,10 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 case R.id.nav_notification:
                     viewPager.setCurrentItem(3);
                     setTitle("Notifikace");
-                    removeBadge();
+                    if (notificationsUnread > 0) {
+                        removeBadge();
+                        notificationsUnread = 0;
+                    }
                     lastReadNotification = lastNotification;
                     //badge.setVisibility(View.GONE);
                     Log.d(TAG, "Přepnuto na navigaci notifikací");
@@ -117,20 +113,20 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                     lastReadNotification = lastNotification; //první modifikaci označíme při startu jako poslední přečtenou - od této počítáme
                     firstInit = false;
                 }
-                int unread = 0;
+                notificationsUnread = 0;
                 for (Notification notification : notifications) {
                     if (!notification.equals(lastReadNotification)) {
-                        unread++;
+                        notificationsUnread++;
                     }
                     else {
                         break;
                     }
                 }
-                if (unread == 1) {
-                    showBadge(unread); //to znamená, že se badge předtím odebíral nebo ještě nebyl načten
+                if (notificationsUnread == 1) {
+                    showBadge(notificationsUnread); //to znamená, že se badge předtím odebíral nebo ještě nebyl načten
                 }
-                else if (unread > 1) { //musíme předtím odebrat aby nebyl 2x
-                    showBadge(unread);
+                else if (notificationsUnread > 1) { //musíme předtím odebrat aby nebyl 2x
+                    showBadge(notificationsUnread);
                     removeBadge();
                 }
             }

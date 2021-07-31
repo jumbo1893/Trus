@@ -17,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.jumbo.trus.INotificationSender;
-import com.jumbo.trus.User;
 import com.jumbo.trus.layout.BeerLayout;
 import com.jumbo.trus.Dialog;
 import com.jumbo.trus.Flag;

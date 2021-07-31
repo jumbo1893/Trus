@@ -14,7 +14,7 @@ import com.jumbo.trus.Result;
 import com.jumbo.trus.Validator;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.notification.Notification;
-import com.jumbo.trus.User;
+import com.jumbo.trus.user.User;
 import com.jumbo.trus.repository.FirebaseRepository;
 
 import java.time.DateTimeException;

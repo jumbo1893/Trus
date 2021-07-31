@@ -22,7 +22,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jumbo.trus.INotificationSender;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.SimpleDividerItemDecoration;
-import com.jumbo.trus.User;
+import com.jumbo.trus.user.User;
 import com.jumbo.trus.adapters.SimpleRecycleViewAdapter;
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.OnListListener;
@@ -122,7 +122,7 @@ public class MatchFragment extends Fragment implements OnListListener, IMatchFra
                         Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
                     }
                 }
-            });
+        });
 
         playerViewModel.getPlayers().observe(this, new Observer<List<Player>>() {
             @Override

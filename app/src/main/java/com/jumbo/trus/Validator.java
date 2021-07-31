@@ -50,6 +50,37 @@ public class Validator {
         return false;
     }
 
+    public boolean checkFieldFormat (String name, int nameLength) {
+        String regex = "^[a-zA-Z0-9_ áčďéěíňóřšťůúýžÁČĎÉĚÍŇÓŘŠŤŮÚÝŽ-]{0," + nameLength + "}$";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(name);
+        if (m.matches()) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean checkPasswordFormat (String password) {
+        String regex = "^[a-zA-Z0-9_.! áčďéěíňóřšťůúýžÁČĎÉĚÍŇÓŘŠŤŮÚÝŽ-]{1,30}$";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(password);
+        if (m.matches()) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean checkEmailFormat (String mail) {
+        String regex = "^\\S+@\\S+\\.\\S+$";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(mail);
+        if (m.matches()) {
+            return true;
+        }
+        return false;
+    }
+
+
     public boolean checkIfStartIsBeforeEnd(String dateStart, String dateEnd) {
         Date date = new Date();
         long millisStart = date.convertTextDateToMillis(dateStart);

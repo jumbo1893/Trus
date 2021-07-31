@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Vítejte ve Trusí appce</string>
+    <string name="app_name">Trusí apkka</string>
     <string name="nav_piva">domů</string>
     <string name="nav_plus">přidat</string>
     <string name="nav_settings">nastavení</string>
@@ -12,4 +12,14 @@
     <string name="uprav_hrace">upravit</string>
     <string name="smaz_hrace">smazat hráče</string>
     <string name="statistika">statistiky</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="prompt_email">Email</string>
+    <string name="password">Heslo</string>
+    <string name="action_sign_in">Přihlaš se</string>
+    <string name="action_sign_in_short">Přihlaš se</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="login">přihlašovací jméno</string>
 </resources>

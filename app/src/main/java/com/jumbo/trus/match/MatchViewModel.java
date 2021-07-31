@@ -11,7 +11,7 @@ import com.jumbo.trus.Date;
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.Result;
-import com.jumbo.trus.User;
+import com.jumbo.trus.user.User;
 import com.jumbo.trus.Validator;
 import com.jumbo.trus.fine.ReceivedFine;
 import com.jumbo.trus.notification.Notification;
@@ -263,7 +263,6 @@ public class MatchViewModel extends ViewModel implements ChangeListener {
         });
         Log.d(TAG, "itemListLoaded: zapasy: " + models);
         matches.setValue(models);
-
     }
 
     @Override

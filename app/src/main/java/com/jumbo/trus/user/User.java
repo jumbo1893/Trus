@@ -1,8 +1,10 @@
-package com.jumbo.trus;
+package com.jumbo.trus.user;
 
 import com.jumbo.trus.Model;
 
-public class User extends Model {
+import java.io.Serializable;
+
+public class User extends Model implements Serializable {
 
     private String password;
     private long registrationDate;
@@ -20,7 +22,11 @@ public class User extends Model {
     public User() {
     }
 
-
+    public boolean nameEquals(User user) {
+        if (this == user) return true;
+        if (user == null || getClass() != user.getClass()) return false;
+        return user.getName().equals(this.getName());
+    }
     public String getPassword() {
         return password;
     }

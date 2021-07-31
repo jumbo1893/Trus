@@ -23,12 +23,11 @@ import com.jumbo.trus.OnListListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.Result;
 import com.jumbo.trus.SimpleDividerItemDecoration;
-import com.jumbo.trus.User;
+import com.jumbo.trus.user.User;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.match.MatchViewModel;
 import com.jumbo.trus.notification.Notification;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SeasonsFragment extends Fragment implements OnListListener, ISeasonFragment {
