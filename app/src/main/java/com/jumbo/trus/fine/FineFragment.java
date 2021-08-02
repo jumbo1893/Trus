@@ -17,12 +17,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jumbo.trus.Flag;
+import com.jumbo.trus.MainActivityViewModel;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.OnListListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.Result;
 import com.jumbo.trus.SimpleDividerItemDecoration;
 import com.jumbo.trus.adapters.SimpleRecycleViewAdapter;
+import com.jumbo.trus.notification.Notification;
+import com.jumbo.trus.user.User;
 
 import java.util.List;
 
@@ -30,10 +33,13 @@ public class FineFragment extends Fragment implements OnListListener, IFineFragm
 
     private static final String TAG = "FineFragment";
 
+    private User user;
+
     private RecyclerView rc_fines;
     private ProgressBar progress_bar;
     private FloatingActionButton fab_plus;
     private FineViewModel fineViewModel;
+    private MainActivityViewModel mainActivityViewModel;
     private SimpleRecycleViewAdapter finesAdapter;
 
     @Override
@@ -44,12 +50,19 @@ public class FineFragment extends Fragment implements OnListListener, IFineFragm
         rc_fines.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         progress_bar = view.findViewById(R.id.progress_bar);
         fab_plus = view.findViewById(R.id.fab_plus);
+        mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
+        mainActivityViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                setUser(user);
+            }
+        });
         fineViewModel = new ViewModelProvider(getActivity()).get(FineViewModel.class);
         fineViewModel.init();
         //hideItem(rc_settings);
         Log.d(TAG, "onCreateView: ");
 
-        fineViewModel.getFines().observe(this, new Observer<List<Fine>>() {
+        fineViewModel.getFines().observe(getViewLifecycleOwner(), new Observer<List<Fine>>() {
             @Override
             public void onChanged(List<Fine> fines) {
                 Log.d(TAG, "onChanged: nacetly se sezony " + fines);
@@ -61,7 +74,7 @@ public class FineFragment extends Fragment implements OnListListener, IFineFragm
             }
         });
 
-        fineViewModel.isUpdating().observe(this, new Observer<Boolean>() {
+        fineViewModel.isUpdating().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
@@ -72,7 +85,7 @@ public class FineFragment extends Fragment implements OnListListener, IFineFragm
                 }
             }
         });
-        fineViewModel.getAlert().observe(this, new Observer<String>() {
+        fineViewModel.getAlert().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
                 //podmínka aby se upozornění nezobrazovalo vždy když se mění fragment
@@ -115,12 +128,21 @@ public class FineFragment extends Fragment implements OnListListener, IFineFragm
         rc_fines.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
+    private void createNotification(Notification notification) {
+        notification.setUser(user);
+        fineViewModel.sendNotificationToRepository(notification);
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
 
     @Override
     public void onItemClick(int position) {
         FineDialog dialog = new FineDialog(Flag.FINE_EDIT, fineViewModel.getFines().getValue().get(position));
         dialog.setTargetFragment(FineFragment.this, 1);
-        dialog.show(getFragmentManager(), "dialogplus");
+        dialog.show(getParentFragmentManager(), "dialogplus");
     }
 
 
@@ -134,6 +156,10 @@ public class FineFragment extends Fragment implements OnListListener, IFineFragm
         else {
             Result addFineToRepositoryResult = fineViewModel.addFineToRepository(name, amount);
             Toast.makeText(getActivity(), addFineToRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
+            if (addFineToRepositoryResult.isTrue()) {
+                String text = "Byla vytvořena pokuta " + name + " s částkou " + amount + " Kč";
+                createNotification(new Notification("Přidána pokuta " + name, text));
+            }
         }
         return result.isTrue();
     }
@@ -147,6 +173,10 @@ public class FineFragment extends Fragment implements OnListListener, IFineFragm
         else {
             Result editFineInRepositoryResult = fineViewModel.editFineInRepository(name, amount, fine);
             Toast.makeText(getActivity(), editFineInRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
+            if (editFineInRepositoryResult.isTrue()) {
+                String text = "Pokuta změněna na " + name + " s částkou " + amount + " Kč";
+                createNotification(new Notification("Upravena pokuta " + fine.getName(), text));
+            }
         }
         return result.isTrue();
     }
@@ -155,6 +185,10 @@ public class FineFragment extends Fragment implements OnListListener, IFineFragm
     public boolean deleteModel(Model model) {
         Result removeFineFromRepositoryResult = fineViewModel.removeFineFromRepository((Fine) model);
         Toast.makeText(getActivity(), removeFineFromRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
+        if (removeFineFromRepositoryResult.isTrue()) {
+            String text = "ve výši " + ((Fine) model).getAmount() + " Kč";
+            createNotification(new Notification("Smazaná pokuta " + model.getName(), text));
+        }
         return removeFineFromRepositoryResult.isTrue();
     }
 }

@@ -205,7 +205,7 @@ public class MatchFragment extends Fragment implements OnListListener, IMatchFra
         Log.d(TAG, "onHracClick: kliknuto na pozici " + position + ", object: " + matchViewModel.getMatches().getValue());
         MatchDialog matchDialog = new MatchDialog(Flag.MATCH_EDIT, matchViewModel.getMatches().getValue().get(position), seasonsViewModel.getSeasons().getValue(), players);
         matchDialog.setTargetFragment(MatchFragment.this, 1);
-        matchDialog.show(getFragmentManager(), "dialogplus");
+        matchDialog.show(getParentFragmentManager(), "dialogplus");
     }
 
 
@@ -239,7 +239,7 @@ public class MatchFragment extends Fragment implements OnListListener, IMatchFra
             Toast.makeText(getActivity(), editMatchInRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
             if (editMatchInRepositoryResult.isTrue()) {
                 String text = "Zápas byl změněn na " + (homeMatch ? "domácí zápas" : "venkovní zápas") + " se soupeřem " + opponent + " hraný " + date;
-                createNotification(new Notification("Upraven zápas " + match.getOpponent() + " hraný " + match.getDateOfMatchInStringFormat(), text));
+                createNotification(new Notification("Upraven zápas " + match.getOpponent(), text));
             }
         }
         return result.isTrue();

@@ -21,7 +21,6 @@ public class FineViewModel extends ViewModel implements ChangeListener {
 
     private static final String TAG = "FineViewModel";
 
-    private User user = new User("test_user_notifikace_fine");
 
     private MutableLiveData<List<Fine>> fines;
     private MutableLiveData<Boolean> isUpdating = new MutableLiveData<>();
@@ -134,16 +133,10 @@ public class FineViewModel extends ViewModel implements ChangeListener {
                 break;
         }
         alert.setValue("Pokuta " + fine.getName() + " úspěšně " + action);
-        sendNotificationToRepository(prepareNotification("Pokuta " + fine.getName() + " " + action, user));
         isUpdating.setValue(false);
     }
 
-    private Notification prepareNotification(String text, User user) {
-        Notification notification = new Notification(text, user);
-        return notification;
-    }
-
-    private void sendNotificationToRepository(Notification notification) {
+    public void sendNotificationToRepository(Notification notification) {
         firebaseRepository.addNotification(notification);
     }
 
