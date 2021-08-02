@@ -22,10 +22,8 @@ import androidx.annotation.Nullable;
 
 import com.jumbo.trus.Dialog;
 import com.jumbo.trus.Flag;
-import com.jumbo.trus.INotificationSender;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.R;
-import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.player.Player;
 import com.jumbo.trus.season.Season;
 

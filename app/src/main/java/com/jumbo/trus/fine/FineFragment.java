@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.jumbo.trus.CustomUserFragment;
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.MainActivityViewModel;
 import com.jumbo.trus.Model;
@@ -29,17 +30,15 @@ import com.jumbo.trus.user.User;
 
 import java.util.List;
 
-public class FineFragment extends Fragment implements OnListListener, IFineFragment {
+public class FineFragment extends CustomUserFragment implements OnListListener, IFineFragment {
 
     private static final String TAG = "FineFragment";
 
-    private User user;
 
     private RecyclerView rc_fines;
     private ProgressBar progress_bar;
     private FloatingActionButton fab_plus;
     private FineViewModel fineViewModel;
-    private MainActivityViewModel mainActivityViewModel;
     private SimpleRecycleViewAdapter finesAdapter;
 
     @Override
@@ -50,13 +49,7 @@ public class FineFragment extends Fragment implements OnListListener, IFineFragm
         rc_fines.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         progress_bar = view.findViewById(R.id.progress_bar);
         fab_plus = view.findViewById(R.id.fab_plus);
-        mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
-        mainActivityViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<User>() {
-            @Override
-            public void onChanged(User user) {
-                setUser(user);
-            }
-        });
+        initMainActivityViewModel();
         fineViewModel = new ViewModelProvider(getActivity()).get(FineViewModel.class);
         fineViewModel.init();
         //hideItem(rc_settings);
@@ -128,16 +121,6 @@ public class FineFragment extends Fragment implements OnListListener, IFineFragm
         rc_fines.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
-    private void createNotification(Notification notification) {
-        notification.setUser(user);
-        fineViewModel.sendNotificationToRepository(notification);
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-
     @Override
     public void onItemClick(int position) {
         FineDialog dialog = new FineDialog(Flag.FINE_EDIT, fineViewModel.getFines().getValue().get(position));
@@ -158,7 +141,7 @@ public class FineFragment extends Fragment implements OnListListener, IFineFragm
             Toast.makeText(getActivity(), addFineToRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
             if (addFineToRepositoryResult.isTrue()) {
                 String text = "Byla vytvořena pokuta " + name + " s částkou " + amount + " Kč";
-                createNotification(new Notification("Přidána pokuta " + name, text));
+                createNotification(new Notification("Přidána pokuta " + name, text), fineViewModel);
             }
         }
         return result.isTrue();
@@ -175,7 +158,7 @@ public class FineFragment extends Fragment implements OnListListener, IFineFragm
             Toast.makeText(getActivity(), editFineInRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
             if (editFineInRepositoryResult.isTrue()) {
                 String text = "Pokuta změněna na " + name + " s částkou " + amount + " Kč";
-                createNotification(new Notification("Upravena pokuta " + fine.getName(), text));
+                createNotification(new Notification("Upravena pokuta " + fine.getName(), text), fineViewModel);
             }
         }
         return result.isTrue();
@@ -187,7 +170,7 @@ public class FineFragment extends Fragment implements OnListListener, IFineFragm
         Toast.makeText(getActivity(), removeFineFromRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
         if (removeFineFromRepositoryResult.isTrue()) {
             String text = "ve výši " + ((Fine) model).getAmount() + " Kč";
-            createNotification(new Notification("Smazaná pokuta " + model.getName(), text));
+            createNotification(new Notification("Smazaná pokuta " + model.getName(), text), fineViewModel);
         }
         return removeFineFromRepositoryResult.isTrue();
     }

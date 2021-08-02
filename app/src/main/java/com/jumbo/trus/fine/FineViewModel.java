@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.jumbo.trus.ChangeListener;
 import com.jumbo.trus.Flag;
+import com.jumbo.trus.INotificationSender;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.Result;
 import com.jumbo.trus.user.User;
@@ -17,7 +18,7 @@ import com.jumbo.trus.repository.FirebaseRepository;
 
 import java.util.List;
 
-public class FineViewModel extends ViewModel implements ChangeListener {
+public class FineViewModel extends ViewModel implements ChangeListener, INotificationSender {
 
     private static final String TAG = "FineViewModel";
 
@@ -136,6 +137,7 @@ public class FineViewModel extends ViewModel implements ChangeListener {
         isUpdating.setValue(false);
     }
 
+    @Override
     public void sendNotificationToRepository(Notification notification) {
         firebaseRepository.addNotification(notification);
     }

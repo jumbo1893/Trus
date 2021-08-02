@@ -10,58 +10,118 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
+import com.jumbo.trus.INotificationSender;
+import com.jumbo.trus.layout.BeerLayout;
 import com.jumbo.trus.Dialog;
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.OnPlusButtonListener;
+import com.jumbo.trus.OnSwipeTouchListener;
 import com.jumbo.trus.R;
-import com.jumbo.trus.adapters.PlusRecycleViewAdapter;
+import com.jumbo.trus.layout.OnLineFinishedListener;
 import com.jumbo.trus.match.Match;
+import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BeerDialog extends Dialog implements OnPlusButtonListener {
+/**
+ *
+ */
+public class BeerDialog extends Dialog implements OnPlusButtonListener, OnLineFinishedListener {
 
     private static final String TAG = "BeerDialog";
 
     //widgety
-    private RecyclerView rc_players;
     private Button btn_cancel, btn_commit;
+    private TextView tv_title;
+    private BeerLayout beer_layout;
+    private ImageButton btn_back, btn_forward;
+
 
     //vars
     private IChangePlayerListListener iChangePlayerListListener;
+    private INotificationSender iNotificationSender;
     private List<Player> selectedPlayers;
     private List<Integer> beerCompensation;
-    private PlusRecycleViewAdapter adapter;
+    private Player player;
+    private int selectedPlayersSize;
+    private int selectedPlayer;
     private boolean commit = false;
+    private boolean lineDrawed; //příznak pomocí kterého poznáme, zda se již nakreslila čátka v layoutu. Defaultně true, pak vrací inteface hodnotu
 
 
     public BeerDialog(Flag flag, Model model) {
         super(flag, model);
         selectedPlayers = ((Match) model).getPlayerList();
+        selectedPlayersSize = selectedPlayers.size();
+        player = selectedPlayers.get(0);
+        selectedPlayer = 0;
         Log.d(TAG, "BeerDialog: " + ((Match) model).getPlayerList());
     }
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_beer, container, false);
-        rc_players = view.findViewById(R.id.rc_players);
+        View view = inflater.inflate(R.layout.dialog_beer2, container, false);
         btn_cancel = view.findViewById(R.id.btn_cancel);
         btn_commit = view.findViewById(R.id.btn_commit);
+        tv_title = view.findViewById(R.id.tv_title);
+        beer_layout = view.findViewById(R.id.beer_layout);
+        btn_back = view.findViewById(R.id.btn_back);
+        btn_forward = view.findViewById(R.id.btn_forward);
         btn_cancel.setOnClickListener(this);
         btn_commit.setOnClickListener(this);
+        btn_back.setOnClickListener(this);
+        btn_forward.setOnClickListener(this);
+        setPlayerTitle();
+        beer_layout.loadPlayers(selectedPlayers);
+        beer_layout.attachListener(this);
+        beer_layout.drawBeers(player);
+        //lineDrawed = true;
         initBeerCompensation();
-        initMatchRecycleView();
-        setAdapter();
+        view.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+            public void onSwipeTop() {
+                Log.d(TAG, "onSwipeTop: " + lineDrawed);
+                if (lineDrawed) {
+                    lineDrawed = false;
+                    player.removeBeer();
+                    beer_layout.removeBeer(player);
+                }
+            }
+            public void onSwipeRight() {
+                Log.d(TAG, "onSwipeRight: ");
+                if (lineDrawed) {
+                    setPreviousPlayer();
+                }
+
+            }
+            public void onSwipeLeft() {
+                Log.d(TAG, "onSwipeLeft: ");
+                if (lineDrawed) {
+                    setNextPlayer();
+                }
+            }
+            public void onSwipeBottom() {
+                Log.d(TAG, "onSwipeBottom: ");
+                btn_back.setVisibility(View.GONE);
+                btn_forward.setVisibility(View.GONE);
+                if (lineDrawed) {
+                    lineDrawed = false;
+                    player.addBeer();
+                    beer_layout.addBeer(player);
+                }
+            }
+
+        });
 
         return view;
     }
@@ -71,25 +131,35 @@ public class BeerDialog extends Dialog implements OnPlusButtonListener {
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_commit: {
+            case R.id.btn_commit:
                 if (iChangePlayerListListener.editMatch(selectedPlayers, (Match) model)) {
                     commit = true;
                     getDialog().dismiss();
+                    iNotificationSender.sendNotificationToRepository(new Notification((Match) model, selectedPlayers, beerCompensation));
                 }
                 break;
-            }
-            case R.id.btn_cancel: {
+            case R.id.btn_cancel:
                 Log.d(TAG, "onClick: kliknuti na smazat zápas " + selectedPlayers);
                 getDialog().dismiss();
                 break;
-            }
+            case R.id.btn_back:
+                if (lineDrawed) {
+                    setPreviousPlayer();
+                }
+                break;
+
+            case R.id.btn_forward:
+                if (lineDrawed) {
+                    setNextPlayer();
+                }
+                break;
+
         }
     }
 
-    private void initMatchRecycleView() {
-        adapter = new PlusRecycleViewAdapter(selectedPlayers, getActivity(), this);
-    }
-
+    /**
+     * načte seznam piv v v původní nezměněné podobě
+     */
     private void initBeerCompensation() {
         beerCompensation = new ArrayList<>();
         for (Player player : selectedPlayers) {
@@ -98,23 +168,51 @@ public class BeerDialog extends Dialog implements OnPlusButtonListener {
         Log.d(TAG, "initSelectedPlayers: " + selectedPlayers);
     }
 
-    private void setAdapter() {
-        Log.d(TAG, "setAdapter: ");
-        rc_players.setAdapter(adapter);
-        rc_players.setLayoutManager(new LinearLayoutManager(getActivity()));
-    }
-
+    /**
+     * vezme z listu počet piv načtených před přidáváním nových piv a nastaví je zpět
+     */
     private void returnOriginalBeerNumber() {
         for (int i = 0; i < selectedPlayers.size(); i++) {
             selectedPlayers.get(i).setNumberOfBeers(beerCompensation.get(i));
         }
     }
 
+    private void setNextPlayer() {
+        Log.d(TAG, "setNextPlayer: selectedPlayer: " + selectedPlayer + ", size: " + selectedPlayersSize);
+        if (!(selectedPlayer == selectedPlayersSize-1)) {
+            selectedPlayer++;
+        }
+        else {
+            selectedPlayer = 0;
+        }
+        player = selectedPlayers.get(selectedPlayer);
+        setPlayerTitle();
+        beer_layout.drawBeers(player);
+    }
+
+    private void setPreviousPlayer() {
+        if (selectedPlayer > 0) {
+            selectedPlayer--;
+        }
+        else {
+            selectedPlayer = selectedPlayersSize-1;
+        }
+        player = selectedPlayers.get(selectedPlayer);
+        setPlayerTitle();
+        beer_layout.drawBeers(player);
+    }
+
+    private void setPlayerTitle() {
+        tv_title.setText(player.getName());
+    }
+
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
             iChangePlayerListListener = (IChangePlayerListListener) getTargetFragment();
+            iNotificationSender = (INotificationSender) getTargetFragment();
         } catch (ClassCastException e) {
             Log.e(TAG, "onAttach: ClassCastException", e);
         }
@@ -136,5 +234,19 @@ public class BeerDialog extends Dialog implements OnPlusButtonListener {
     @Override
     public void onMinusClick(int position) {
         selectedPlayers.get(position).removeBeer();
+    }
+
+    /**
+     * @param finished vrací false, pokud započal proces kreslení čárky
+     *                 vrací true pokud skončil proces kreslení čárky
+     */
+    @Override
+    public void drawFinished(boolean finished) {
+        Log.d(TAG, "drawFinished: " + finished);
+        lineDrawed = finished;
+        if (finished) {
+            btn_back.setVisibility(View.VISIBLE);
+            btn_forward.setVisibility(View.VISIBLE);
+        }
     }
 }

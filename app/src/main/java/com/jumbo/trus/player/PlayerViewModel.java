@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel;
 import com.jumbo.trus.ChangeListener;
 import com.jumbo.trus.Date;
 import com.jumbo.trus.Flag;
+import com.jumbo.trus.INotificationSender;
 import com.jumbo.trus.Result;
 import com.jumbo.trus.Validator;
 import com.jumbo.trus.Model;
@@ -22,7 +23,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class PlayerViewModel extends ViewModel implements ChangeListener {
+public class PlayerViewModel extends ViewModel implements ChangeListener, INotificationSender {
 
     private static final String TAG = "PlayerViewModel";
 
@@ -30,7 +31,6 @@ public class PlayerViewModel extends ViewModel implements ChangeListener {
     private MutableLiveData<Boolean> isUpdating = new MutableLiveData<>();
     private MutableLiveData<String> alert = new MutableLiveData<>();
     private FirebaseRepository firebaseRepository;
-    private User user = new User("test_user");
 
     public void init() {
         firebaseRepository = new FirebaseRepository("player", this);
@@ -139,12 +139,11 @@ public class PlayerViewModel extends ViewModel implements ChangeListener {
                 break;
         }
         alert.setValue("Hráč " + player.getName() + " úspěšně " + action);
-        Notification newNotification = new Notification("Hráč " + player.getName() + " " + action, user);
-        sendNotificationToRepository(newNotification);
         isUpdating.setValue(false);
     }
 
-    private void sendNotificationToRepository(Notification notification) {
+    @Override
+    public void sendNotificationToRepository(Notification notification) {
         firebaseRepository.addNotification(notification);
     }
 

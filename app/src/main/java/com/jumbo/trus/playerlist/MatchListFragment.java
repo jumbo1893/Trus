@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.jumbo.trus.CustomUserFragment;
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.INotificationSender;
 import com.jumbo.trus.OnListListener;
@@ -37,7 +38,7 @@ import com.jumbo.trus.season.SeasonsViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MatchListFragment extends Fragment implements OnListListener, IChangeFineListListener,
+public class MatchListFragment extends CustomUserFragment implements OnListListener, IChangeFineListListener,
         IChangePlayerListListener, AdapterView.OnItemSelectedListener, INotificationSender {
 
     private static final String TAG = "MatchListFragment";
@@ -54,8 +55,6 @@ public class MatchListFragment extends Fragment implements OnListListener, IChan
     private int spinnerPosition = 0;
     private Flag flag;
 
-    private User user = new User("pivka");
-
     public MatchListFragment(Flag flag) {
         this.flag = flag;
         Log.d(TAG, "MatchListFragment: " + this.flag);
@@ -66,19 +65,18 @@ public class MatchListFragment extends Fragment implements OnListListener, IChan
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        Bundle result = new Bundle();
-        result.putString("bundleKey", "result");
         View view = inflater.inflate(R.layout.fragment_beer, container, false);
         rc_matches = view.findViewById(R.id.rc_matches);
         rc_matches.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         progress_bar = view.findViewById(R.id.progress_bar);
         sp_seasons = view.findViewById(R.id.sp_seasons);
         sp_seasons.setOnItemSelectedListener(this);
+        initMainActivityViewModel();
         matchViewModel = new ViewModelProvider(requireActivity()).get(MatchViewModel.class);
         matchViewModel.init();
         seasonsViewModel = new ViewModelProvider(requireActivity()).get(SeasonsViewModel.class);
         seasonsViewModel.init();
-        matchViewModel.getMatches().observe(this, new Observer<List<Match>>() {
+        matchViewModel.getMatches().observe(getViewLifecycleOwner(), new Observer<List<Match>>() {
             @Override
             public void onChanged(List<Match> matches) {
                 Log.d(TAG, "onChanged: nacetli se hraci " + matches);
@@ -89,7 +87,7 @@ public class MatchListFragment extends Fragment implements OnListListener, IChan
             }
         });
 
-        seasonsViewModel.getSeasons().observe(this, new Observer<List<Season>>() {
+        seasonsViewModel.getSeasons().observe(getViewLifecycleOwner(), new Observer<List<Season>>() {
             @Override
             public void onChanged(List<Season> seasons) {
                 Log.d(TAG, "onChanged: nacetli se sezony " + seasons);
@@ -105,7 +103,7 @@ public class MatchListFragment extends Fragment implements OnListListener, IChan
                 seasonArrayAdapter.notifyDataSetChanged(); //TODO notifyItemInserted
             }
         });
-        matchViewModel.isUpdating().observe(this, new Observer<Boolean>() {
+        matchViewModel.isUpdating().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
@@ -116,7 +114,7 @@ public class MatchListFragment extends Fragment implements OnListListener, IChan
                 }
             }
         });
-        matchViewModel.getAlert().observe(this, new Observer<String>() {
+        matchViewModel.getAlert().observe(getViewLifecycleOwner(), new Observer<String>() {
                 @Override
                 public void onChanged(String s) {
                     //podmínka aby se upozornění nezobrazovalo vždy když se mění fragment
@@ -178,17 +176,14 @@ public class MatchListFragment extends Fragment implements OnListListener, IChan
     public void onItemClick(int position) {
         Log.d(TAG, "onHracClick: kliknuto na pozici " + position + ", object: " + matchViewModel.getMatches().getValue() + flag);
         if (flag == Flag.BEER) {
-            /*BeerDialog beerDialog = new BeerDialog(Flag.MATCH_EDIT, matchViewModel.getMatches().getValue().get(position));
+            BeerDialog beerDialog = new BeerDialog(Flag.MATCH_EDIT, matchViewModel.getMatches().getValue().get(position));
             beerDialog.setTargetFragment(MatchListFragment.this, 1);
-            beerDialog.show(getFragmentManager(), "dialogplus");*/
-            BeerDialog2 beerDialog = new BeerDialog2(Flag.MATCH_EDIT, matchViewModel.getMatches().getValue().get(position));
-            beerDialog.setTargetFragment(MatchListFragment.this, 1);
-            beerDialog.show(getFragmentManager(), "dialogplus");
+            beerDialog.show(getParentFragmentManager(), "dialogplus");
         }
         else if (flag == Flag.FINE) {
             FinePlayerDialog finePlayerDialog = new FinePlayerDialog(matchViewModel.getMatches().getValue().get(position));
             finePlayerDialog.setTargetFragment(MatchListFragment.this, 1);
-            finePlayerDialog.show(getFragmentManager(), "dialogplus");
+            finePlayerDialog.show(getParentFragmentManager(), "dialogplus");
         }
     }
 
@@ -224,8 +219,9 @@ public class MatchListFragment extends Fragment implements OnListListener, IChan
         return result.isTrue();
     }
 
+
     @Override
-    public void createNotification(Notification notification) {
+    public void sendNotificationToRepository(Notification notification) {
         notification.setUser(user);
         matchViewModel.sendNotificationToRepository(notification);
     }

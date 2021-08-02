@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel;
 import com.jumbo.trus.ChangeListener;
 import com.jumbo.trus.Date;
 import com.jumbo.trus.Flag;
+import com.jumbo.trus.INotificationSender;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.Result;
 import com.jumbo.trus.user.User;
@@ -25,7 +26,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class MatchViewModel extends ViewModel implements ChangeListener {
+public class MatchViewModel extends ViewModel implements ChangeListener, INotificationSender {
 
     private static final String TAG = "MatchViewModel";
 
@@ -217,6 +218,7 @@ public class MatchViewModel extends ViewModel implements ChangeListener {
         return matchList;
     }
 
+    @Override
     public void sendNotificationToRepository(Notification notification) {
         firebaseRepository.addNotification(notification);
     }

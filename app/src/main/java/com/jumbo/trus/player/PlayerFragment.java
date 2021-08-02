@@ -17,16 +17,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.jumbo.trus.CustomUserFragment;
 import com.jumbo.trus.Flag;
+import com.jumbo.trus.MainActivityViewModel;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.OnListListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.Result;
 import com.jumbo.trus.SimpleDividerItemDecoration;
+import com.jumbo.trus.notification.Notification;
+import com.jumbo.trus.user.User;
 
 import java.util.List;
 
-public class PlayerFragment extends Fragment implements OnListListener, IPlayerFragment {
+public class PlayerFragment extends CustomUserFragment implements OnListListener, IPlayerFragment {
 
     private static final String TAG = "HracFragment";
 
@@ -36,11 +40,6 @@ public class PlayerFragment extends Fragment implements OnListListener, IPlayerF
     private ProgressBar progress_bar;
     private PlayerViewModel playerViewModel;
 
-    /*@Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }*/
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,9 +49,10 @@ public class PlayerFragment extends Fragment implements OnListListener, IPlayerF
         rc_hraci = view.findViewById(R.id.rc_hraci);
         rc_hraci.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         progress_bar = view.findViewById(R.id.progress_bar);
+        initMainActivityViewModel();
         playerViewModel = new ViewModelProvider(requireActivity()).get(PlayerViewModel.class);
         playerViewModel.init();
-        playerViewModel.getPlayers().observe(this, new Observer<List<Player>>() {
+        playerViewModel.getPlayers().observe(getViewLifecycleOwner(), new Observer<List<Player>>() {
             @Override
             public void onChanged(List<Player> hraci) {
                 Log.d(TAG, "onChanged: nacetli se hraci " + hraci);
@@ -63,7 +63,7 @@ public class PlayerFragment extends Fragment implements OnListListener, IPlayerF
                 adapter.notifyDataSetChanged(); //TODO notifyItemInserted
             }
         });
-        playerViewModel.isUpdating().observe(this, new Observer<Boolean>() {
+        playerViewModel.isUpdating().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
@@ -74,7 +74,7 @@ public class PlayerFragment extends Fragment implements OnListListener, IPlayerF
                 }
             }
         });
-        playerViewModel.getAlert().observe(this, new Observer<String>() {
+        playerViewModel.getAlert().observe(getViewLifecycleOwner(), new Observer<String>() {
                 @Override
                 public void onChanged(String s) {
                     //podmínka aby se upozornění nezobrazovalo vždy když se mění fragment
@@ -89,7 +89,7 @@ public class PlayerFragment extends Fragment implements OnListListener, IPlayerF
             public void onClick(View v) {
                 PlayerDialog playerDialog = new PlayerDialog(Flag.PLAYER_PLUS);
                 playerDialog.setTargetFragment(PlayerFragment.this, 1);
-                playerDialog.show(getFragmentManager(), "dialogplus");
+                playerDialog.show(getParentFragmentManager(), "dialogplus");
             }
         });
         return view;
@@ -117,33 +117,41 @@ public class PlayerFragment extends Fragment implements OnListListener, IPlayerF
         Log.d(TAG, "onHracClick: kliknuto na pozici " + position + ", object: " + playerViewModel.getPlayers().getValue());
         PlayerDialog playerDialog = new PlayerDialog(Flag.PLAYER_EDIT, playerViewModel.getPlayers().getValue().get(position));
         playerDialog.setTargetFragment(PlayerFragment.this, 1);
-        playerDialog.show(getFragmentManager(), "dialogplus");
+        playerDialog.show(getParentFragmentManager(), "dialogplus");
     }
 
     @Override
-    public boolean createNewPlayer(String jmeno, String birthday, boolean fan) {
+    public boolean createNewPlayer(String name, String birthday, boolean fan) {
 
-        Result result = playerViewModel.checkNewPlayerValidation(jmeno, birthday);
+        Result result = playerViewModel.checkNewPlayerValidation(name, birthday);
         if (!result.isTrue()) {
             Toast.makeText(getActivity(), result.getText(), Toast.LENGTH_SHORT).show();
         }
         else {
-            Result addPlayerToRepositoryResult = playerViewModel.addPlayerToRepository(jmeno, fan, birthday);
+            Result addPlayerToRepositoryResult = playerViewModel.addPlayerToRepository(name, fan, birthday);
             Toast.makeText(getActivity(), addPlayerToRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
+            if (addPlayerToRepositoryResult.isTrue()) {
+                String text = "narozen " + birthday;
+                createNotification(new Notification("Vytvořen " + (fan ? "fanoušek " : "hráč ") + name, text), playerViewModel);
+            }
         }
         return result.isTrue();
 
     }
 
     @Override
-    public boolean editPlayer(String jmeno, String birthday, boolean fan, Player player) {
-        Result result = playerViewModel.checkNewPlayerValidation(jmeno, birthday);
+    public boolean editPlayer(String name, String birthday, boolean fan, Player player) {
+        Result result = playerViewModel.checkNewPlayerValidation(name, birthday);
         if (!result.isTrue()) {
             Toast.makeText(getActivity(), result.getText(), Toast.LENGTH_SHORT).show();
         }
         else {
-            Result editPlayerInRepositoryResult = playerViewModel.editPlayerInRepository(jmeno, fan, birthday, player);
+            Result editPlayerInRepositoryResult = playerViewModel.editPlayerInRepository(name, fan, birthday, player);
             Toast.makeText(getActivity(), editPlayerInRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
+            if (editPlayerInRepositoryResult.isTrue()) {
+                String text = "narozen " + birthday;
+                createNotification(new Notification("Upraven " + (fan ? "fanoušek " : "hráč ") + name, text), playerViewModel);
+            }
         }
         return result.isTrue();
     }
@@ -152,6 +160,10 @@ public class PlayerFragment extends Fragment implements OnListListener, IPlayerF
     public boolean deleteModel(Model model) {
         Result removePlayerFromRepositoryResult = playerViewModel.removePlayerFromRepository((Player) model);
         Toast.makeText(getActivity(), removePlayerFromRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
+        if (removePlayerFromRepositoryResult.isTrue()) {
+            String text = " narozen " + ((Player) model).getBirthdayInStringFormat();
+            createNotification(new Notification("Smazán " + (((Player) model).isFan() ? "fanoušek " : "hráč" ) + model.getName(), text), playerViewModel);
+        }
         return removePlayerFromRepositoryResult.isTrue();
     }
 }

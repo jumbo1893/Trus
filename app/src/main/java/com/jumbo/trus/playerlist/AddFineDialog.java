@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jumbo.trus.Dialog;
 import com.jumbo.trus.INotificationSender;
-import com.jumbo.trus.MainActivity;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.OnPlusButtonListener;
 import com.jumbo.trus.R;
@@ -28,7 +27,6 @@ import com.jumbo.trus.adapters.FinesRecycleViewAdapter;
 import com.jumbo.trus.fine.Fine;
 import com.jumbo.trus.fine.FineViewModel;
 import com.jumbo.trus.fine.ReceivedFine;
-import com.jumbo.trus.match.IMatchFragment;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.player.Player;
@@ -72,7 +70,7 @@ public class AddFineDialog extends Dialog implements OnPlusButtonListener {
         btn_commit.setOnClickListener(this);
         fineViewModel = new ViewModelProvider(requireActivity()).get(FineViewModel.class);
         fineViewModel.init();
-        fineViewModel.getFines().observe(this, new Observer<List<Fine>>() {
+        fineViewModel.getFines().observe(getViewLifecycleOwner(), new Observer<List<Fine>>() {
             @Override
             public void onChanged(List<Fine> fines) {
                 Log.d(TAG, "onChanged: nacetly se sezony " + fines);
@@ -100,7 +98,7 @@ public class AddFineDialog extends Dialog implements OnPlusButtonListener {
             case R.id.btn_commit: {
                 if (iChangeFineListListener.editPlayer(playerFines, (Player) model, match)) {
                     commit = true;
-                    iNotificationSender.createNotification(new Notification(match, (Player) model, playerFines, finesCompesation));
+                    iNotificationSender.sendNotificationToRepository(new Notification(match, (Player) model, playerFines, finesCompesation));
                     getDialog().dismiss();
                 }
                 break;
