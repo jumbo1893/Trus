@@ -1,8 +1,11 @@
 package com.jumbo.trus;
 
+import android.os.Parcelable;
+
+import java.io.Serializable;
 import java.util.Objects;
 
-public abstract class Model {
+public abstract class Model implements Serializable {
 
     protected String id;
     protected String name;

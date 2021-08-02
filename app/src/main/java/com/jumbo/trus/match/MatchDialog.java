@@ -45,7 +45,6 @@ public class MatchDialog extends Dialog implements AdapterView.OnItemSelectedLis
 
     //vars
     private IMatchFragment iMatchFragment;
-    private INotificationSender iNotificationSender;
     private List<Season> seasons;
     private List<String> seasonsNames = new ArrayList<>();
     private List<Player> players;
@@ -151,6 +150,7 @@ public class MatchDialog extends Dialog implements AdapterView.OnItemSelectedLis
                         Season season = selectPickedSeason(sp_seasons.getSelectedItemPosition());
                         if (iMatchFragment.createNewMatch(opponent, date, homeMatch, season, selectedPlayers)) {
                             getDialog().dismiss();
+
                         }
                         break;
                     }
@@ -175,7 +175,6 @@ public class MatchDialog extends Dialog implements AdapterView.OnItemSelectedLis
                         Season season = selectPickedSeason(sp_seasons.getSelectedItemPosition());
                         if (iMatchFragment.editMatch(opponent, date, homeMatch, season, selectedPlayers, (Match) model)) {
                             getDialog().dismiss();
-                            iNotificationSender.createNotification(new Notification("Upraven zápas " + opponent, ""));
                         }
                         break;
                     }
@@ -286,7 +285,6 @@ public class MatchDialog extends Dialog implements AdapterView.OnItemSelectedLis
         super.onAttach(context);
         try {
             iMatchFragment = (IMatchFragment) getTargetFragment();
-            iNotificationSender = (INotificationSender) getTargetFragment();
         } catch (ClassCastException e) {
             Log.e(TAG, "onAttach: ClassCastException", e);
         }

@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jumbo.trus.INotificationSender;
+import com.jumbo.trus.MainActivityViewModel;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.SimpleDividerItemDecoration;
 import com.jumbo.trus.user.User;
@@ -37,11 +38,11 @@ import com.jumbo.trus.season.SeasonsViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MatchFragment extends Fragment implements OnListListener, IMatchFragment, AdapterView.OnItemSelectedListener, INotificationSender {
+public class MatchFragment extends Fragment implements OnListListener, IMatchFragment, AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "MatchFragment";
 
-    private User user = new User("zapas");
+    private User user;
 
     private FloatingActionButton fab_plus;
     private RecyclerView rc_zapas;
@@ -54,6 +55,7 @@ public class MatchFragment extends Fragment implements OnListListener, IMatchFra
     private MatchViewModel matchViewModel;
     private SeasonsViewModel seasonsViewModel;
     private PlayerViewModel playerViewModel;
+    private MainActivityViewModel mainActivityViewModel;
     private Spinner sp_seasons;
     private int spinnerPosition = 0;
 
@@ -70,13 +72,20 @@ public class MatchFragment extends Fragment implements OnListListener, IMatchFra
         progress_bar = view.findViewById(R.id.progress_bar);
         sp_seasons = view.findViewById(R.id.sp_seasons);
         sp_seasons.setOnItemSelectedListener(this);
+        mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
+        mainActivityViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                setUser(user);
+            }
+        });
         matchViewModel = new ViewModelProvider(requireActivity()).get(MatchViewModel.class);
         matchViewModel.init();
         seasonsViewModel = new ViewModelProvider(requireActivity()).get(SeasonsViewModel.class);
         seasonsViewModel.init();
         playerViewModel = new ViewModelProvider(requireActivity()).get(PlayerViewModel.class);
         playerViewModel.init();
-        matchViewModel.getMatches().observe(this, new Observer<List<Match>>() {
+        matchViewModel.getMatches().observe(getViewLifecycleOwner(), new Observer<List<Match>>() {
             @Override
             public void onChanged(List<Match> matches) {
                 Log.d(TAG, "onChanged: nacetli se hraci " + matches);
@@ -87,7 +96,7 @@ public class MatchFragment extends Fragment implements OnListListener, IMatchFra
             }
         });
 
-        seasonsViewModel.getSeasons().observe(this, new Observer<List<Season>>() {
+        seasonsViewModel.getSeasons().observe(getViewLifecycleOwner(), new Observer<List<Season>>() {
             @Override
             public void onChanged(List<Season> seasons) {
                 Log.d(TAG, "onChanged: nacetli se sezony " + seasons);
@@ -103,7 +112,7 @@ public class MatchFragment extends Fragment implements OnListListener, IMatchFra
                 seasonArrayAdapter.notifyDataSetChanged(); //TODO notifyItemInserted
             }
         });
-        matchViewModel.isUpdating().observe(this, new Observer<Boolean>() {
+        matchViewModel.isUpdating().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
@@ -114,7 +123,7 @@ public class MatchFragment extends Fragment implements OnListListener, IMatchFra
                 }
             }
         });
-        matchViewModel.getAlert().observe(this, new Observer<String>() {
+        matchViewModel.getAlert().observe(getViewLifecycleOwner(), new Observer<String>() {
                 @Override
                 public void onChanged(String s) {
                     //podmínka aby se upozornění nezobrazovalo vždy když se mění fragment
@@ -124,7 +133,7 @@ public class MatchFragment extends Fragment implements OnListListener, IMatchFra
                 }
         });
 
-        playerViewModel.getPlayers().observe(this, new Observer<List<Player>>() {
+        playerViewModel.getPlayers().observe(getViewLifecycleOwner(), new Observer<List<Player>>() {
             @Override
             public void onChanged(List<Player> playerList) {
                 players = playerList;
@@ -186,6 +195,10 @@ public class MatchFragment extends Fragment implements OnListListener, IMatchFra
         }
     }
 
+    private void createNotification(Notification notification) {
+        notification.setUser(user);
+        matchViewModel.sendNotificationToRepository(notification);
+    }
 
     @Override
     public void onItemClick(int position) {
@@ -203,9 +216,13 @@ public class MatchFragment extends Fragment implements OnListListener, IMatchFra
             Toast.makeText(getActivity(), result.getText(), Toast.LENGTH_SHORT).show();
         }
         else {
-            Result addPlayerToRepositoryResult = matchViewModel.addMatchToRepository(opponent, homeMatch, date, season, playerList,
+            Result addMatchToRepositoryResult = matchViewModel.addMatchToRepository(opponent, homeMatch, date, season, playerList,
                     seasonsViewModel.getSeasons().getValue());
-            Toast.makeText(getActivity(), addPlayerToRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), addMatchToRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
+            if (addMatchToRepositoryResult.isTrue()) {
+                String text = "Byl vytvořen " +  (homeMatch ? "domácí zápas" : "venkovní zápas") + " se soupeřem " + opponent + " hraný " + date;
+                createNotification(new Notification("Přidán zápas se soupeřem " + opponent, text));
+            }
         }
         return result.isTrue();
     }
@@ -217,17 +234,25 @@ public class MatchFragment extends Fragment implements OnListListener, IMatchFra
             Toast.makeText(getActivity(), result.getText(), Toast.LENGTH_SHORT).show();
         }
         else {
-            Result editPlayerInRepositoryResult = matchViewModel.editMatchInRepository(opponent, homeMatch, date, season, playerList,
+            Result editMatchInRepositoryResult = matchViewModel.editMatchInRepository(opponent, homeMatch, date, season, playerList,
                     seasonsViewModel.getSeasons().getValue(), match);
-            Toast.makeText(getActivity(), editPlayerInRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), editMatchInRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
+            if (editMatchInRepositoryResult.isTrue()) {
+                String text = "Zápas byl změněn na " + (homeMatch ? "domácí zápas" : "venkovní zápas") + " se soupeřem " + opponent + " hraný " + date;
+                createNotification(new Notification("Upraven zápas " + match.getOpponent() + " hraný " + match.getDateOfMatchInStringFormat(), text));
+            }
         }
         return result.isTrue();
     }
     @Override
     public boolean deleteModel(Model model) {
-        Result removePlayerFromRepositoryResult = matchViewModel.removeMatchFromRepository((Match) model);
-        Toast.makeText(getActivity(), removePlayerFromRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
-        return removePlayerFromRepositoryResult.isTrue();
+        Result removeMatchFromRepositoryResult = matchViewModel.removeMatchFromRepository((Match) model);
+        Toast.makeText(getActivity(), removeMatchFromRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
+        if (removeMatchFromRepositoryResult.isTrue()) {
+            String text = "hraný " + ((Match) model).getDateOfMatchInStringFormat();
+            createNotification(new Notification("Smazán zápas " + ((Match) model).getOpponent(), text));
+        }
+        return removeMatchFromRepositoryResult.isTrue();
     }
 
     @Override
@@ -247,9 +272,7 @@ public class MatchFragment extends Fragment implements OnListListener, IMatchFra
 
     }
 
-    @Override
-    public void createNotification(Notification notification) {
-        notification.setUser(user);
-        matchViewModel.sendNotificationToRepository(notification);
+    public void setUser(User user) {
+        this.user = user;
     }
 }

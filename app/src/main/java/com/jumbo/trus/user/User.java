@@ -2,9 +2,7 @@ package com.jumbo.trus.user;
 
 import com.jumbo.trus.Model;
 
-import java.io.Serializable;
-
-public class User extends Model implements Serializable {
+public class User extends Model {
 
     private String password;
     private long registrationDate;

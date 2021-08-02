@@ -1,5 +1,6 @@
 package com.jumbo.trus;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
@@ -19,6 +20,7 @@ import com.jumbo.trus.statistics.FineStatisticsFragment;
 import com.jumbo.trus.user.User;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
@@ -37,6 +39,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
+    private static final String TAG = "MainActivity";
+
     private ViewPager viewPager;
     private BottomNavigationView navigation;
     private NotificationViewModel notificationViewModel;
@@ -47,9 +51,8 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     private Notification lastNotification;
     private int notificationsUnread;
 
-    public User user = new User("test");
+    private User user;
 
-    private static final String TAG = "MainActivity";
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -95,7 +98,12 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        user = (User) getIntent().getSerializableExtra("user");
+        Log.d(TAG, "onCreate: přihlásil se user " + user);
         setContentView(R.layout.activity_main);
+        MainActivityViewModel model = new ViewModelProvider(this).get(MainActivityViewModel.class);
+        model.init();
+        model.setUser(user);
         viewPager = findViewById(R.id.viewpager);
         setupViewPager(viewPager);
         navigation = findViewById(R.id.navigation);
@@ -170,8 +178,16 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
     }
 
+    private Bundle prepareUserBundle() {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("user", user);
+        return bundle;
+    }
+
     private void setupViewPager(ViewPager viewPager) {
         BottomNavPagerAdapter adapter = new BottomNavPagerAdapter(getSupportFragmentManager());
+        Fragment fragment = new HomeFragment();
+        fragment.setArguments(prepareUserBundle());
         adapter.addFragment(new HomeFragment());
         adapter.addFragment(new PlayerFragment());
         adapter.addFragment(new SeasonsFragment());

@@ -33,7 +33,6 @@ public class MatchViewModel extends ViewModel implements ChangeListener {
     private MutableLiveData<Boolean> isUpdating = new MutableLiveData<>();
     private MutableLiveData<String> alert = new MutableLiveData<>();
     private FirebaseRepository firebaseRepository;
-    private User user = new User("test_user");
 
     public void init() {
         firebaseRepository = new FirebaseRepository("match", this);
@@ -201,10 +200,6 @@ public class MatchViewModel extends ViewModel implements ChangeListener {
             case MATCH_DELETE:
                 action = "smazán";
                 break;
-        }
-        if (flag != Flag.MATCH_EDIT) {
-            Notification newNotification = new Notification("Zápas " + match.getName() + " " + action, user);
-            sendNotificationToRepository(newNotification);
         }
         alert.setValue("Zápas " + match.getName() + " úspěšně " + action);
         isUpdating.setValue(false);
