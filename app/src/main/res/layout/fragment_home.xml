@@ -48,7 +48,7 @@
         android:text="obnovit text" />
 
     <Button
-        android:id="@+id/btn_zavrit"
+        android:id="@+id/btn_logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/btn_obnovit"
@@ -57,22 +57,21 @@
         android:layout_alignEnd="@+id/btn_obnovit"
         android:layout_alignRight="@+id/btn_obnovit"
         android:layout_marginTop="20dp"
-        android:onClick="menu1_skok3"
         android:paddingLeft="10dp"
         android:paddingTop="5dp"
         android:paddingRight="10dp"
         android:paddingBottom="5dp"
-        android:text="button3" />
+        android:text="Odhlásit" />
 
     <TextView
         android:id="@+id/tv_oslavenec"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btn_zavrit"
-        android:layout_alignStart="@+id/btn_zavrit"
-        android:layout_alignLeft="@+id/btn_zavrit"
-        android:layout_alignEnd="@+id/btn_zavrit"
-        android:layout_alignRight="@+id/btn_zavrit"
+        android:layout_below="@+id/btn_logout"
+        android:layout_alignStart="@+id/btn_logout"
+        android:layout_alignLeft="@+id/btn_logout"
+        android:layout_alignEnd="@+id/btn_logout"
+        android:layout_alignRight="@+id/btn_logout"
         android:layout_marginTop="20dp"
         android:text="narozeniny"/>
 

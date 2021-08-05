@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel;
 import com.jumbo.trus.ChangeListener;
 import com.jumbo.trus.Date;
 import com.jumbo.trus.Flag;
+import com.jumbo.trus.INotificationSender;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.Result;
 import com.jumbo.trus.user.User;
@@ -21,11 +22,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class SeasonsViewModel extends ViewModel implements ChangeListener {
+public class SeasonsViewModel extends ViewModel implements ChangeListener, INotificationSender {
 
     private static final String TAG = "SettingsViewModel";
-
-    private User user = new User("test_user_notifikace");
 
     private MutableLiveData<List<Season>> seasons;
     private MutableLiveData<Boolean> isUpdating = new MutableLiveData<>();
@@ -157,16 +156,12 @@ public class SeasonsViewModel extends ViewModel implements ChangeListener {
                 break;
         }
         alert.setValue("Sezona " + season.getName() + " úspěšně " + action);
-        sendNotificationToRepository(prepareNotification("Sezona " + season.getName() + " " + action, user));
         isUpdating.setValue(false);
     }
 
-    private Notification prepareNotification(String text, User user) {
-        Notification notification = new Notification(text, user);
-        return notification;
-    }
 
-    private void sendNotificationToRepository(Notification notification) {
+    @Override
+    public void sendNotificationToRepository(Notification notification) {
         firebaseRepository.addNotification(notification);
     }
 

@@ -1,5 +1,6 @@
 package com.jumbo.trus.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,13 +14,14 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.jumbo.trus.R;
+import com.jumbo.trus.user.LoginActivity;
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "HomeFragment";
 
     private TextView tv_oslavenec,tv_random;
-    private Button btn_info, btn_obnovit, btn_zavrit;
+    private Button btn_info, btn_obnovit, btn_logout;
 
     private HomeViewModel homeViewModel;
 
@@ -31,8 +33,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         tv_random = view.findViewById(R.id.tv_random);
         btn_info = view.findViewById(R.id.btn_info);
         btn_obnovit = view.findViewById(R.id.btn_obnovit);
-        btn_zavrit = view.findViewById(R.id.btn_zavrit);
+        btn_logout = view.findViewById(R.id.btn_logout);
         btn_obnovit.setOnClickListener(this);
+        btn_logout.setOnClickListener(this);
         homeViewModel = new ViewModelProvider(getActivity()).get(HomeViewModel.class);
         homeViewModel.init();
         Log.d(TAG, "onCreateView: ");
@@ -54,12 +57,21 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
+    private void logoutToLoginActivity() {
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        intent.putExtra("logout", true);
+        startActivity(intent);
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_obnovit:
                 homeViewModel.setRandomFact();
                 homeViewModel.setPlayerBirthday();
+                break;
+            case R.id.btn_logout:
+                logoutToLoginActivity();
                 break;
         }
     }

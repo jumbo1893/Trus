@@ -17,7 +17,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.jumbo.trus.CustomUserFragment;
 import com.jumbo.trus.Flag;
+import com.jumbo.trus.INotificationSender;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.OnListListener;
 import com.jumbo.trus.R;
@@ -30,11 +32,9 @@ import com.jumbo.trus.notification.Notification;
 
 import java.util.List;
 
-public class SeasonsFragment extends Fragment implements OnListListener, ISeasonFragment {
+public class SeasonsFragment extends CustomUserFragment implements OnListListener, ISeasonFragment {
 
     private static final String TAG = "SeasonsFragment";
-
-    private User user = new User("sezony");
 
     private RecyclerView rc_seasons;
     private ProgressBar progress_bar;
@@ -54,13 +54,14 @@ public class SeasonsFragment extends Fragment implements OnListListener, ISeason
         rc_seasons.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         progress_bar = view.findViewById(R.id.progress_bar);
         fab_plus = view.findViewById(R.id.fab_plus);
+        initMainActivityViewModel();
         matchViewModel = new ViewModelProvider(requireActivity()).get(MatchViewModel.class);
         matchViewModel.init();
         seasonsViewModel = new ViewModelProvider(getActivity()).get(SeasonsViewModel.class);
         seasonsViewModel.init();
         Log.d(TAG, "onCreateView: ");
 
-        seasonsViewModel.getSeasons().observe(this, new Observer<List<Season>>() {
+        seasonsViewModel.getSeasons().observe(getViewLifecycleOwner(), new Observer<List<Season>>() {
             @Override
             public void onChanged(List<Season> seasons) {
                 Log.d(TAG, "onChanged: nacetly se sezony " + seasons);
@@ -70,7 +71,7 @@ public class SeasonsFragment extends Fragment implements OnListListener, ISeason
             }
         });
 
-        seasonsViewModel.isUpdating().observe(this, new Observer<Boolean>() {
+        seasonsViewModel.isUpdating().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
@@ -81,7 +82,7 @@ public class SeasonsFragment extends Fragment implements OnListListener, ISeason
                 }
             }
         });
-        seasonsViewModel.getAlert().observe(this, new Observer<String>() {
+        seasonsViewModel.getAlert().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
                 //podmínka aby se upozornění nezobrazovalo vždy když se mění fragment
@@ -96,7 +97,7 @@ public class SeasonsFragment extends Fragment implements OnListListener, ISeason
             public void onClick(View v) {
                 SeasonDialog seasonDialog = new SeasonDialog(Flag.SEASON_PLUS);
                 seasonDialog.setTargetFragment(SeasonsFragment.this, 1);
-                seasonDialog.show(getFragmentManager(), "dialogplus");
+                seasonDialog.show(getParentFragmentManager(), "dialogplus");
             }
         });
 
@@ -127,7 +128,7 @@ public class SeasonsFragment extends Fragment implements OnListListener, ISeason
     public void onItemClick(int position) {
         SeasonDialog dialog = new SeasonDialog(Flag.SEASON_EDIT, seasonsViewModel.getSeasons().getValue().get(position));
         dialog.setTargetFragment(SeasonsFragment.this, 1);
-        dialog.show(getFragmentManager(), "dialogplus");
+        dialog.show(getParentFragmentManager(), "dialogplus");
     }
 
     @Override
@@ -140,6 +141,10 @@ public class SeasonsFragment extends Fragment implements OnListListener, ISeason
         else {
             Result addSeasonToRepositoryResult = seasonsViewModel.addSeasonToRepository(name, seasonStart, seasonEnd);
             Toast.makeText(getActivity(), addSeasonToRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
+            if (addSeasonToRepositoryResult.isTrue()) {
+                String text = "se začátkem " + seasonStart + " a koncem " + seasonEnd;
+                createNotification(new Notification("Přidána sezona " + name, text), seasonsViewModel);
+            }
         }
         return result.isTrue();
     }
@@ -153,6 +158,10 @@ public class SeasonsFragment extends Fragment implements OnListListener, ISeason
         else {
             Result editSeasonInRepositoryResult = seasonsViewModel.editSeasonInRepository(name, seasonStart, seasonEnd, season);
             Toast.makeText(getActivity(), editSeasonInRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
+            if (editSeasonInRepositoryResult.isTrue()) {
+                String text = "se začátkem " + seasonStart + " a koncem " + seasonEnd;
+                createNotification(new Notification("Upravena sezona " + name, text), seasonsViewModel);
+            }
         }
         return result.isTrue();
     }
@@ -166,9 +175,9 @@ public class SeasonsFragment extends Fragment implements OnListListener, ISeason
             List <Season> seasonList = seasonsViewModel.getSeasons().getValue();
             seasonList.remove(model);
             final List<Match> matchList = matchViewModel.recalculateMatchSeason((Season) model, seasonList);
-            Notification notification = new Notification().prepareNotificationAboutChangedSeasons(matchList);
-            notification.setUser(user);
-            matchViewModel.sendNotificationToRepository(notification);
+            String text = "se začátkem " + ((Season) model).getSeasonStartInStringFormat() + " a koncem " + ((Season) model).getSeasonEndInStringFormat();
+            createNotification(new Notification("Smazána sezona " + model.getName(), text), seasonsViewModel);
+            createNotification(new Notification().prepareNotificationAboutChangedSeasons(matchList), seasonsViewModel);
             Handler handler = new Handler();
             handler.postDelayed(new Runnable()
             {

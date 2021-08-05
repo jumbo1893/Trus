@@ -7,12 +7,14 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -22,12 +24,16 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.jumbo.trus.MainActivity;
 import com.jumbo.trus.R;
+
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher {
 
@@ -36,17 +42,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText et_username, et_password;
     private TextView tv_emptyfields;
     private Button btn_login, btn_register;
+    private Switch sw_remember;
     private ProgressBar progress_bar;
+
+    private boolean logout;
 
     private LoginViewModel loginViewModel;
 
-    private User user;
+    private SharedPreferences pref;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        logout = getIntent().getBooleanExtra("logout", false);
         setContentView(R.layout.activity_login);
+        pref = getSharedPreferences("Preferences", MODE_PRIVATE);
         loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
         loginViewModel.init();
         et_username = findViewById(R.id.et_username);
@@ -54,11 +65,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         tv_emptyfields = findViewById(R.id.tv_emptyfields);
         btn_login = findViewById(R.id.btn_login);
         btn_register = findViewById(R.id.btn_register);
+        sw_remember = findViewById(R.id.sw_remember);
         progress_bar = findViewById(R.id.progress_bar);
         btn_login.setOnClickListener(this);
         btn_register.setOnClickListener(this);
         et_username.addTextChangedListener(this);
         et_password.addTextChangedListener(this);
+        showProgressBar();
+        et_username.setFocusable(false);
+        et_password.setFocusable(false);
+        setRememberedCredentials();
 
         loginViewModel.isUpdating().observe(this, new Observer<Boolean>() {
             @Override
@@ -81,10 +97,32 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         });
 
+        loginViewModel.getUsers().observe(this, new Observer<List<User>>() {
+            @Override
+            public void onChanged(List<User> users) {
+                hideProgressBar();
+                et_username.setFocusableInTouchMode(true);
+                et_password.setFocusableInTouchMode(true);
+                loginWithRememberedLogin();
+            }
+        });
+
         loginViewModel.getUser().observe(this, new Observer<User>() {
             @Override
             public void onChanged(User user) {
                 Log.d(TAG, "přihlášen " + user);
+                if (sw_remember.isChecked()) {
+                    getSharedPreferences("Preferences", MODE_PRIVATE)
+                            .edit()
+                            .putString("username", user.getName())
+                            .putString("password", user.getPassword())
+                            .putBoolean("remember", sw_remember.isChecked())
+                            .apply();
+                }
+                getSharedPreferences("Preferences", MODE_PRIVATE)
+                        .edit()
+                        .putBoolean("remember", sw_remember.isChecked())
+                        .apply();
                 switchToMainActivity(user);
             }
         });
@@ -120,13 +158,28 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         startActivity(intent);
     }
 
+    private void loginWithRememberedLogin() {
+        if (pref.getBoolean("remember", false) && !logout) {
+            loginViewModel.loginWithHashedPassword(pref.getString("username", ""), pref.getString("password", ""));
+        }
+    }
+
+    private void setRememberedCredentials() {
+        if (pref.getBoolean("remember", false)) {
+            et_username.setText(pref.getString("username", ""));
+            sw_remember.setChecked(pref.getBoolean("remember", false));
+        }
+    }
+
     @Override
     public void onClick(View v) {
         String name = et_username.getText().toString().trim();
         String password = et_password.getText().toString().trim();
         switch (v.getId()) {
             case R.id.btn_login:
-                loginViewModel.loginWithUsernameAndPassword(name, password);
+                if (loginViewModel.loginWithUsernameAndPassword(name, password) && sw_remember.isChecked()) {
+
+                }
 
                 break;
             case R.id.btn_register:
