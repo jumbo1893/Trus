@@ -14,7 +14,6 @@ import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.repository.FirebaseRepository;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,8 +41,7 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
         }
     }
 
-    boolean checkNewUserValidation(final String name, final String password) {
-        isUpdating.setValue(true);
+    private boolean checkNewUserValidation(final String name, final String password) {
         Validator validator = new Validator();
         if (!validator.fieldIsNotEmpty(name)) {
             alert.setValue("Pro registraci musíš vyplnit jméno a heslo");
@@ -67,11 +65,51 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
             response = "Mail není ve správném formátu";
         }*/
         else {
-            isUpdating.setValue(false);
-            return addUserToRepository(name, password);
+            return true;
         }
-        isUpdating.setValue(false);
         return false;
+    }
+
+    private boolean checkNewPassword(final String password) {
+        Validator validator = new Validator();
+        if (!validator.fieldIsNotEmpty(password)) {
+            alert.setValue("Není vyplněné heslo");
+        }
+        else if (!validator.checkPasswordFormat(password)) {
+            alert.setValue("Heslo musí mít mezi dýlku 1 až 30 znaků, tak nevymejšlej píčoviny");
+        }
+        else {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean editUserPasswordInRepository(final String password, final String oldPassword, User user) {
+        isUpdating.setValue(true);
+        PasswordEncryption encryption = new PasswordEncryption();
+        try {
+            if (!encryption.compareHashedPassword(user.getPassword(), oldPassword)) {
+                isUpdating.setValue(false);
+                alert.setValue("Nezadal si stejný heslo");
+                return false;
+            } else if (!checkNewPassword(password)) {
+                isUpdating.setValue(false);
+                return false;
+            }
+            user.setPassword(encryption.hashPassword(password));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            alert.setValue("Chyba při šifrování, soráč");
+            return false;
+        }
+        try {
+            firebaseRepository.editModel(user);
+        } catch (Exception e) {
+            alert.setValue("Nastala nějaká kokotina při ukládání změny hesla do db, tak se na to teď vyser");
+            return false;
+        }
+
+        return true;
     }
 
     private boolean checkIfUsernameAlreadyExists(String name) {
@@ -85,8 +123,7 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
 
     boolean loginWithUsernameAndPassword(String name, String password) {
         isUpdating.setValue(true);
-
-        for (User user : getUsers().getValue()) {
+        for (User user : Objects.requireNonNull(getUsers().getValue())) {
             try {
                 if (name.equals(user.getName()) && encryption.compareHashedPassword(user.getPassword(), password)) {
                     this.user.setValue(user);
@@ -113,7 +150,7 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
     boolean loginWithHashedPassword(String name, String password) {
         isUpdating.setValue(true);
 
-        for (User user : getUsers().getValue()) {
+        for (User user : Objects.requireNonNull(getUsers().getValue())) {
             if (name.equals(user.getName()) && password.equals(user.getPassword())) {
                 this.user.setValue(user);
                 isUpdating.setValue(false);
@@ -131,19 +168,27 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
         return false;
     }
 
-    private boolean addUserToRepository (final String name, final String password) {
+    boolean addUserToRepository (final String name, final String password) {
+        isUpdating.setValue(true);
+        if (!checkNewUserValidation(name, password)) {
+            isUpdating.setValue(false);
+            return false;
+        }
         User user;
         try {
             user = new User(name, encryption.hashPassword(password));
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             alert.setValue("Chyba při šifrování hesla!");
+            isUpdating.setValue(false);
             return false;
         }
         try {
             firebaseRepository.insertNewModel(user);
         }
         catch (Exception e) {
+            alert.setValue("Chyba při komunikaci s db, žádná registrace nebude");
+            isUpdating.setValue(false);
             return false;
         }
         alert.setValue("Registruji uživatele " + name);
@@ -154,17 +199,19 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
         String action = "";
         switch (flag) {
             case USER_PLUS:
+                action = "Byl zaregistrován uživatel " + user.getName();
                 alert.setValue("Registrace uživatele " + user.getName() + " hotová, můžete se přihlásit");
                 break;
             case USER_EDIT:
-                action = "Upraveny údaje uživatele ";
+                alert.setValue("Heslo bylo úspěšně změněno");
+                action = "Upraveny údaje uživatele";
                 break;
             case USER_DELETE:
                 alert.setValue("Smazán uživatel" + user.getName());
                 break;
         }
-        if (flag != Flag.MATCH_EDIT) {
-            Notification newNotification = new Notification(action + user.getName(), new User("admin"));
+        if (flag == Flag.USER_PLUS) {
+            Notification newNotification = new Notification(action, new User("admin"));
             sendNotificationToRepository(newNotification);
         }
         isUpdating.setValue(false);

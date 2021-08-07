@@ -12,7 +12,7 @@ import com.jumbo.trus.user.User;
 
 public class CustomUserFragment extends Fragment {
     protected User user;
-    private MainActivityViewModel mainActivityViewModel;
+    protected MainActivityViewModel mainActivityViewModel;
 
     protected void initMainActivityViewModel() {
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);

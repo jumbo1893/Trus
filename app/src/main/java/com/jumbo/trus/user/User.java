@@ -20,11 +20,6 @@ public class User extends Model {
     public User() {
     }
 
-    public boolean nameEquals(User user) {
-        if (this == user) return true;
-        if (user == null || getClass() != user.getClass()) return false;
-        return user.getName().equals(this.getName());
-    }
     public String getPassword() {
         return password;
     }

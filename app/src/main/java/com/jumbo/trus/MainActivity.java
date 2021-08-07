@@ -18,6 +18,7 @@ import com.jumbo.trus.season.SeasonsFragment;
 import com.jumbo.trus.statistics.BeerStatisticsFragment;
 import com.jumbo.trus.statistics.FineStatisticsFragment;
 import com.jumbo.trus.user.User;
+import com.jumbo.trus.user.UserInteractionFragment;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -198,6 +199,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         adapter.addFragment(new FineFragment());
         adapter.addFragment(new BeerStatisticsFragment());
         adapter.addFragment(new FineStatisticsFragment());
+        adapter.addFragment(new UserInteractionFragment());
         viewPager.setAdapter(adapter);
     }
 
@@ -281,6 +283,10 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             case R.id.statistics_fine:
                 setTitle("Statistika pokut");
                 viewPager.setCurrentItem(9);
+                return true;
+            case R.id.user:
+                setTitle("Nastavení uživatele");
+                viewPager.setCurrentItem(10);
                 return true;
             default:
                 return false;

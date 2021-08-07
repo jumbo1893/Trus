@@ -10,17 +10,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -28,11 +23,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.jumbo.trus.MainActivity;
 import com.jumbo.trus.R;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher {
@@ -183,7 +176,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 break;
             case R.id.btn_register:
-                loginViewModel.checkNewUserValidation(name, password);
+                loginViewModel.addUserToRepository(name, password);
                 break;
         }
     }
