@@ -13,7 +13,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.jumbo.trus.Flag;
 import com.jumbo.trus.R;
+import com.jumbo.trus.match.MatchDialog;
+import com.jumbo.trus.match.MatchFragment;
 import com.jumbo.trus.user.LoginActivity;
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
@@ -21,7 +24,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "HomeFragment";
 
     private TextView tv_oslavenec,tv_random;
-    private Button btn_info, btn_obnovit, btn_logout;
+    private Button btn_facts, btn_reload, btn_logout;
 
     private HomeViewModel homeViewModel;
 
@@ -31,11 +34,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         tv_oslavenec = view.findViewById(R.id.tv_oslavenec);
         tv_random = view.findViewById(R.id.tv_random);
-        btn_info = view.findViewById(R.id.btn_info);
-        btn_obnovit = view.findViewById(R.id.btn_obnovit);
+        btn_facts = view.findViewById(R.id.btn_facts);
+        btn_reload = view.findViewById(R.id.btn_reload);
         btn_logout = view.findViewById(R.id.btn_logout);
-        btn_obnovit.setOnClickListener(this);
+        btn_reload.setOnClickListener(this);
         btn_logout.setOnClickListener(this);
+        btn_facts.setOnClickListener(this);
         homeViewModel = new ViewModelProvider(getActivity()).get(HomeViewModel.class);
         homeViewModel.init();
         Log.d(TAG, "onCreateView: ");
@@ -66,13 +70,19 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_obnovit:
+            case R.id.btn_reload:
                 homeViewModel.setRandomFact();
                 homeViewModel.setPlayerBirthday();
                 break;
             case R.id.btn_logout:
                 logoutToLoginActivity();
                 break;
+            case R.id.btn_facts:
+                homeViewModel.setRandomFacts();
+                Log.d(TAG, "onClick: " + homeViewModel.getRandomFacts().size());
+                FactDialog factDialog = new FactDialog(homeViewModel.getRandomFacts());
+                factDialog.setTargetFragment(HomeFragment.this, 1);
+                factDialog.show(getParentFragmentManager(), "dialog");
         }
     }
 }

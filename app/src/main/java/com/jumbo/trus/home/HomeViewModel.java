@@ -83,24 +83,41 @@ public class HomeViewModel extends ViewModel implements ChangeListener {
         firebaseRepository.loadFinesFromRepository();
     }
 
-    private void setRandomFacts() {
+    public void setRandomFacts() {
         Log.d(TAG, "setRandomFacts: ");
+        fact = new RandomFact(players.getValue(), matches.getValue(), seasons.getValue(), fines.getValue());
         randomFacts.clear();
-        String zajimavost = "Náhodná zajímavost: ";
-        randomFacts.add(zajimavost + fact.getPlayerWithMostBeers()); //vrátí hráče (1 či víc) co za celou historii vypil nejvíce piv
-        randomFacts.add(zajimavost + fact.getMatchWithMostBeers()); // vrátí zápas(y), ve kterých padlo nejvíce piv
-        randomFacts.add(zajimavost + fact.getNumberOfBeersInCurrentSeason()); //vrátí počet piv v aktuální sezoně dle data
-        randomFacts.add(zajimavost + fact.getMatchWithMostBeersInCurrentSeason()); //vrátí zápas aktuální sezony kde se nejvíc pilo
-        randomFacts.add(zajimavost + fact.getSeasonWithMostBeers()); //vrátí sezonu s nejvíce pivy
-        randomFacts.add(zajimavost + fact.getAverageNumberOfBeersInMatchForPlayersAndFans()); //vrátí průměrný počet piv na hráče a fanouška
-        randomFacts.add(zajimavost + fact.getAverageNumberOfBeersInMatchForPlayers()); //vrátí průměrný počet vypitejch piv na hráče
-        randomFacts.add(zajimavost + fact.getAverageNumberOfBeersInMatchForFans()); //vrátí průměrný počet vypitejch piv na fanouška
-        randomFacts.add(zajimavost + fact.getAverageNumberOfBeersInMatch()); //vrátí průměrný počet vypitejch piv v jednom zápase
-        randomFacts.add(zajimavost + fact.getMatchWithHighestAverageBeers()); //vrátí zápas s nejvyšším průměrem piv
-        randomFacts.add(zajimavost + fact.getMatchWithLowestAverageBeers()); //vrátí zápas s nejnižším průměrem piv
-        randomFacts.add(zajimavost + fact.getHighestAttendanceInMatch()); //vrátí zápas s nejvyšší účastí
-        randomFacts.add(zajimavost + fact.getLowestAttendanceInMatch()); //vrátí zápas s nejnižší účastí
-        randomFacts.add(zajimavost + fact.getMatchWithBirthday()); //vrátí zápas na kterém někdo slavil narozky
+        randomFacts.add(fact.getPlayerWithMostBeers()); //vrátí hráče (1 či víc) co za celou historii vypil nejvíce piv
+        randomFacts.add(fact.getMatchWithMostBeers()); // vrátí zápas(y), ve kterých padlo nejvíce piv
+        randomFacts.add(fact.getNumberOfBeersInCurrentSeason()); //vrátí počet piv v aktuální sezoně dle data
+        randomFacts.add(fact.getMatchWithMostBeersInCurrentSeason()); //vrátí zápas aktuální sezony kde se nejvíc pilo
+        randomFacts.add(fact.getSeasonWithMostBeers()); //vrátí sezonu s nejvíce pivy
+        randomFacts.add(fact.getAverageNumberOfBeersInMatchForPlayersAndFans()); //vrátí průměrný počet piv na hráče a fanouška
+        randomFacts.add(fact.getAverageNumberOfBeersInMatchForPlayers()); //vrátí průměrný počet vypitejch piv na hráče
+        randomFacts.add(fact.getAverageNumberOfBeersInMatchForFans()); //vrátí průměrný počet vypitejch piv na fanouška
+        randomFacts.add(fact.getAverageNumberOfBeersInMatch()); //vrátí průměrný počet vypitejch piv v jednom zápase
+        randomFacts.add(fact.getMatchWithHighestAverageBeers()); //vrátí zápas s nejvyšším průměrem piv
+        randomFacts.add(fact.getMatchWithLowestAverageBeers()); //vrátí zápas s nejnižším průměrem piv
+        randomFacts.add(fact.getHighestAttendanceInMatch()); //vrátí zápas s nejvyšší účastí
+        randomFacts.add(fact.getLowestAttendanceInMatch()); //vrátí zápas s nejnižší účastí
+        randomFacts.add(fact.getMatchWithBirthday()); //vrátí zápas na kterém někdo slavil narozky
+
+        randomFacts.add(fact.getPlayerWithMostFines()); //vrátí hráče s největším počtem pokut
+        randomFacts.add(fact.getMatchWithMostFines()); //vrátí zápas s největším počtem pokut
+        randomFacts.add(fact.getPlayerWithMostFinesAmount()); //vrátí hráče co zaplatil nejvíc na pokutách
+        randomFacts.add(fact.getMatchWithMostFinesAmount()); //vrátí zápas kde se nejvíc vydělalo na pokutách
+        randomFacts.add(fact.getNumberOfFinesInCurrentSeason()); //vrátí počet pokut v aktuální sezoně
+        randomFacts.add(fact.getAmountOfFinesInCurrentSeason()); //vrátí kolik se vybralo v aktuální sezoně
+        randomFacts.add(fact.getMatchWithMostFinesInCurrentSeason()); //vrátí zápas aktuální sezony kde padlo nejvíc pokut
+        randomFacts.add(fact.getMatchWithMostFinesAmountInCurrentSeason()); //vrátí zápas aktuální sezony kde se nejvíc vydělalo
+        randomFacts.add(fact.getSeasonWithMostFines()); //vrátí sezonu s nejvíc pokutama
+        randomFacts.add(fact.getSeasonWithMostFinesAmount()); //vrátí sezonu kde se vybralo nejvíc peněz
+        randomFacts.add(fact.getAverageNumberOfFinesInMatchForPlayers()); //vrátí průměrný počet pokut na hráče a zápas
+        randomFacts.add(fact.getAverageNumberOfFinesAmountInMatchForPlayers()); //vrátí průměrný výdělek na hráče a zápas
+        randomFacts.add(fact.getAverageNumberOfFinesInMatch()); //vrátí průměrný počet pokut na zápas
+        randomFacts.add(fact.getAverageNumberOfFinesAmountInMatch()); //vrátí průměrný výdělek na pokutách za zápas
+        randomFacts.add(fact.getTheMostCommonFineInAllMatches()); //vrátí nejčastěji udělovanou pokutu
+        randomFacts.add(fact.getTheMostProfitableFineInAllMatches()); //vrátí nejvýdělečnější pokutu
     }
 
     public void setRandomFact() {
@@ -109,7 +126,7 @@ public class HomeViewModel extends ViewModel implements ChangeListener {
             Random rand = new Random();
             int index = rand.nextInt(randomFacts.size());
             Log.d(TAG, "getRandomFact: index: " + index);
-            randomFact.setValue(randomFacts.get(index));
+            randomFact.setValue("Náhodná zajímavost: " + randomFacts.get(index));
         }
         else {
             randomFact.setValue("načítám...");
@@ -151,6 +168,9 @@ public class HomeViewModel extends ViewModel implements ChangeListener {
         return seasons;
     }
 
+    public List<String> getRandomFacts() {
+        return randomFacts;
+    }
 
     @Override
     public void itemAdded(Model model) {
@@ -218,7 +238,6 @@ public class HomeViewModel extends ViewModel implements ChangeListener {
         }
         if (firstFact && seasonsLoaded && finesLoaded && playersLoaded && matchesLoaded) {
             firstFact = false;
-            fact = new RandomFact(players.getValue(), matches.getValue(), seasons.getValue(), fines.getValue());
             setRandomFact();
             setPlayerBirthday();
         }

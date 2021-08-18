@@ -188,25 +188,35 @@ public class Match extends Model {
         return fineAmount;
     }
 
+    /**
+     * @param fine Pokuta, jejíž počet chceme nalézt
+     * @return kolikrát se tato pokuta udělila v tomto zápase
+     */
+    public int getNumberOfReceviedFineInMatch(Fine fine) {
+        int count = 0;
+        for (Player player : playerList) {
+            count += player.getNumberOfReceviedFine(fine);
+        }
+        return count;
+    }
+
+    /**
+     * @param receivedFine Pokuta, u které chceme znát kolik se za ní v tomto zápase vybralo
+     * @return počet peněz, které v tomto zápase přinesla tato pokuta
+     */
+    public int getAmountOfReceviedFineInMatch(Fine fine) {
+        int count = 0;
+        for (Player player : playerList) {
+            count += player.getAmountOfReceviedFine(fine);
+        }
+        return count;
+    }
+
     public String toStringNameWithOpponent() {
         if (homeMatch) {
             return "Liščí trus - " + opponent;
         }
         return opponent + " - Liščí Trus";
-    }
-
-    public String toStringForStatisticsBeerRecycleView() {
-        if (homeMatch) {
-            return "Liščí trus - " + opponent + ", počet pivek: " + getNumberOfBeersInMatch();
-        }
-        return opponent + " - Liščí Trus, počet pivek: " + getNumberOfBeersInMatch();
-    }
-
-    public String toStringForStatisticsFineRecycleView() {
-        if (homeMatch) {
-            return "Liščí trus - " + opponent + ", počet pokut: " + getNumberOfFinesInMatch() + " v celkové výši: " + getAmountOfFinesInMatch() + " Kč";
-        }
-        return opponent + " - Liščí Trus, počet pokut: " + getNumberOfFinesInMatch() + " v celkové výši: " + getAmountOfFinesInMatch()  + " Kč";
     }
 
     @Override

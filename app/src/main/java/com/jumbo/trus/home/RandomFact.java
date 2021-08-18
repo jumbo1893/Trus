@@ -2,6 +2,7 @@ package com.jumbo.trus.home;
 
 import com.jumbo.trus.Date;
 import com.jumbo.trus.fine.Fine;
+import com.jumbo.trus.fine.ReceivedFine;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.player.Player;
 import com.jumbo.trus.season.Season;
@@ -555,6 +556,551 @@ public class RandomFact {
                 }
                 else {
                     result += "; ";
+                }
+            }
+            return result;
+        }
+    }
+
+    /**
+     * @return Vrátí text s hráčem nebo seznam hráčů, kteří dostali za celou historii (všechny zápasy v db) nejvíce pokut
+     */
+    public String getPlayerWithMostFines() {
+        List<Player> returnPlayers = new ArrayList<>();
+        int maximumFines = 0;
+        for (Player player : players) {
+            player.calculateAllFinesNumber(matches);
+            if (player.getNumberOfFinesInMatches() > maximumFines) {
+                returnPlayers.clear();
+                returnPlayers.add(player);
+                maximumFines = player.getNumberOfFinesInMatches();
+            }
+            else if (player.getNumberOfFinesInMatches() == maximumFines) {
+                returnPlayers.add(player);
+            }
+        }
+        if (maximumFines == 0) {
+            return "Nelze nalézt hráče s nejvíce pokutami, protože ještě nikdo žádnou nedostal??!!";
+        }
+        else if (returnPlayers.size() == 1) {
+            return "Nejvíce pokut za historii dostal hráč " + returnPlayers.get(0).getName() + ", který dostal " + maximumFines + " pokut. Za pokladníka děkujeme!";
+
+        }
+        else {
+            String result = "O pozici hráče s největším počtem pokut v historii se dělí ";
+            for (int i = 0; i < returnPlayers.size(); i++) {
+                result += returnPlayers.get(i).getName();
+                if (i == returnPlayers.size()-1) {
+                    result += " kteří všichni do jednoho dostali " + maximumFines + " pokut. Nádherný souboj, prosíme, ještě přidejte!";
+                }
+                else if (i == returnPlayers.size()-2) {
+                    result += " a ";
+                }
+                else {
+                    result += ", ";
+                }
+            }
+            return result;
+        }
+    }
+
+    /**
+     * @return vrátí text se zápasem nebo seznamem zápasů, ve kterém se za historii (z db) padlo nejvíce pokut
+     */
+    public String getMatchWithMostFines() {
+        List<Match> returnMatches = new ArrayList<>();
+        int maximumFines = 0;
+        for (Match match : matches) {
+            if (match.getNumberOfFinesInMatch() > maximumFines) {
+                returnMatches.clear();
+                returnMatches.add(match);
+                maximumFines = match.getNumberOfFinesInMatch();
+            }
+            else if (match.getNumberOfFinesInMatch() == maximumFines) {
+                returnMatches.add(match);
+            }
+        }
+        if (maximumFines == 0) {
+            return "Nelze nalézt zápas s nejvíce pokutami, protože ještě nikdo žádnou nedostal??!!";
+        }
+        else if (returnMatches.size() == 1) {
+            return "Nejvíce pokut v historii padlo v zápase se soupeřem " + returnMatches.get(0).getOpponent() + ", který se hrál " +
+                    returnMatches.get(0).getDateOfMatchInStringFormat() + " a udělilo se v něm " + maximumFines + " pokut";
+
+        }
+        else {
+            String result = "O pozici zápasu ve kterém padlo nejvíce pokut se dělí zápas se soupeřem ";
+            for (int i = 0; i < returnMatches.size(); i++) {
+                result += returnMatches.get(i).getOpponent() + ", který se hrál " + returnMatches.get(i).getDateOfMatchInStringFormat();
+                if (i == returnMatches.size()-1) {
+                    result += " ve kterých padlo " + maximumFines + " pokut.";
+                }
+                else if (i == returnMatches.size()-2) {
+                    result += " a ";
+                }
+                else {
+                    result += ", ";
+                }
+            }
+            return result;
+        }
+    }
+
+    /**
+     * @return Vrátí text s hráčem nebo seznam hráčů, kteří zaplatili za celou historii (všechny zápasy v db) nejvíce na pokutách
+     */
+    public String getPlayerWithMostFinesAmount() {
+        List<Player> returnPlayers = new ArrayList<>();
+        int maximumFinesAmount = 0;
+        for (Player player : players) {
+            player.calculateAllFinesNumber(matches);
+            if (player.getAmountOfFinesInMatches() > maximumFinesAmount) {
+                returnPlayers.clear();
+                returnPlayers.add(player);
+                maximumFinesAmount = player.getAmountOfFinesInMatches();
+            }
+            else if (player.getAmountOfFinesInMatches() == maximumFinesAmount) {
+                returnPlayers.add(player);
+            }
+        }
+        if (maximumFinesAmount == 0) {
+            return "Nelze nalézt hráče, co nejvíc zaplatil na pokutách, protože ještě nikdo žádnou nedostal??!!";
+        }
+        else if (returnPlayers.size() == 1) {
+            return "Nejvíce pokuty stály hráče " + returnPlayers.get(0).getName() + ", který celkem zacáloval " + maximumFinesAmount +
+                    " Kč. Nezapomeň, je to nedílná součást tréningového procesu!";
+
+        }
+        else {
+            String result = "O pozici hráče co nejvíc zacálovali na pokutách se dělí ";
+            for (int i = 0; i < returnPlayers.size(); i++) {
+                result += returnPlayers.get(i).getName();
+                if (i == returnPlayers.size()-1) {
+                    result += " kteří všichni do jednoho zaplatili " + maximumFinesAmount + " Kč. Díky kluci, zvyšuje to autoritu trenéra!";
+                }
+                else if (i == returnPlayers.size()-2) {
+                    result += " a ";
+                }
+                else {
+                    result += ", ";
+                }
+            }
+            return result;
+        }
+    }
+
+    /**
+     * @return vrátí text se zápasem nebo seznamem zápasů, ve kterém se za historii (z db) nejvíce vydělalo na pokutách
+     */
+    public String getMatchWithMostFinesAmount() {
+        List<Match> returnMatches = new ArrayList<>();
+        int maximumFinesAmount = 0;
+        for (Match match : matches) {
+            if (match.getAmountOfFinesInMatch() > maximumFinesAmount) {
+                returnMatches.clear();
+                returnMatches.add(match);
+                maximumFinesAmount = match.getAmountOfFinesInMatch();
+            }
+            else if (match.getAmountOfFinesInMatch() == maximumFinesAmount) {
+                returnMatches.add(match);
+            }
+        }
+        if (maximumFinesAmount == 0) {
+            return "Nelze nalézt zápas, kde se nejvíc cálovalo za pokuty, protože ještě nikdo žádnou nedostal??!!";
+        }
+        else if (returnMatches.size() == 1) {
+            return "Největší objem peněz v pokutách přinesl zápas se soupeřem " + returnMatches.get(0).getOpponent() + ", který se hrál " +
+                    returnMatches.get(0).getDateOfMatchInStringFormat() + " a vybralo se v něm " + maximumFinesAmount + " Kč.";
+
+        }
+        else {
+            String result = "O pozici zápasu ve kterém se klubová pokladna nejvíce nafoukla se dělí zápas se soupeřem ";
+            for (int i = 0; i < returnMatches.size(); i++) {
+                result += returnMatches.get(i).getOpponent() + ", který se hrál " + returnMatches.get(i).getDateOfMatchInStringFormat();
+                if (i == returnMatches.size()-1) {
+                    result += " ve kterých se vybralo " + maximumFinesAmount + " Kč.";
+                }
+                else if (i == returnMatches.size()-2) {
+                    result += " a ";
+                }
+                else {
+                    result += ", ";
+                }
+            }
+            return result;
+        }
+    }
+
+    /**
+     * @return vrátí počet pokut v aktuální sezoně dle data
+     */
+    public String getNumberOfFinesInCurrentSeason() {
+        Date date = new Date();
+        Match compareMatch = new Match("compare", date.getCurrentDateInMillis(), false, null, seasons);
+        int fineNumber = 0;
+        for (Match match : matches) {
+            if (match.getSeason().equals(compareMatch.getSeason())) {
+                fineNumber += match.getNumberOfFinesInMatch();
+            }
+        }
+        return "V aktuální sezoně " + compareMatch.getSeason().getName() + " se rozdalo již " + fineNumber + " pokut";
+    }
+
+    /**
+     * @return vrátí vybranou částku na pokutách v aktuální sezoně dle data
+     */
+    public String getAmountOfFinesInCurrentSeason() {
+        Date date = new Date();
+        Match compareMatch = new Match("compare", date.getCurrentDateInMillis(), false, null, seasons);
+        int fineNumber = 0;
+        for (Match match : matches) {
+            if (match.getSeason().equals(compareMatch.getSeason())) {
+                fineNumber += match.getAmountOfFinesInMatch();
+            }
+        }
+        return "V aktuální sezoně " + compareMatch.getSeason().getName() + " se na pokutách vybralo již " + fineNumber + " Kč.";
+    }
+
+    /**
+     * @return vrátí text se zápasem nebo listem zápasů ve kterých se tuto sezonu rozdalo nejvíce pokut
+     */
+    public String getMatchWithMostFinesInCurrentSeason() {
+        List<Match> returnMatches = new ArrayList<>();
+        Date date = new Date();
+        Match compareMatch = new Match("compare", date.getCurrentDateInMillis(), false, null, seasons);
+        int maximumFines = 0;
+        for (Match match : matches) {
+            if (match.getSeason().equals(compareMatch.getSeason())) {
+                if (match.getNumberOfFinesInMatch() > maximumFines) {
+                    returnMatches.clear();
+                    returnMatches.add(match);
+                    maximumFines = match.getNumberOfFinesInMatch();
+                }
+                else if (match.getNumberOfFinesInMatch() == maximumFines) {
+                    returnMatches.add(match);
+                }
+            }
+        }
+        if (maximumFines == 0) {
+            return "Nelze najít zápas s nejvíce pokutami odehraný v této sezoně " + compareMatch.getSeason().getName() + ", protože se zatím žádná pokuta neudělila!";
+        }
+        else if (returnMatches.size() == 1) {
+            return "Nejvíce pokut v aktuální sezoně " + compareMatch.getSeason().getName() + " se rozdalo v zápase se soupeřem " +
+                    returnMatches.get(0).getOpponent() + ", který se hrál " + returnMatches.get(0).getDateOfMatchInStringFormat() + " a padlo v něm " + maximumFines + " pokut";
+
+        }
+        else {
+            String result = "O pozici zápasu ve kterém se rozdalo nejvíce pokut v aktuální sezoně " + compareMatch.getSeason().getName() + " se dělí zápas se soupeřem ";
+            for (int i = 0; i < returnMatches.size(); i++) {
+                result += returnMatches.get(i).getOpponent() + ", který se hrál " + returnMatches.get(i).getDateOfMatchInStringFormat();
+                if (i == returnMatches.size()-1) {
+                    result += " ve kterých padlo " + maximumFines + " pokut.";
+                }
+                else if (i == returnMatches.size()-2) {
+                    result += " a ";
+                }
+                else {
+                    result += ", ";
+                }
+            }
+            return result;
+        }
+    }
+
+    /**
+     * @return vrátí text se zápasem nebo listem zápasů ve kterých se tuto sezonu nejvíce vydělalo na pokutách
+     */
+    public String getMatchWithMostFinesAmountInCurrentSeason() {
+        List<Match> returnMatches = new ArrayList<>();
+        Date date = new Date();
+        Match compareMatch = new Match("compare", date.getCurrentDateInMillis(), false, null, seasons);
+        int maximumFinesAmount = 0;
+        for (Match match : matches) {
+            if (match.getSeason().equals(compareMatch.getSeason())) {
+                if (match.getAmountOfFinesInMatch() > maximumFinesAmount) {
+                    returnMatches.clear();
+                    returnMatches.add(match);
+                    maximumFinesAmount = match.getAmountOfFinesInMatch();
+                }
+                else if (match.getAmountOfFinesInMatch() == maximumFinesAmount) {
+                    returnMatches.add(match);
+                }
+            }
+        }
+        if (maximumFinesAmount == 0) {
+            return "Nelze najít zápas, kde se v této sezoně " + compareMatch.getSeason().getName() + " nejvíce cálovalo za pokuty, protože se zatím žádná pokuta neudělila!";
+        }
+        else if (returnMatches.size() == 1) {
+            return "Největší objem peněz v aktuální sezoně " + compareMatch.getSeason().getName() + " se přinesl zápas se soupeřem " +
+                    returnMatches.get(0).getOpponent() + ", který se hrál " + returnMatches.get(0).getDateOfMatchInStringFormat() +
+                    " a vybralo se v něm " + maximumFinesAmount + " Kč.";
+
+        }
+        else {
+            String result = "O pozici zápasu, který přinesl klubové pokladně nejvíce peněz z pokut v aktuální sezoně " + compareMatch.getSeason().getName() + " se dělí zápas se soupeřem ";
+            for (int i = 0; i < returnMatches.size(); i++) {
+                result += returnMatches.get(i).getOpponent() + ", který se hrál " + returnMatches.get(i).getDateOfMatchInStringFormat();
+                if (i == returnMatches.size()-1) {
+                    result += " ve kterých se vybralo " + maximumFinesAmount + " Kč.";
+                }
+                else if (i == returnMatches.size()-2) {
+                    result += " a ";
+                }
+                else {
+                    result += ", ";
+                }
+            }
+            return result;
+        }
+    }
+
+    /**
+     * @return vrátí text sezonu/sezony ve kterých padlo v historii nejvíce pokut, společně s počtem a počtem zápasů
+     */
+    public String getSeasonWithMostFines() {
+        List<Season> returnSeasons = new ArrayList<>();
+        List<Integer> numberOfMatches = new ArrayList<>();
+        int maximumFines = 0;
+        for (Season season : seasons) {
+            int seasonFines = 0;
+            int matchesNumber = 0;
+            for (Match match : matches) {
+                if (match.getSeason().equals(season)) {
+                    matchesNumber++;
+                    seasonFines += match.getNumberOfFinesInMatch();
+                }
+            }
+            if (seasonFines > maximumFines) {
+                maximumFines = seasonFines;
+                numberOfMatches.clear();
+                numberOfMatches.add(matchesNumber);
+                returnSeasons.clear();
+                returnSeasons.add(season);
+            }
+            else if (seasonFines == maximumFines) {
+                numberOfMatches.add(matchesNumber);
+                returnSeasons.add(season);
+            }
+        }
+        if (maximumFines == 0) {
+            return "Nelze najít sezonu s nejvíce pokutama, protože se zatím žádná pokuta nerozdala!";
+        }
+        else if (returnSeasons.size() == 1) {
+            return "Nejvíce pokut se rozdalo v sezoně " + returnSeasons.get(0).getName() + ", kdy v " + numberOfMatches.get(0) + ". zápasech padlo " + maximumFines + " pokut";
+
+        }
+        else {
+            String result = "Nejvíce pokutami se můžou chlubit sezony ";
+            for (int i = 0; i < returnSeasons.size(); i++) {
+                result += returnSeasons.get(i).getName() + " s " + numberOfMatches.get(i) + ". zápasy";
+                if (i == returnSeasons.size()-1) {
+                    result += ", ve kterých padlo " + maximumFines + " pokut.";
+                }
+                else if (i == returnSeasons.size()-2) {
+                    result += " a ";
+                }
+                else {
+                    result += ", ";
+                }
+
+            }
+
+            return result;
+        }
+
+    }
+
+    /**
+     * @return vrátí text sezonu/sezony ve kterých se vybralo v historii nejvíce za pokuty, společně s počtem zápasů
+     */
+    public String getSeasonWithMostFinesAmount() {
+        List<Season> returnSeasons = new ArrayList<>();
+        List<Integer> numberOfMatches = new ArrayList<>();
+        int maximumFines = 0;
+        for (Season season : seasons) {
+            int seasonFines = 0;
+            int matchesNumber = 0;
+            for (Match match : matches) {
+                if (match.getSeason().equals(season)) {
+                    matchesNumber++;
+                    seasonFines += match.getAmountOfFinesInMatch();
+                }
+            }
+            if (seasonFines > maximumFines) {
+                maximumFines = seasonFines;
+                numberOfMatches.clear();
+                numberOfMatches.add(matchesNumber);
+                returnSeasons.clear();
+                returnSeasons.add(season);
+            }
+            else if (seasonFines == maximumFines) {
+                numberOfMatches.add(matchesNumber);
+                returnSeasons.add(season);
+            }
+        }
+        if (maximumFines == 0) {
+            return "Nelze najít sezonu kdy se vybralo nejvíc za pokuty, protože se zatím žádná pokuta nerozdala!";
+        }
+        else if (returnSeasons.size() == 1) {
+            return "Nejvíc peněz na pokutách se vybralo v sezoně " + returnSeasons.get(0).getName() + ", kdy v " + numberOfMatches.get(0) + ". zápasech pokladna shrábla " + maximumFines + " Kč.";
+
+        }
+        else {
+            String result = "Největším objemem vybraných peněz se můžou chlubit sezony ";
+            for (int i = 0; i < returnSeasons.size(); i++) {
+                result += returnSeasons.get(i).getName() + " s " + numberOfMatches.get(i) + ". zápasy";
+                if (i == returnSeasons.size()-1) {
+                    result += ", ve kterých se zaplatilo " + maximumFines + " Kč.";
+                }
+                else if (i == returnSeasons.size()-2) {
+                    result += " a ";
+                }
+                else {
+                    result += ", ";
+                }
+
+            }
+
+            return result;
+        }
+
+    }
+
+    /**
+     * @return vrátí průměrný počet pokut na hráče
+     */
+    public String getAverageNumberOfFinesInMatchForPlayers() {
+        float finesNumber = 0;
+        int playerNumber = 0;
+        for (Match match : matches) {
+            finesNumber += match.getNumberOfFinesInMatch();
+            playerNumber += match.getNumberOfPlayersInMatch();
+        }
+        float average = finesNumber/playerNumber;
+
+        return "Za celou historii průměrně každý hráč Trusu dostal " + average + " pokut za zápas";
+    }
+
+    /**
+     * @return vrátí průměrný cálování pokut na hráče
+     */
+    public String getAverageNumberOfFinesAmountInMatchForPlayers() {
+        float finesNumber = 0;
+        int playerNumber = 0;
+        for (Match match : matches) {
+            finesNumber += match.getAmountOfFinesInMatch();
+            playerNumber += match.getNumberOfPlayersInMatch();
+        }
+        float average = finesNumber/playerNumber;
+
+        return "Za celou historii průměrně každý hráč Trusu zacáloval " + average + " korun každý zápas za pokuty";
+    }
+
+
+    /**
+     * @return vrátí průměrný počet pokut na zápas
+     */
+    public String getAverageNumberOfFinesInMatch() {
+        float finesNumber = 0;
+        for (Match match : matches) {
+            finesNumber += match.getNumberOfFinesInMatch();
+        }
+        float average = finesNumber/matches.size();
+        return "V naprosto průměrném zápasu Trusu se udělí " + average + " pokut";
+    }
+
+    /**
+     * @return vrátí průměrný počet vybranejch peněz v zápase
+     */
+    public String getAverageNumberOfFinesAmountInMatch() {
+        float finesNumber = 0;
+        for (Match match : matches) {
+            finesNumber += match.getAmountOfFinesInMatch();
+        }
+        float average = finesNumber/matches.size();
+        return "V naprosto průměrném zápasu Trusu se vybere " + average + " Kč na pokutách";
+    }
+
+    /**
+     * @return vrátí nejčastěji udělovanou pokutu v zápasech
+     */
+    public String getTheMostCommonFineInAllMatches() {
+        List<Fine> returnFines = new ArrayList<>();
+        int maximumFines = 0;
+        for (Fine fine : fines) {
+            if (fine.returnNumberOfFineInMatches(matches) > maximumFines) {
+                returnFines.clear();
+                returnFines.add(fine);
+                maximumFines = fine.returnNumberOfFineInMatches(matches);
+            }
+            else if (fine.returnNumberOfFineInMatches(matches) == maximumFines) {
+                returnFines.add(fine);
+            }
+        }
+        float average = (float)maximumFines/matches.size();
+        if (maximumFines == 0) {
+            return "Nelze zobrazit nejčastější pokutu, protože nikdo zatim žádnou nedostal?!";
+        }
+        else if (returnFines.size() == 1) {
+            return "Zatím nejčastější pokuta byla " + returnFines.get(0).getName() + ", která padla celkem " +
+                    maximumFines + "., tedy průměrně " + average + " v každém zápase";
+
+        }
+        else {
+            String result = "O pozici pokuty, která padla doteď nejvíckrát se dělí ";
+            for (int i = 0; i < returnFines.size(); i++) {
+                result += returnFines.get(i).getName();
+                if (i == returnFines.size()-1) {
+                    result += " která padla celkem " + maximumFines + "., tedy průměrně " + average + " v každém zápase";
+                }
+                else if (i == returnFines.size()-2) {
+                    result += " a ";
+                }
+                else {
+                    result += ", ";
+                }
+            }
+            return result;
+        }
+    }
+
+    /**
+     * @return vrátí nejvýdělečnější pokutu v zápasech
+     */
+    public String getTheMostProfitableFineInAllMatches() {
+        List<Fine> returnFines = new ArrayList<>();
+        int maximumFines = 0;
+        for (Fine fine : fines) {
+            if (fine.returnAmountOfFineInMatches(matches) > maximumFines) {
+                returnFines.clear();
+                returnFines.add(fine);
+                maximumFines = fine.returnNumberOfFineInMatches(matches);
+            }
+            else if (fine.returnNumberOfFineInMatches(matches) == maximumFines) {
+                returnFines.add(fine);
+            }
+        }
+        float average = (float)maximumFines/matches.size();
+        if (maximumFines == 0) {
+            return "Nelze zobrazit nejvýdělečnější pokutu, protože nikdo zatim žádnou nedostal?!";
+        }
+        else if (returnFines.size() == 1) {
+            return "Zatím nejvýdělečnější pokuta byla " + returnFines.get(0).getName() + ", na které se vybralo již" +
+                    maximumFines + " Kč, tedy průměrně " + average + " Kč v každém zápase";
+
+        }
+        else {
+            String result = "O pozici nejvýdělečnější pokuty se dělí ";
+            for (int i = 0; i < returnFines.size(); i++) {
+                result += returnFines.get(i).getName();
+                if (i == returnFines.size()-1) {
+                    result += " na kterých se vybralo již " + maximumFines + " Kč, tedy průměrně " + average + " Kč v každém zápase";
+                }
+                else if (i == returnFines.size()-2) {
+                    result += " a ";
+                }
+                else {
+                    result += ", ";
                 }
             }
             return result;

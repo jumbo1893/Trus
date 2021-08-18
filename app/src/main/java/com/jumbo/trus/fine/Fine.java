@@ -4,7 +4,9 @@ import android.util.Log;
 
 import com.jumbo.trus.Date;
 import com.jumbo.trus.Model;
+import com.jumbo.trus.match.Match;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Fine extends Model {
@@ -31,6 +33,22 @@ public class Fine extends Model {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    public int returnNumberOfFineInMatches(List<Match> matchList) {
+        int count = 0;
+        for (Match match : matchList) {
+            count += match.getNumberOfReceviedFineInMatch(this);
+        }
+        return count;
+    }
+
+    public int returnAmountOfFineInMatches(List<Match> matchList) {
+        int count = 0;
+        for (Match match : matchList) {
+            count += match.getAmountOfReceviedFineInMatch(this);
+        }
+        return count;
     }
 
 

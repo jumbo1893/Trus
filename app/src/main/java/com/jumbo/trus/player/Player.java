@@ -224,6 +224,30 @@ public class Player extends Model {
         return 0;
     }
 
+    /**
+     * použití pro jeden zápas, nutné použít na hráče co je v zápase
+     * @return počet pokut tohoto typu, které padly v zápase
+     */
+    public int getNumberOfReceviedFine(Fine fine) {
+        for (ReceivedFine receivedFine : receivedFines) {
+            if (fine.equals(receivedFine))
+                return receivedFine.getCount();
+        }
+        return 0;
+    }
+
+    /**
+     * použití pro jeden zápas, nutné použít na hráče co je v zápase
+     * @return částka za pokuty tohoto typu, které padly v zápase
+     */
+    public int getAmountOfReceviedFine(Fine fine) {
+        for (ReceivedFine receivedFine : receivedFines) {
+            if (fine.equals(receivedFine))
+                return receivedFine.getAmountOfAllFines();
+        }
+        return 0;
+    }
+
     @Override
     public String toString() {
         return "Hrac{" +
