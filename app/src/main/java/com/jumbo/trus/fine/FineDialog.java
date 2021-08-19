@@ -82,7 +82,7 @@ public class FineDialog extends Dialog {
     }
 
     private void setTextsToEditSeason() {
-        tv_headline.setText("Úprava sezony");
+        tv_headline.setText("Úprava pokuty");
         et_name.setText(model.getName());
         et_amount.setText(String.valueOf(((Fine)model).getAmount()));
         btn_commit.setText("Upravit");

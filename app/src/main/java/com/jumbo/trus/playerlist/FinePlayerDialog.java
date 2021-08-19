@@ -54,7 +54,7 @@ public class FinePlayerDialog extends Dialog implements OnListListener {
 
     public FinePlayerDialog(Model model) {
         super(model);
-        selectedPlayers = ((Match) model).getPlayerList();
+        selectedPlayers = ((Match) model).getPlayerListOnlyWithParticipantsAndWithoutFans();
     }
 
     @Nullable

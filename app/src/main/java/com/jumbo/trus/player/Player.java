@@ -23,6 +23,7 @@ public class Player extends Model {
     private int numberOfFinesInMatches;
     private int amountOfFinesInMatches;
     private List<ReceivedFine> receivedFines = new ArrayList<>();
+    private boolean matchParticipant;
 
     private Date date = new Date();
 
@@ -35,6 +36,14 @@ public class Player extends Model {
 
     public Player() {
 
+    }
+
+    public boolean isMatchParticipant() {
+        return matchParticipant;
+    }
+
+    public void setMatchParticipant(boolean matchParticipant) {
+        this.matchParticipant = matchParticipant;
     }
 
     public int getVek() {
@@ -144,7 +153,7 @@ public class Player extends Model {
     public void calculateAllBeersNumber(List<Match> matchList) {
         numberOfBeersInMatches = 0;
         for (Match match : matchList) {
-            for (Player player : match.getPlayerList()) {
+            for (Player player : match.getPlayerListOnlyWithParticipants()) {
                 if (player.equals(this)) {
                     numberOfBeersInMatches += player.numberOfBeers;
                     break;
@@ -161,7 +170,7 @@ public class Player extends Model {
         numberOfFinesInMatches = 0;
         amountOfFinesInMatches = 0;
         for (Match match : matchList) {
-            for (Player player : match.getPlayerList()) {
+            for (Player player : match.getPlayerListOnlyWithParticipantsAndWithoutFans()) {
                 if (player.equals(this)) {
                     numberOfFinesInMatches += player.getNumberOfAllReceviedFines();
                     amountOfFinesInMatches += player.getAmountOfAllReceviedFines();

@@ -61,11 +61,10 @@ public class BeerDialog extends Dialog implements OnPlusButtonListener, OnLineFi
 
     public BeerDialog(Flag flag, Model model) {
         super(flag, model);
-        selectedPlayers = ((Match) model).getPlayerList();
+        selectedPlayers = ((Match) model).getPlayerListOnlyWithParticipants();
         selectedPlayersSize = selectedPlayers.size();
         player = selectedPlayers.get(0);
         selectedPlayer = 0;
-        Log.d(TAG, "BeerDialog: " + ((Match) model).getPlayerList());
     }
 
 

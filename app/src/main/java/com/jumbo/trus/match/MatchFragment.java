@@ -201,7 +201,7 @@ public class MatchFragment extends CustomUserFragment implements OnListListener,
         }
         else {
             Result addMatchToRepositoryResult = matchViewModel.addMatchToRepository(opponent, homeMatch, date, season, playerList,
-                    seasonsViewModel.getSeasons().getValue());
+                    seasonsViewModel.getSeasons().getValue(), players);
             Toast.makeText(getActivity(), addMatchToRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
             if (addMatchToRepositoryResult.isTrue()) {
                 String text = "Byl vytvořen " +  (homeMatch ? "domácí zápas" : "venkovní zápas") + " se soupeřem " + opponent + " hraný " + date;

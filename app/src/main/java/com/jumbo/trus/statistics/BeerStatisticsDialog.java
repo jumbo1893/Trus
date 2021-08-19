@@ -143,7 +143,7 @@ public class BeerStatisticsDialog extends Dialog implements AdapterView.OnItemSe
     }
 
     private void addPlayerText() {
-        List<Match> matchesWithPlayer = statisticsViewModel.findAllMatchesWithPlayer(selectedMatches, (Player) model);
+        List<Match> matchesWithPlayer = statisticsViewModel.findAllMatchesWithPlayerParticipant(selectedMatches, (Player) model);
         String text = "";
         int allBeers = 0;
         for (Match match : matchesWithPlayer) {
@@ -153,17 +153,16 @@ public class BeerStatisticsDialog extends Dialog implements AdapterView.OnItemSe
             else {
                 text += "Venkovní ";
             }
-            text += "zápas proti " + match.getOpponent() + ", počet piv: " + match.getPlayerList().get(match.getPlayerList().indexOf(model)).getNumberOfBeers() + "\n\n";
-            allBeers += match.getPlayerList().get(match.getPlayerList().indexOf(model)).getNumberOfBeers();
+            text += "zápas proti " + match.getOpponent() + ", počet piv: " + match.getPlayerListOnlyWithParticipants().get(match.getPlayerListOnlyWithParticipants().indexOf(model)).getNumberOfBeers() + "\n\n";
+            allBeers += match.getPlayerListOnlyWithParticipants().get(match.getPlayerListOnlyWithParticipants().indexOf(model)).getNumberOfBeers();
         }
         tv_list.setText("Celkový počet piv: " + allBeers + "\n\n" + text);
     }
 
     private void addMatchText() {
-        List<Player> playersInMatch = new ArrayList<>();
         String text = "";
         int allBeers = 0;
-        for (Player player : ((Match)model).getPlayerList()) {
+        for (Player player : ((Match)model).getPlayerListOnlyWithParticipants()) {
             if (spinnerPosition == 0) {
                 text += player.getName() + " v zápase vypil " + player.getNumberOfBeers() + "\n\n";
                 allBeers += player.getNumberOfBeers();

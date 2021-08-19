@@ -125,7 +125,6 @@ public class HomeViewModel extends ViewModel implements ChangeListener {
             setRandomFacts();
             Random rand = new Random();
             int index = rand.nextInt(randomFacts.size());
-            Log.d(TAG, "getRandomFact: index: " + index);
             randomFact.setValue("Náhodná zajímavost: " + randomFacts.get(index));
         }
         else {

@@ -85,7 +85,7 @@ public class FineStatisticsDialogDetail extends Dialog implements OnListListener
             initFinesRecycleView();
         }
         else {
-            tv_title.setText(receivedFine.getName());
+            tv_title.setText(receivedFine.getFine().getName());
             initPlayersRecycleView();
         }
     }
@@ -99,7 +99,7 @@ public class FineStatisticsDialogDetail extends Dialog implements OnListListener
 
     private void initPlayersRecycleView() {
         Log.d(TAG, "initRecycleView: ");
-        finesPlayerNumberRecycleViewAdapter = new FinesPlayerNumberRecycleViewAdapter(((Match)model).getPlayerList(), receivedFine, getActivity(), this);
+        finesPlayerNumberRecycleViewAdapter = new FinesPlayerNumberRecycleViewAdapter(((Match)model).getPlayerListOnlyWithFine(receivedFine), receivedFine, getActivity(), this);
     }
 
     private void setAdapter() {

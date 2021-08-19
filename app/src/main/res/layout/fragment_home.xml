@@ -29,7 +29,7 @@
         android:paddingRight="10dp"
         android:paddingBottom="5dp"
         android:layout_below="@+id/imageView2"
-        android:text="button1" />
+        android:text="zajímavosti" />
 
     <Button
         android:id="@+id/btn_reload"

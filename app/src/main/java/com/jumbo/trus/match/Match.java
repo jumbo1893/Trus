@@ -9,6 +9,7 @@ import com.jumbo.trus.season.Season;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.player.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Match extends Model {
@@ -84,6 +85,38 @@ public class Match extends Model {
         return playerList;
     }
 
+    public List<Player> getPlayerListOnlyWithParticipants() {
+        List<Player> newPlayerList = new ArrayList<>();
+        for (Player player : playerList) {
+            if (player.isMatchParticipant()) {
+                newPlayerList.add(player);
+            }
+        }
+        return newPlayerList;
+    }
+
+    public List<Player> getPlayerListOnlyWithParticipantsAndWithoutFans() {
+        List<Player> newPlayerList = new ArrayList<>();
+        for (Player player : playerList) {
+            if (player.isMatchParticipant() && !player.isFan()) {
+                newPlayerList.add(player);
+            }
+        }
+        return newPlayerList;
+    }
+
+    public List<Player> getPlayerListOnlyWithFine(ReceivedFine receivedFine) {
+        List<Player> newPlayerList = new ArrayList<>();
+        for (Player player : playerList) {
+            for (ReceivedFine playerFine : player.getReceivedFines()) {
+                if (playerFine.equals(receivedFine) && playerFine.getCount() > 0) {
+                    newPlayerList.add(player);
+                }
+            }
+        }
+        return newPlayerList;
+    }
+
     public String getDateOfMatchInStringFormat() {
         Date date = new Date();
         return date.convertMillisToTextDate(dateOfMatch);
@@ -136,7 +169,13 @@ public class Match extends Model {
      * @return počet účastníků zápasu
      */
     public int getNumberOfPlayersAndFansInMatch() {
-        return playerList.size();
+        int playerNumber = 0;
+        for (Player player : playerList) {
+            if (player.isMatchParticipant()) {
+                playerNumber++;
+            }
+        }
+        return playerNumber;
     }
 
     /**
@@ -145,7 +184,7 @@ public class Match extends Model {
     public int getNumberOfPlayersInMatch() {
         int playerNumber = 0;
         for (Player player : playerList) {
-            if (!player.isFan()) {
+            if (!player.isFan() && player.isMatchParticipant()) {
                 playerNumber++;
             }
         }
@@ -201,7 +240,7 @@ public class Match extends Model {
     }
 
     /**
-     * @param receivedFine Pokuta, u které chceme znát kolik se za ní v tomto zápase vybralo
+     * @param fine Pokuta, u které chceme znát kolik se za ní v tomto zápase vybralo
      * @return počet peněz, které v tomto zápase přinesla tato pokuta
      */
     public int getAmountOfReceviedFineInMatch(Fine fine) {

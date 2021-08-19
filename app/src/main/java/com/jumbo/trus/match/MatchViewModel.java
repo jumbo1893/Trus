@@ -70,7 +70,7 @@ public class MatchViewModel extends ViewModel implements ChangeListener, INotifi
     }
 
     public Result addMatchToRepository(final String opponent, final boolean homeMatch, final String datum, final Season season,
-                                       final List<Player> playerList, final List<Season> seasonList) {
+                                       final List<Player> playerList, final List<Season> seasonList, List<Player> allPlayerList) {
         isUpdating.setValue(true);
         Date date = new Date();
         Result result = new Result(false);
@@ -78,10 +78,10 @@ public class MatchViewModel extends ViewModel implements ChangeListener, INotifi
             long millis = date.convertTextDateToMillis(datum);
             Match match;
             if (season == null) {
-                match = new Match(opponent, millis, homeMatch, playerList, seasonList);
+                match = new Match(opponent, millis, homeMatch, createListOfPlayers(playerList, allPlayerList), seasonList);
             }
             else {
-                match = new Match(opponent, millis, homeMatch, season, playerList);
+                match = new Match(opponent, millis, homeMatch, season, createListOfPlayers(playerList, allPlayerList));
             }
 
             firebaseRepository.insertNewModel(match);
@@ -104,7 +104,7 @@ public class MatchViewModel extends ViewModel implements ChangeListener, INotifi
         Result result = new Result(false);
         match.setOpponent(opponent);
         match.setHomeMatch(homeMatch);
-        match.setPlayerList(playerList);
+        match.setPlayerList(createListOfPlayers(playerList, match.getPlayerList()));
         try {
             long millis = date.convertTextDateToMillis(datum);
             match.setDateOfMatch(millis);
@@ -130,7 +130,7 @@ public class MatchViewModel extends ViewModel implements ChangeListener, INotifi
     public Result editMatchBeers(final List<Player> playerList, Match match) {
         isUpdating.setValue(true);
         Result result = new Result(false);
-        match.setPlayerList(playerList);
+        match.setPlayerList(editListOfPlayers(playerList, match.getPlayerList()));
         try {
             firebaseRepository.editModel(match);
         }
@@ -216,6 +216,33 @@ public class MatchViewModel extends ViewModel implements ChangeListener, INotifi
             }
         }
         return matchList;
+    }
+
+    private List<Player> createListOfPlayers(List<Player> playerList, List<Player> allPlayerList) {
+        List<Player> nonPlayerList = new ArrayList<>();
+        for (Player player : allPlayerList) {
+            if (playerList.contains(player)) {
+                player.setMatchParticipant(true);
+            }
+            else {
+                player.setMatchParticipant(false);
+            }
+            nonPlayerList.add(player);
+        }
+        return nonPlayerList;
+    }
+
+    private List<Player> editListOfPlayers(List<Player> playerList, List<Player> allPlayerList) {
+        List<Player> newPlayerList = new ArrayList<>();
+        for (Player player : allPlayerList) {
+            if (playerList.contains(player)) {
+                newPlayerList.add(playerList.get(playerList.indexOf(player)));
+            }
+            else {
+                newPlayerList.add(player);
+            }
+        }
+        return newPlayerList;
     }
 
     @Override

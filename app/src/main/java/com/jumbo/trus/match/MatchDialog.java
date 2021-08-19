@@ -186,7 +186,7 @@ public class MatchDialog extends Dialog implements AdapterView.OnItemSelectedLis
                         break;
                     }
                     case R.id.btn_players: {
-                        displayPlayersDialog(((Match)model).getPlayerList());
+                        displayPlayersDialog(((Match)model).getPlayerListOnlyWithParticipants());
                         break;
                     }
                 }
@@ -208,7 +208,7 @@ public class MatchDialog extends Dialog implements AdapterView.OnItemSelectedLis
             selectedPlayers = new ArrayList<>();
         }
         else {
-            selectedPlayers = ((Match) model).getPlayerList();
+            selectedPlayers = ((Match) model).getPlayerListOnlyWithParticipants();
         }
     }
 

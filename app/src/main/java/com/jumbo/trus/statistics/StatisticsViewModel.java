@@ -150,6 +150,16 @@ public class StatisticsViewModel extends ViewModel {
         return filteredMatches;
     }
 
+    public List<Match> findAllMatchesWithPlayerParticipant (List<Match> matches, Player player) {
+        List<Match> filteredMatches = new ArrayList<>();
+        for (Match match : matches) {
+            if (match.getPlayerListOnlyWithParticipants().contains(player)) {
+                filteredMatches.add(match);
+            }
+        }
+        return filteredMatches;
+    }
+
     public List<ReceivedFine> returnListOfAllFinesInMatch(Match match) {
         List<ReceivedFine> receivedFines = new ArrayList<>();
         List<Player> playerList = match.getPlayerList();

@@ -1,5 +1,7 @@
 package com.jumbo.trus.home;
 
+import android.util.Log;
+
 import com.jumbo.trus.Date;
 import com.jumbo.trus.fine.Fine;
 import com.jumbo.trus.fine.ReceivedFine;
@@ -15,16 +17,25 @@ import java.util.List;
 
 public class RandomFact {
 
+    private static final String TAG = "RandomFact";
+
     private List<Player> players;
     private List<Match> matches;
     private List<Season> seasons;
     private List<Fine> fines;
+    private Match compareMatch;
 
     public RandomFact(List<Player> players, List<Match> matches, List<Season> seasons, List<Fine> fines) {
         this.players = players;
         this.matches = matches;
         this.seasons = seasons;
         this.fines = fines;
+        initCompareMatch();
+    }
+
+    private void initCompareMatch() {
+        Date date = new Date();
+        compareMatch = new Match("compare", date.getCurrentDateInMillis(), false, null, seasons);
     }
 
     /**
@@ -216,8 +227,6 @@ public class RandomFact {
      * @return vrátí počet piv v aktuální sezoně dle data
      */
     public String getNumberOfBeersInCurrentSeason() {
-        Date date = new Date();
-        Match compareMatch = new Match("compare", date.getCurrentDateInMillis(), false, null, seasons);
         int beerNumber = 0;
         for (Match match : matches) {
             if (match.getSeason().equals(compareMatch.getSeason())) {
@@ -232,8 +241,6 @@ public class RandomFact {
      */
     public String getMatchWithMostBeersInCurrentSeason() {
         List<Match> returnMatches = new ArrayList<>();
-        Date date = new Date();
-        Match compareMatch = new Match("compare", date.getCurrentDateInMillis(), false, null, seasons);
         int maximumBeers = 0;
         for (Match match : matches) {
             if (match.getSeason().equals(compareMatch.getSeason())) {
@@ -735,8 +742,6 @@ public class RandomFact {
      * @return vrátí počet pokut v aktuální sezoně dle data
      */
     public String getNumberOfFinesInCurrentSeason() {
-        Date date = new Date();
-        Match compareMatch = new Match("compare", date.getCurrentDateInMillis(), false, null, seasons);
         int fineNumber = 0;
         for (Match match : matches) {
             if (match.getSeason().equals(compareMatch.getSeason())) {
@@ -750,8 +755,6 @@ public class RandomFact {
      * @return vrátí vybranou částku na pokutách v aktuální sezoně dle data
      */
     public String getAmountOfFinesInCurrentSeason() {
-        Date date = new Date();
-        Match compareMatch = new Match("compare", date.getCurrentDateInMillis(), false, null, seasons);
         int fineNumber = 0;
         for (Match match : matches) {
             if (match.getSeason().equals(compareMatch.getSeason())) {
@@ -766,8 +769,6 @@ public class RandomFact {
      */
     public String getMatchWithMostFinesInCurrentSeason() {
         List<Match> returnMatches = new ArrayList<>();
-        Date date = new Date();
-        Match compareMatch = new Match("compare", date.getCurrentDateInMillis(), false, null, seasons);
         int maximumFines = 0;
         for (Match match : matches) {
             if (match.getSeason().equals(compareMatch.getSeason())) {
@@ -812,8 +813,6 @@ public class RandomFact {
      */
     public String getMatchWithMostFinesAmountInCurrentSeason() {
         List<Match> returnMatches = new ArrayList<>();
-        Date date = new Date();
-        Match compareMatch = new Match("compare", date.getCurrentDateInMillis(), false, null, seasons);
         int maximumFinesAmount = 0;
         for (Match match : matches) {
             if (match.getSeason().equals(compareMatch.getSeason())) {
@@ -1074,9 +1073,9 @@ public class RandomFact {
             if (fine.returnAmountOfFineInMatches(matches) > maximumFines) {
                 returnFines.clear();
                 returnFines.add(fine);
-                maximumFines = fine.returnNumberOfFineInMatches(matches);
+                maximumFines = fine.returnAmountOfFineInMatches(matches);
             }
-            else if (fine.returnNumberOfFineInMatches(matches) == maximumFines) {
+            else if (fine.returnAmountOfFineInMatches(matches) == maximumFines) {
                 returnFines.add(fine);
             }
         }
@@ -1128,7 +1127,7 @@ public class RandomFact {
             List<Match> returnMatches = new ArrayList<>();
             List<Player> returnPlayers = new ArrayList<>();
             for (int i = 0; i < matchesWithBirthday.size(); i++) {
-                for (Player player : matchesWithBirthday.get(i).getPlayerList()) {
+                for (Player player : matchesWithBirthday.get(i).getPlayerListOnlyWithParticipants()) {
                     if (player.equals(playersWithBirthday.get(i))) {
                         returnPlayers.add(player);
                         returnMatches.add(matchesWithBirthday.get(i));
