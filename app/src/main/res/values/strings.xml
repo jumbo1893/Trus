@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Trusí apkka</string>
+    <string name="app_name">Trusí appka</string>
     <string name="nav_piva">domů</string>
     <string name="nav_plus">přidat</string>
     <string name="nav_settings">nastavení</string>
@@ -12,7 +12,7 @@
     <string name="uprav_hrace">upravit</string>
     <string name="smaz_hrace">smazat hráče</string>
     <string name="statistika">statistiky</string>
-    <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_login">Trusí appka</string>
     <string name="prompt_email">Email</string>
     <string name="password">Heslo</string>
     <string name="action_sign_in">Přihlaš se</string>
