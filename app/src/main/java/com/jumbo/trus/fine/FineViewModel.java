@@ -64,11 +64,11 @@ public class FineViewModel extends ViewModel implements ChangeListener, INotific
         return new Result(result, response);
     }
 
-    public Result addFineToRepository(final String name, int amount) {
+    public Result addFineToRepository(final String name, int amount, Fine.Type type) {
         isUpdating.setValue(true);
         Result result = new Result(false);
         try {
-            Fine fine = new Fine(name, amount);
+            Fine fine = new Fine(name, amount, type);
             firebaseRepository.insertNewModel(fine);
         }
         catch (Exception e) {
@@ -82,10 +82,11 @@ public class FineViewModel extends ViewModel implements ChangeListener, INotific
         return result;
     }
 
-    public Result editFineInRepository(final String name, int amount, Fine fine) {
+    public Result editFineInRepository(final String name, int amount, Fine.Type type, Fine fine) {
         isUpdating.setValue(true);
         Result result = new Result(false);
         fine.setName(name);
+        fine.setType(type);
         try {
             fine.setAmount(amount);
             firebaseRepository.editModel(fine);

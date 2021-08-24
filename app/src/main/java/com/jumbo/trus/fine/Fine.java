@@ -14,10 +14,17 @@ public class Fine extends Model {
     private static final String TAG = "Fine";
 
     private int amount;
+    private Type type;
 
     public Fine(String name, int amount) {
         super(name);
         this.amount = amount;
+    }
+
+    public Fine(String name, int amount, Type type) {
+        super(name);
+        this.amount = amount;
+        this.type = type;
     }
 
     public Fine(String name) {
@@ -35,6 +42,14 @@ public class Fine extends Model {
         this.amount = amount;
     }
 
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
     public int returnNumberOfFineInMatches(List<Match> matchList) {
         int count = 0;
         for (Match match : matchList) {
@@ -49,6 +64,10 @@ public class Fine extends Model {
             count += match.getAmountOfReceviedFineInMatch(this);
         }
         return count;
+    }
+
+    public enum Type {
+        PLAYER, NONPLAYERS, OTHER_PLAYERS
     }
 
 

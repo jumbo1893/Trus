@@ -43,6 +43,36 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_name" />
 
+    <Switch
+        android:id="@+id/sw_player"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Klasická pokuta (pro daného hráče)"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_amount" />
+
+    <Switch
+        android:id="@+id/sw_otherplayer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Pokuta pro ostatní hráče"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sw_player" />
+
+    <Switch
+        android:id="@+id/sw_nonplayer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Pokuta pro nehrající"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sw_otherplayer" />
+
     <Button
         android:id="@+id/btn_commit"
         android:layout_width="wrap_content"
@@ -52,7 +82,7 @@
         android:textColor="@color/zluta"
         style="?android:attr/borderlessButtonStyle"
         android:text="přidat"
-        app:layout_constraintTop_toBottomOf="@+id/et_amount"/>
+        app:layout_constraintTop_toBottomOf="@+id/sw_nonplayer"/>
 
     <Button
         android:id="@+id/btn_delete"

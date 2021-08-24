@@ -7,7 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,7 +22,7 @@ import com.jumbo.trus.R;
 import com.jumbo.trus.season.ISeasonFragment;
 import com.jumbo.trus.season.Season;
 
-public class FineDialog extends Dialog {
+public class FineDialog extends Dialog implements CompoundButton.OnCheckedChangeListener {
 
     private static final String TAG = "FineDialog";
 
@@ -28,6 +30,8 @@ public class FineDialog extends Dialog {
     private TextView tv_headline;
     private EditText et_name, et_amount;
     private Button btn_commit, btn_cancel, btn_delete;
+    private Switch sw_player, sw_otherplayer, sw_nonplayer;
+    private Fine.Type type = Fine.Type.PLAYER;
 
     //vars
     private IFineFragment iFineFragment;
@@ -51,12 +55,18 @@ public class FineDialog extends Dialog {
         btn_commit = view.findViewById(R.id.btn_commit);
         btn_delete = view.findViewById(R.id.btn_delete);
         btn_cancel = view.findViewById(R.id.btn_cancel);
+        sw_player = view.findViewById(R.id.sw_player);
+        sw_otherplayer = view.findViewById(R.id.sw_otherplayer);
+        sw_nonplayer = view.findViewById(R.id.sw_nonplayer);
+        sw_player.setChecked(true);
         decideTextsToShow();
 
         btn_commit.setOnClickListener(this);
         btn_delete.setOnClickListener(this);
         btn_cancel.setOnClickListener(this);
-
+        sw_player.setOnCheckedChangeListener(this);
+        sw_otherplayer.setOnCheckedChangeListener(this);
+        sw_nonplayer.setOnCheckedChangeListener(this);
         return view;
     }
 
@@ -87,6 +97,39 @@ public class FineDialog extends Dialog {
         et_amount.setText(String.valueOf(((Fine)model).getAmount()));
         btn_commit.setText("Upravit");
         btn_delete.setVisibility(View.VISIBLE);
+        setSwitchType(((Fine) model).getType());
+    }
+
+    private void setSwitchType(Fine.Type type) {
+        switch (type) {
+            case PLAYER: {
+                sw_player.setChecked(true);
+                sw_otherplayer.setChecked(false);
+                sw_nonplayer.setChecked(false);
+                this.type = Fine.Type.PLAYER;
+                break;
+            }
+            case OTHER_PLAYERS: {
+                sw_otherplayer.setChecked(true);
+                sw_player.setChecked(false);
+                sw_nonplayer.setChecked(false);
+                this.type = Fine.Type.OTHER_PLAYERS;
+                break;
+            }
+            case NONPLAYERS: {
+                sw_nonplayer.setChecked(true);
+                sw_otherplayer.setChecked(false);
+                sw_player.setChecked(false);
+                this.type = Fine.Type.NONPLAYERS;
+                break;
+            }
+            default:
+                sw_nonplayer.setChecked(false);
+                sw_otherplayer.setChecked(false);
+                sw_player.setChecked(false);
+                this.type = Fine.Type.PLAYER;
+                break;
+        }
     }
 
     @Override
@@ -104,7 +147,7 @@ public class FineDialog extends Dialog {
                         else {
                             amount = 0;
                         }
-                        if (iFineFragment.createNewFine(name, amount)) {
+                        if (iFineFragment.createNewFine(name, amount, type)) {
                             getDialog().dismiss();
                         }
                         break;
@@ -128,7 +171,7 @@ public class FineDialog extends Dialog {
                         else {
                             amount = 0;
                         }
-                        if (iFineFragment.editFine(name, amount, (Fine) model)) {
+                        if (iFineFragment.editFine(name, amount, type, (Fine) model)) {
                             getDialog().dismiss();
                         }
                         break;
@@ -161,4 +204,32 @@ public class FineDialog extends Dialog {
 
     }
 
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+            switch (buttonView.getId()) {
+                case R.id.sw_player: {
+                    Log.d(TAG, "onCheckedChanged: sw_player" );
+                    sw_otherplayer.setChecked(false);
+                    sw_nonplayer.setChecked(false);
+                    type = Fine.Type.PLAYER;
+                    break;
+                }
+                case R.id.sw_otherplayer: {
+                    Log.d(TAG, "onCheckedChanged: sw_otherplayer" );
+                    sw_player.setChecked(false);
+                    sw_nonplayer.setChecked(false);
+                    type = Fine.Type.OTHER_PLAYERS;
+                    break;
+                }
+                case R.id.sw_nonplayer: {
+                    Log.d(TAG, "onCheckedChanged: sw_nonplayer" );
+                    sw_otherplayer.setChecked(false);
+                    sw_player.setChecked(false);
+                    type = Fine.Type.NONPLAYERS;
+                    break;
+                }
+            }
+        }
+    }
 }
