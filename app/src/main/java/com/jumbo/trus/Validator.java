@@ -125,11 +125,11 @@ public class Validator {
         return !(currentSeason.equalsForSeasonsFields(season));
     }
 
-    public boolean checkEqualityOfFine(String name, int amount, Fine currentFine) {
+    public boolean checkEqualityOfFine(String name, int amount, Fine.Type type, Fine currentFine) {
         if (currentFine == null) {
             return true;
         }
-        Fine fine = new Fine(name, amount);
+        Fine fine = new Fine(name, amount, type);
         return !(currentFine.equals(fine));
     }
 

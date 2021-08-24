@@ -67,7 +67,7 @@ public class Fine extends Model {
     }
 
     public enum Type {
-        PLAYER, NONPLAYERS, OTHER_PLAYERS
+        PLAYER, NONPLAYERS, OTHER_PLAYERS, PLAYER_AND_OTHER_PLAYERS;
     }
 
 
@@ -80,7 +80,8 @@ public class Fine extends Model {
         }
         Fine fine = (Fine) o;
         return amount == fine.amount &&
-                name.equals(fine.name);
+                name.equals(fine.name)&&
+                type == fine.type;
     }
 
     @Override

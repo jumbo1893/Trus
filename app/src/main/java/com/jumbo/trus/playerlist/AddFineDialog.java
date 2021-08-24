@@ -62,7 +62,7 @@ public class AddFineDialog extends Dialog implements OnPlusButtonListener {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_beer, container, false);
+        View view = inflater.inflate(R.layout.dialog_add_fine_player, container, false);
         rc_players = view.findViewById(R.id.rc_players);
         btn_cancel = view.findViewById(R.id.btn_cancel);
         btn_commit = view.findViewById(R.id.btn_commit);

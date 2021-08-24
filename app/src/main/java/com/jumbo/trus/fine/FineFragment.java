@@ -132,7 +132,7 @@ public class FineFragment extends CustomUserFragment implements OnListListener, 
 
     @Override
     public boolean createNewFine(String name, int amount, Fine.Type type) {
-        Result result = fineViewModel.checkNewFineValidation(name, amount, null);
+        Result result = fineViewModel.checkNewFineValidation(name, amount, type,null);
         if (!result.isTrue()) {
             Toast.makeText(getActivity(), result.getText(), Toast.LENGTH_SHORT).show();
         }
@@ -149,7 +149,7 @@ public class FineFragment extends CustomUserFragment implements OnListListener, 
 
     @Override
     public boolean editFine(String name, int amount, Fine.Type type, Fine fine) {
-        Result result = fineViewModel.checkNewFineValidation(name, amount, fine);
+        Result result = fineViewModel.checkNewFineValidation(name, amount, type, fine);
         if (!result.isTrue()) {
             Toast.makeText(getActivity(), result.getText(), Toast.LENGTH_SHORT).show();
         }

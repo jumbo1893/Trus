@@ -2,8 +2,6 @@ package com.jumbo.trus.playerlist;
 
 
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,25 +13,17 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jumbo.trus.Dialog;
-import com.jumbo.trus.Flag;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.OnListListener;
-import com.jumbo.trus.OnPlusButtonListener;
 import com.jumbo.trus.R;
-import com.jumbo.trus.adapters.PlusRecycleViewAdapter;
 import com.jumbo.trus.adapters.SimpleRecycleViewAdapter;
-import com.jumbo.trus.fine.Fine;
-import com.jumbo.trus.fine.FineViewModel;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.player.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FinePlayerDialog extends Dialog implements OnListListener {
@@ -60,7 +50,7 @@ public class FinePlayerDialog extends Dialog implements OnListListener {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_beer, container, false);
+        View view = inflater.inflate(R.layout.dialog_add_fine_player, container, false);
         rc_players = view.findViewById(R.id.rc_players);
         btn_cancel = view.findViewById(R.id.btn_cancel);
         btn_commit = view.findViewById(R.id.btn_commit);

@@ -39,7 +39,7 @@ public class FineViewModel extends ViewModel implements ChangeListener, INotific
     }
 
 
-    public Result checkNewFineValidation(final String name, final int amount, final Fine fine) {
+    public Result checkNewFineValidation(final String name, final int amount, final Fine.Type type, final Fine fine) {
         Validator validator = new Validator();
         String response = "";
         boolean result = false;
@@ -55,7 +55,7 @@ public class FineViewModel extends ViewModel implements ChangeListener, INotific
         if (!validator.checkAmount(amount)) {
             response = "Buď si napsal do částky nesmysly nebo je moc vysoká";
         }
-        else if (!validator.checkEqualityOfFine(name, amount, fine)) {
+        else if (!validator.checkEqualityOfFine(name, amount, type, fine)) {
             response = "Nebyly provedeny žádné změny!";
         }
         else {
