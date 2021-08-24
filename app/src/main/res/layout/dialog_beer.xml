@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:text="přidat pokuty"
+        android:text="přidat piva"
         android:textAlignment="center"
         android:textSize="25sp"
         android:textStyle="bold"

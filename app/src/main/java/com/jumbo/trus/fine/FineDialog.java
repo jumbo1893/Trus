@@ -106,41 +106,30 @@ public class FineDialog extends Dialog implements CompoundButton.OnCheckedChange
                 sw_player.setChecked(true);
                 sw_otherplayer.setChecked(false);
                 sw_nonplayer.setChecked(false);
+                this.type = Fine.Type.PLAYER;
                 break;
             }
             case OTHER_PLAYERS: {
                 sw_otherplayer.setChecked(true);
                 sw_player.setChecked(false);
                 sw_nonplayer.setChecked(false);
+                this.type = Fine.Type.OTHER_PLAYERS;
                 break;
             }
             case NONPLAYERS: {
                 sw_nonplayer.setChecked(true);
                 sw_otherplayer.setChecked(false);
                 sw_player.setChecked(false);
-                break;
-            }
-            case PLAYER_AND_OTHER_PLAYERS: {
-                sw_nonplayer.setChecked(false);
-                sw_otherplayer.setChecked(true);
-                sw_player.setChecked(true);
+                this.type = Fine.Type.NONPLAYERS;
                 break;
             }
             default:
                 sw_nonplayer.setChecked(false);
                 sw_otherplayer.setChecked(false);
                 sw_player.setChecked(false);
+                this.type = Fine.Type.PLAYER;
                 break;
         }
-        this.type = type;
-    }
-
-    private boolean checkNoButtonSwitched(CompoundButton buttonView) {
-        if (!sw_player.isChecked() && !sw_otherplayer.isChecked() && !sw_nonplayer.isChecked()) {
-            buttonView.setChecked(true);
-            return false;
-        }
-        return true;
     }
 
     @Override
@@ -218,51 +207,27 @@ public class FineDialog extends Dialog implements CompoundButton.OnCheckedChange
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
-            Log.d(TAG, "onCheckedChanged: checked");
             switch (buttonView.getId()) {
                 case R.id.sw_player: {
+                    Log.d(TAG, "onCheckedChanged: sw_player" );
+                    sw_otherplayer.setChecked(false);
                     sw_nonplayer.setChecked(false);
-                    if (sw_otherplayer.isChecked()) {
-                        type = Fine.Type.PLAYER_AND_OTHER_PLAYERS;
-                    }
-                    else {
-                        type = Fine.Type.PLAYER;
-                    }
+                    type = Fine.Type.PLAYER;
                     break;
                 }
                 case R.id.sw_otherplayer: {
+                    Log.d(TAG, "onCheckedChanged: sw_otherplayer" );
+                    sw_player.setChecked(false);
                     sw_nonplayer.setChecked(false);
                     type = Fine.Type.OTHER_PLAYERS;
-                    if (sw_player.isChecked()) {
-                        type = Fine.Type.PLAYER_AND_OTHER_PLAYERS;
-                    }
-                    else {
-                        type = Fine.Type.OTHER_PLAYERS;
-                    }
                     break;
                 }
                 case R.id.sw_nonplayer: {
-                    sw_player.setChecked(false);
+                    Log.d(TAG, "onCheckedChanged: sw_nonplayer" );
                     sw_otherplayer.setChecked(false);
+                    sw_player.setChecked(false);
                     type = Fine.Type.NONPLAYERS;
                     break;
-                }
-            }
-        }
-        else {
-            if (checkNoButtonSwitched(buttonView)) {
-                Log.d(TAG, "onCheckedChanged: neco");
-                switch (buttonView.getId()) {
-                    case R.id.sw_player: {
-                        Log.d(TAG, "onCheckedChanged: sw_player");
-                        type = Fine.Type.OTHER_PLAYERS;
-                        break;
-                    }
-                    case R.id.sw_otherplayer: {
-                        Log.d(TAG, "onCheckedChanged: sw_otherplayer");
-                        type = Fine.Type.PLAYER;
-                        break;
-                    }
                 }
             }
         }
