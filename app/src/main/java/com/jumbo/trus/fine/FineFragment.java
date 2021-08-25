@@ -131,13 +131,13 @@ public class FineFragment extends CustomUserFragment implements OnListListener, 
 
 
     @Override
-    public boolean createNewFine(String name, int amount, Fine.Type type) {
-        Result result = fineViewModel.checkNewFineValidation(name, amount, type, null);
+    public boolean createNewFine(String name, int amount, boolean forNonPlayers) {
+        Result result = fineViewModel.checkNewFineValidation(name, amount, forNonPlayers, null);
         if (!result.isTrue()) {
             Toast.makeText(getActivity(), result.getText(), Toast.LENGTH_SHORT).show();
         }
         else {
-            Result addFineToRepositoryResult = fineViewModel.addFineToRepository(name, amount, type);
+            Result addFineToRepositoryResult = fineViewModel.addFineToRepository(name, amount, forNonPlayers);
             Toast.makeText(getActivity(), addFineToRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
             if (addFineToRepositoryResult.isTrue()) {
                 String text = "Byla vytvořena pokuta " + name + " s částkou " + amount + " Kč";
@@ -148,13 +148,13 @@ public class FineFragment extends CustomUserFragment implements OnListListener, 
     }
 
     @Override
-    public boolean editFine(String name, int amount, Fine.Type type, Fine fine) {
-        Result result = fineViewModel.checkNewFineValidation(name, amount, type, fine);
+    public boolean editFine(String name, int amount, boolean forNonPlayers, Fine fine) {
+        Result result = fineViewModel.checkNewFineValidation(name, amount, forNonPlayers, fine);
         if (!result.isTrue()) {
             Toast.makeText(getActivity(), result.getText(), Toast.LENGTH_SHORT).show();
         }
         else {
-            Result editFineInRepositoryResult = fineViewModel.editFineInRepository(name, amount, type, fine);
+            Result editFineInRepositoryResult = fineViewModel.editFineInRepository(name, amount, forNonPlayers, fine);
             Toast.makeText(getActivity(), editFineInRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
             if (editFineInRepositoryResult.isTrue()) {
                 String text = "Pokuta změněna na " + name + " s částkou " + amount + " Kč";

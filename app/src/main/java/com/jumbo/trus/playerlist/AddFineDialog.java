@@ -73,7 +73,7 @@ public class AddFineDialog extends Dialog implements OnPlusButtonListener {
         fineViewModel.getFines().observe(getViewLifecycleOwner(), new Observer<List<Fine>>() {
             @Override
             public void onChanged(List<Fine> fines) {
-                Log.d(TAG, "onChanged: nacetly se sezony " + fines);
+                Log.d(TAG, "onChanged: nacetly se pokuty " + fines);
                 ((Player)model).mergeFineLists(fines);
                 playerFines = ((Player)model).getReceivedFines();
                 Log.d(TAG, "onChanged: " + ((Player)model).getReceivedFines());

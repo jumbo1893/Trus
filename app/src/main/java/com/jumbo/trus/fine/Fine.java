@@ -14,17 +14,17 @@ public class Fine extends Model {
     private static final String TAG = "Fine";
 
     private int amount;
-    private Type type;
+    private boolean forNonPlayers;
 
     public Fine(String name, int amount) {
         super(name);
         this.amount = amount;
     }
 
-    public Fine(String name, int amount, Type type) {
+    public Fine(String name, int amount, boolean forNonPlayers) {
         super(name);
         this.amount = amount;
-        this.type = type;
+        this.forNonPlayers = forNonPlayers;
     }
 
     public Fine(String name) {
@@ -42,12 +42,12 @@ public class Fine extends Model {
         this.amount = amount;
     }
 
-    public Type getType() {
-        return type;
+    public boolean isForNonPlayers() {
+        return forNonPlayers;
     }
 
-    public void setType(Type type) {
-        this.type = type;
+    public void setForNonPlayers(boolean forNonPlayers) {
+        this.forNonPlayers = forNonPlayers;
     }
 
     public int returnNumberOfFineInMatches(List<Match> matchList) {
@@ -66,11 +66,6 @@ public class Fine extends Model {
         return count;
     }
 
-    public enum Type {
-        PLAYER, NONPLAYERS, OTHER_PLAYERS, SPECIAL
-    }
-
-
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ReceivedFine) && !(o instanceof Fine)) return false;
@@ -81,7 +76,7 @@ public class Fine extends Model {
         Fine fine = (Fine) o;
         return amount == fine.amount &&
                 name.equals(fine.name) &&
-                type == fine.type;
+                forNonPlayers == fine.forNonPlayers;
     }
 
     @Override

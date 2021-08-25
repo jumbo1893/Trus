@@ -105,6 +105,26 @@ public class Match extends Model {
         return newPlayerList;
     }
 
+    public List<Player> getPlayerListOnlyWithoutParticipantsAndWithoutFans() {
+        List<Player> newPlayerList = new ArrayList<>();
+        for (Player player : playerList) {
+            if (!player.isMatchParticipant() && !player.isFan()) {
+                newPlayerList.add(player);
+            }
+        }
+        return newPlayerList;
+    }
+
+    public List<Player> getPlayerListWithoutFans() {
+        List<Player> newPlayerList = new ArrayList<>();
+        for (Player player : playerList) {
+            if (!player.isFan()) {
+                newPlayerList.add(player);
+            }
+        }
+        return newPlayerList;
+    }
+
     public List<Player> getPlayerListOnlyWithFine(ReceivedFine receivedFine) {
         List<Player> newPlayerList = new ArrayList<>();
         for (Player player : playerList) {

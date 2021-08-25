@@ -20,6 +20,7 @@ import com.jumbo.trus.fine.ReceivedFine;
 import com.jumbo.trus.player.Player;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class FinesRecycleViewAdapter extends RecyclerView.Adapter<FinesRecycleViewAdapter.ViewHolder> {

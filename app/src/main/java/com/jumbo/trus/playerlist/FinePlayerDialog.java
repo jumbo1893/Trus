@@ -9,7 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,10 +54,12 @@ public class FinePlayerDialog extends Dialog implements OnListListener {
     //private List<Integer> fineCompensation;
     private SimpleRecycleViewAdapter adapter;
 
+    private boolean forNonPlayers;
+
 
     public FinePlayerDialog(Model model) {
         super(model);
-        selectedPlayers = ((Match) model).getPlayerListOnlyWithParticipantsAndWithoutFans();
+        selectedPlayers = ((Match) model).getPlayerListWithoutFans();
     }
 
     @Nullable
@@ -110,7 +115,6 @@ public class FinePlayerDialog extends Dialog implements OnListListener {
         rc_players.setAdapter(adapter);
         rc_players.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
-
 
    /*@Override
     public void onAttach(@NonNull Context context) {

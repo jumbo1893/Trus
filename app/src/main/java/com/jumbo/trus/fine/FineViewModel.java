@@ -39,7 +39,7 @@ public class FineViewModel extends ViewModel implements ChangeListener, INotific
     }
 
 
-    public Result checkNewFineValidation(final String name, final int amount, final Fine.Type type, final Fine fine) {
+    public Result checkNewFineValidation(final String name, final int amount, final boolean forNonPlayers, final Fine fine) {
         Validator validator = new Validator();
         String response = "";
         boolean result = false;
@@ -55,7 +55,7 @@ public class FineViewModel extends ViewModel implements ChangeListener, INotific
         else if (!validator.checkAmount(amount)) {
             response = "Buď si napsal do částky nesmysly nebo je moc vysoká";
         }
-        else if (!validator.checkEqualityOfFine(name, amount, type, fine)) {
+        else if (!validator.checkEqualityOfFine(name, amount, forNonPlayers, fine)) {
             response = "Nebyly provedeny žádné změny!";
         }
         else {
@@ -64,11 +64,11 @@ public class FineViewModel extends ViewModel implements ChangeListener, INotific
         return new Result(result, response);
     }
 
-    public Result addFineToRepository(final String name, int amount, Fine.Type type) {
+    public Result addFineToRepository(final String name, int amount, boolean forNonPlayers) {
         isUpdating.setValue(true);
         Result result = new Result(false);
         try {
-            Fine fine = new Fine(name, amount, type);
+            Fine fine = new Fine(name, amount, forNonPlayers);
             firebaseRepository.insertNewModel(fine);
         }
         catch (Exception e) {
@@ -82,11 +82,11 @@ public class FineViewModel extends ViewModel implements ChangeListener, INotific
         return result;
     }
 
-    public Result editFineInRepository(final String name, int amount, Fine.Type type, Fine fine) {
+    public Result editFineInRepository(final String name, int amount, boolean forNonPlayers, Fine fine) {
         isUpdating.setValue(true);
         Result result = new Result(false);
         fine.setName(name);
-        fine.setType(type);
+        fine.setForNonPlayers(forNonPlayers);
         try {
             fine.setAmount(amount);
             firebaseRepository.editModel(fine);
