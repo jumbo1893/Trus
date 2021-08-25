@@ -30,7 +30,7 @@ public class FineDialog extends Dialog implements CompoundButton.OnCheckedChange
     private TextView tv_headline;
     private EditText et_name, et_amount;
     private Button btn_commit, btn_cancel, btn_delete;
-    private Switch sw_player, sw_otherplayer, sw_nonplayer;
+    private Switch sw_player, sw_otherplayer, sw_nonplayer, sw_special;
     private Fine.Type type = Fine.Type.PLAYER;
 
     //vars
@@ -58,6 +58,7 @@ public class FineDialog extends Dialog implements CompoundButton.OnCheckedChange
         sw_player = view.findViewById(R.id.sw_player);
         sw_otherplayer = view.findViewById(R.id.sw_otherplayer);
         sw_nonplayer = view.findViewById(R.id.sw_nonplayer);
+        sw_special = view.findViewById(R.id.sw_special);
         sw_player.setChecked(true);
         decideTextsToShow();
 
@@ -67,6 +68,7 @@ public class FineDialog extends Dialog implements CompoundButton.OnCheckedChange
         sw_player.setOnCheckedChangeListener(this);
         sw_otherplayer.setOnCheckedChangeListener(this);
         sw_nonplayer.setOnCheckedChangeListener(this);
+        sw_special.setOnCheckedChangeListener(this);
         return view;
     }
 
@@ -106,30 +108,39 @@ public class FineDialog extends Dialog implements CompoundButton.OnCheckedChange
                 sw_player.setChecked(true);
                 sw_otherplayer.setChecked(false);
                 sw_nonplayer.setChecked(false);
-                this.type = Fine.Type.PLAYER;
+                sw_special.setChecked(false);
                 break;
             }
             case OTHER_PLAYERS: {
                 sw_otherplayer.setChecked(true);
                 sw_player.setChecked(false);
                 sw_nonplayer.setChecked(false);
-                this.type = Fine.Type.OTHER_PLAYERS;
+                sw_special.setChecked(false);
                 break;
             }
             case NONPLAYERS: {
                 sw_nonplayer.setChecked(true);
                 sw_otherplayer.setChecked(false);
                 sw_player.setChecked(false);
-                this.type = Fine.Type.NONPLAYERS;
+                sw_special.setChecked(false);
                 break;
             }
-            default:
+            case SPECIAL:
+                sw_special.setChecked(true);
                 sw_nonplayer.setChecked(false);
                 sw_otherplayer.setChecked(false);
                 sw_player.setChecked(false);
-                this.type = Fine.Type.PLAYER;
                 break;
         }
+        this.type = type;
+    }
+
+    private boolean checkNoButtonSwitched(CompoundButton buttonView) {
+        if (!sw_player.isChecked() && !sw_otherplayer.isChecked() && !sw_nonplayer.isChecked() && !sw_special.isChecked()) {
+            buttonView.setChecked(true);
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -209,27 +220,36 @@ public class FineDialog extends Dialog implements CompoundButton.OnCheckedChange
         if (isChecked) {
             switch (buttonView.getId()) {
                 case R.id.sw_player: {
-                    Log.d(TAG, "onCheckedChanged: sw_player" );
                     sw_otherplayer.setChecked(false);
                     sw_nonplayer.setChecked(false);
+                    sw_special.setChecked(false);
                     type = Fine.Type.PLAYER;
                     break;
                 }
                 case R.id.sw_otherplayer: {
-                    Log.d(TAG, "onCheckedChanged: sw_otherplayer" );
                     sw_player.setChecked(false);
                     sw_nonplayer.setChecked(false);
+                    sw_special.setChecked(false);
                     type = Fine.Type.OTHER_PLAYERS;
                     break;
                 }
                 case R.id.sw_nonplayer: {
-                    Log.d(TAG, "onCheckedChanged: sw_nonplayer" );
                     sw_otherplayer.setChecked(false);
                     sw_player.setChecked(false);
+                    sw_special.setChecked(false);
                     type = Fine.Type.NONPLAYERS;
                     break;
                 }
+                case R.id.sw_special: {
+                    sw_otherplayer.setChecked(false);
+                    sw_player.setChecked(false);
+                    sw_nonplayer.setChecked(false);
+                    type = Fine.Type.SPECIAL;
+                    break;
+                }
             }
+        } else {
+            checkNoButtonSwitched(buttonView);
         }
     }
 }

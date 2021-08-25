@@ -73,6 +73,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sw_otherplayer" />
 
+    <Switch
+        android:id="@+id/sw_special"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Speciální pokuta"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sw_nonplayer" />
+
     <Button
         android:id="@+id/btn_commit"
         android:layout_width="wrap_content"
@@ -82,7 +92,7 @@
         android:textColor="@color/zluta"
         style="?android:attr/borderlessButtonStyle"
         android:text="přidat"
-        app:layout_constraintTop_toBottomOf="@+id/sw_nonplayer"/>
+        app:layout_constraintTop_toBottomOf="@+id/sw_special"/>
 
     <Button
         android:id="@+id/btn_delete"

@@ -67,7 +67,7 @@ public class Fine extends Model {
     }
 
     public enum Type {
-        PLAYER, NONPLAYERS, OTHER_PLAYERS
+        PLAYER, NONPLAYERS, OTHER_PLAYERS, SPECIAL
     }
 
 
