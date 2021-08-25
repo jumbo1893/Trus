@@ -60,7 +60,7 @@ public class FinePlayerDialog extends Dialog implements OnListListener {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_fine_plus, container, false);
+        View view = inflater.inflate(R.layout.dialog_fine_player, container, false);
         rc_players = view.findViewById(R.id.rc_players);
         btn_cancel = view.findViewById(R.id.btn_cancel);
         btn_commit = view.findViewById(R.id.btn_commit);
