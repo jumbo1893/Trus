@@ -170,7 +170,7 @@ public class Player extends Model {
         numberOfFinesInMatches = 0;
         amountOfFinesInMatches = 0;
         for (Match match : matchList) {
-            for (Player player : match.getPlayerListOnlyWithParticipantsAndWithoutFans()) {
+            for (Player player : match.getPlayerListWithoutFans()) {
                 if (player.equals(this)) {
                     numberOfFinesInMatches += player.getNumberOfAllReceviedFines();
                     amountOfFinesInMatches += player.getAmountOfAllReceviedFines();

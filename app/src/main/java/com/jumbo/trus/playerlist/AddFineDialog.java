@@ -24,6 +24,7 @@ import com.jumbo.trus.Model;
 import com.jumbo.trus.OnPlusButtonListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.adapters.FinesRecycleViewAdapter;
+import com.jumbo.trus.comparator.OrderByNonplayerFine;
 import com.jumbo.trus.fine.Fine;
 import com.jumbo.trus.fine.FineViewModel;
 import com.jumbo.trus.fine.ReceivedFine;
@@ -32,6 +33,7 @@ import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.player.Player;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AddFineDialog extends Dialog implements OnPlusButtonListener {
@@ -46,7 +48,6 @@ public class AddFineDialog extends Dialog implements OnPlusButtonListener {
     private IChangeFineListListener iChangeFineListListener;
     private INotificationSender iNotificationSender;
     private List<ReceivedFine> playerFines;
-    private List<Integer> finesNumber;
     private List<Integer> finesCompesation;
     private FinesRecycleViewAdapter adapter;
     private boolean commit = false;
@@ -75,6 +76,12 @@ public class AddFineDialog extends Dialog implements OnPlusButtonListener {
             public void onChanged(List<Fine> fines) {
                 Log.d(TAG, "onChanged: nacetly se pokuty " + fines);
                 ((Player)model).mergeFineLists(fines);
+                if (((Player) model).isMatchParticipant()) {
+                    Collections.sort(((Player) model).getReceivedFines(), new OrderByNonplayerFine(true));
+                }
+                else {
+                    Collections.sort(((Player) model).getReceivedFines(), new OrderByNonplayerFine(false));
+                }
                 playerFines = ((Player)model).getReceivedFines();
                 Log.d(TAG, "onChanged: " + ((Player)model).getReceivedFines());
                 initFineCompensation();

@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.jumbo.trus.INotificationSender;
+import com.jumbo.trus.comparator.OrderByBeerNonplayerLast;
 import com.jumbo.trus.layout.BeerLayout;
 import com.jumbo.trus.Dialog;
 import com.jumbo.trus.Flag;
@@ -31,6 +32,7 @@ import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.player.Player;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -62,6 +64,7 @@ public class BeerDialog extends Dialog implements OnPlusButtonListener, OnLineFi
     public BeerDialog(Flag flag, Model model) {
         super(flag, model);
         selectedPlayers = ((Match) model).getPlayerListOnlyWithParticipants();
+        Collections.sort(selectedPlayers, new OrderByBeerNonplayerLast());
         selectedPlayersSize = selectedPlayers.size();
         player = selectedPlayers.get(0);
         selectedPlayer = 0;

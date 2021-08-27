@@ -2,41 +2,30 @@ package com.jumbo.trus.playerlist;
 
 
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jumbo.trus.Dialog;
-import com.jumbo.trus.Flag;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.OnListListener;
-import com.jumbo.trus.OnPlusButtonListener;
 import com.jumbo.trus.R;
-import com.jumbo.trus.adapters.PlusRecycleViewAdapter;
 import com.jumbo.trus.adapters.SimpleRecycleViewAdapter;
-import com.jumbo.trus.fine.Fine;
-import com.jumbo.trus.fine.FineViewModel;
+import com.jumbo.trus.comparator.OrderByBeerNonplayerLast;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.player.Player;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class FinePlayerDialog extends Dialog implements OnListListener {
@@ -54,12 +43,11 @@ public class FinePlayerDialog extends Dialog implements OnListListener {
     //private List<Integer> fineCompensation;
     private SimpleRecycleViewAdapter adapter;
 
-    private boolean forNonPlayers;
-
 
     public FinePlayerDialog(Model model) {
         super(model);
         selectedPlayers = ((Match) model).getPlayerListWithoutFans();
+        Collections.sort(selectedPlayers, new OrderByBeerNonplayerLast());
     }
 
     @Nullable

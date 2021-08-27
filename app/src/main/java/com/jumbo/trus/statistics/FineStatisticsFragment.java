@@ -102,7 +102,7 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
         btn_overall.setOnClickListener(this);
         btn_search.setOnClickListener(this);
 
-        matchViewModel.getMatches().observe(this, new Observer<List<Match>>() {
+        matchViewModel.getMatches().observe(getViewLifecycleOwner(), new Observer<List<Match>>() {
             @Override
             public void onChanged(List<Match> matches) {
                 Log.d(TAG, "onChanged: nacetly se zapasy " + matches);
@@ -114,7 +114,7 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
                 }
             }
         });
-        matchViewModel.isUpdating().observe(this, new Observer<Boolean>() {
+        matchViewModel.isUpdating().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (!checkedPlayers) {
@@ -126,7 +126,7 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
                 }
             }
         });
-        playerViewModel.getPlayers().observe(this, new Observer<List<Player>>() {
+        playerViewModel.getPlayers().observe(getViewLifecycleOwner(), new Observer<List<Player>>() {
             @Override
             public void onChanged(List<Player> hraci) {
                 Log.d(TAG, "onChanged: nacetli se hraci " + hraci);
@@ -138,7 +138,7 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
                 }
             }
         });
-        playerViewModel.isUpdating().observe(this, new Observer<Boolean>() {
+        playerViewModel.isUpdating().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (checkedPlayers) {
@@ -150,7 +150,7 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
                 }
             }
         });
-        seasonsViewModel.getSeasons().observe(this, new Observer<List<Season>>() {
+        seasonsViewModel.getSeasons().observe(getViewLifecycleOwner(), new Observer<List<Season>>() {
             @Override
             public void onChanged(List<Season> seasons) {
                 Log.d(TAG, "onChanged: nacetli se sezony " + seasons);
