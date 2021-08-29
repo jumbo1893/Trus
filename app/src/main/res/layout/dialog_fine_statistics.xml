@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:text="přidat piva"
         android:textAlignment="center"
         android:textSize="25sp"
         android:textStyle="bold"
@@ -38,21 +37,14 @@
         android:layout_marginTop="10dp"/>
 
 
-    <ScrollView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rc_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toTopOf="@+id/btn_commit"
         app:layout_constraintTop_toBottomOf="@+id/tv_overall"
-        tools:layout_editor_absoluteX="5dp"
-        android:layout_marginTop="10dp">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rc_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textSize="12sp"/>
-
-    </ScrollView>
+        android:textSize="12sp"/>
 
     <Button
         android:id="@+id/btn_commit"

@@ -24,14 +24,14 @@
 
 
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rc_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintBottom_toTopOf="@+id/btn_commit"
-            app:layout_constraintTop_toBottomOf="@+id/tv_title"
-            android:textSize="12sp" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rc_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toTopOf="@+id/btn_commit"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title"
+        android:textSize="12sp" />
 
 
 

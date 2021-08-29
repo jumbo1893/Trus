@@ -8,25 +8,21 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jumbo.trus.CustomUserFragment;
 import com.jumbo.trus.Flag;
-import com.jumbo.trus.MainActivityViewModel;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.OnListListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.Result;
 import com.jumbo.trus.SimpleDividerItemDecoration;
 import com.jumbo.trus.notification.Notification;
-import com.jumbo.trus.user.User;
 
 import java.util.List;
 
@@ -44,7 +40,7 @@ public class PlayerFragment extends CustomUserFragment implements OnListListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_hrac, container, false);
+        View view = inflater.inflate(R.layout.fragment_player, container, false);
         fab_plus = view.findViewById(R.id.fab_plus);
         rc_hraci = view.findViewById(R.id.rc_hraci);
         rc_hraci.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
