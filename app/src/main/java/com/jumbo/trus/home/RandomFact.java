@@ -1,21 +1,15 @@
 package com.jumbo.trus.home;
 
-import android.util.Log;
 
 import com.jumbo.trus.Date;
 import com.jumbo.trus.fine.Fine;
-import com.jumbo.trus.fine.ReceivedFine;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.player.Player;
 import com.jumbo.trus.season.Season;
-
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RandomFact {
+class RandomFact {
 
     private static final String TAG = "RandomFact";
 
@@ -25,7 +19,7 @@ public class RandomFact {
     private List<Fine> fines;
     private Match compareMatch;
 
-    public RandomFact(List<Player> players, List<Match> matches, List<Season> seasons, List<Fine> fines) {
+    RandomFact(List<Player> players, List<Match> matches, List<Season> seasons, List<Fine> fines) {
         this.players = players;
         this.matches = matches;
         this.seasons = seasons;
@@ -41,7 +35,7 @@ public class RandomFact {
     /**
      * @return Vrátí oslavný text s hráčem si seznamem hráčů, kteří slaví narozeniny. Pokud nikdo narozeniny neslaví, tak vrátí hráče nebo seznam hráčů kteří mají nejdříve narozeniny
      */
-    public String getPlayerWithEarliestBirthDay() {
+    String getPlayerWithEarliestBirthDay() {
         List<Player> returnPlayers = new ArrayList<>();
         int minimumDays = 367;
         for (Player player : players) {
@@ -142,7 +136,7 @@ public class RandomFact {
     /**
      * @return Vrátí text s hráčem nebo seznam hráčů, kteří vypili za celou historii (všechny zápasy v db) nejvíce piv
      */
-    public String getPlayerWithMostBeers() {
+    String getPlayerWithMostBeers() {
         List<Player> returnPlayers = new ArrayList<>();
         int maximumBeers = 0;
         for (Player player : players) {
@@ -184,7 +178,7 @@ public class RandomFact {
     /**
      * @return vrátí text se zápasem nebo seznamem zápasů, ve kterém se za historii (z db) vypilo nejvíce piv
      */
-    public String getMatchWithMostBeers() {
+    String getMatchWithMostBeers() {
         List<Match> returnMatches = new ArrayList<>();
         int maximumBeers = 0;
         for (Match match : matches) {
@@ -226,7 +220,7 @@ public class RandomFact {
     /**
      * @return vrátí počet piv v aktuální sezoně dle data
      */
-    public String getNumberOfBeersInCurrentSeason() {
+    String getNumberOfBeersInCurrentSeason() {
         int beerNumber = 0;
         for (Match match : matches) {
             if (match.getSeason().equals(compareMatch.getSeason())) {
@@ -284,7 +278,7 @@ public class RandomFact {
     /**
      * @return vrátí text sezonu/sezony ve kterých padlo v historii nejvíce piv, společně s počtem a počtem zápasů
      */
-    public String getSeasonWithMostBeers() {
+    String getSeasonWithMostBeers() {
         List<Season> returnSeasons = new ArrayList<>();
         List<Integer> numberOfMatches = new ArrayList<>();
         int maximumBeers = 0;
@@ -340,7 +334,7 @@ public class RandomFact {
     /**
      * @return vrátí průměrný počet piv na všechny účastníky včetně fans
      */
-    public String getAverageNumberOfBeersInMatchForPlayersAndFans() {
+    String getAverageNumberOfBeersInMatchForPlayersAndFans() {
         float beerNumber = 0;
         int playerNumber = 0;
         for (Match match : matches) {
@@ -354,7 +348,7 @@ public class RandomFact {
     /**
      * @return vrátí průměrný počet piv na hráče
      */
-    public String getAverageNumberOfBeersInMatchForPlayers() {
+    String getAverageNumberOfBeersInMatchForPlayers() {
         float beerNumber = 0;
         int playerNumber = 0;
         for (Match match : matches) {
@@ -368,7 +362,7 @@ public class RandomFact {
     /**
      * @return vrátí průměrný počet piv na fanouška
      */
-    public String getAverageNumberOfBeersInMatchForFans() {
+    String getAverageNumberOfBeersInMatchForFans() {
         float beerNumber = 0;
         int fanNumber = 0;
         for (Match match : matches) {
@@ -395,7 +389,7 @@ public class RandomFact {
     /**
      * @return Vrací dosud nejvyšší průměrný počet vypitých piv v jednom zápase
      */
-    public String getMatchWithHighestAverageBeers() {
+    String getMatchWithHighestAverageBeers() {
         List<Match> returnMatches = new ArrayList<>();
         float average = 0;
         for (Match match : matches) {
@@ -436,7 +430,7 @@ public class RandomFact {
     /**
      * @return Vrací dosud nejnižší průměrný počet vypitých piv v jednom zápase
      */
-    public String getMatchWithLowestAverageBeers() {
+    String getMatchWithLowestAverageBeers() {
         List<Match> returnMatches = new ArrayList<>();
         float average = 1000;
         for (Match match : matches) {
@@ -478,7 +472,7 @@ public class RandomFact {
     /**
      * @return Vrací dosud nejvyšší účast jednom zápase spolu s podrobnými údaji
      */
-    public String getHighestAttendanceInMatch() {
+    String getHighestAttendanceInMatch() {
         List<Match> returnMatches = new ArrayList<>();
         int matchAttendance = 0;
         for (Match match : matches) {
@@ -525,7 +519,7 @@ public class RandomFact {
     /**
      * @return Vrací dosud nejnižší účast jednom zápase spolu s podrobnými údaji
      */
-    public String getLowestAttendanceInMatch() {
+    String getLowestAttendanceInMatch() {
         List<Match> returnMatches = new ArrayList<>();
         int matchAttendance = 1000;
         for (Match match : matches) {
@@ -572,7 +566,7 @@ public class RandomFact {
     /**
      * @return Vrátí text s hráčem nebo seznam hráčů, kteří dostali za celou historii (všechny zápasy v db) nejvíce pokut
      */
-    public String getPlayerWithMostFines() {
+    String getPlayerWithMostFines() {
         List<Player> returnPlayers = new ArrayList<>();
         int maximumFines = 0;
         for (Player player : players) {
@@ -614,7 +608,7 @@ public class RandomFact {
     /**
      * @return vrátí text se zápasem nebo seznamem zápasů, ve kterém se za historii (z db) padlo nejvíce pokut
      */
-    public String getMatchWithMostFines() {
+    String getMatchWithMostFines() {
         List<Match> returnMatches = new ArrayList<>();
         int maximumFines = 0;
         for (Match match : matches) {
@@ -656,7 +650,7 @@ public class RandomFact {
     /**
      * @return Vrátí text s hráčem nebo seznam hráčů, kteří zaplatili za celou historii (všechny zápasy v db) nejvíce na pokutách
      */
-    public String getPlayerWithMostFinesAmount() {
+    String getPlayerWithMostFinesAmount() {
         List<Player> returnPlayers = new ArrayList<>();
         int maximumFinesAmount = 0;
         for (Player player : players) {
@@ -699,7 +693,7 @@ public class RandomFact {
     /**
      * @return vrátí text se zápasem nebo seznamem zápasů, ve kterém se za historii (z db) nejvíce vydělalo na pokutách
      */
-    public String getMatchWithMostFinesAmount() {
+    String getMatchWithMostFinesAmount() {
         List<Match> returnMatches = new ArrayList<>();
         int maximumFinesAmount = 0;
         for (Match match : matches) {
@@ -741,7 +735,7 @@ public class RandomFact {
     /**
      * @return vrátí počet pokut v aktuální sezoně dle data
      */
-    public String getNumberOfFinesInCurrentSeason() {
+    String getNumberOfFinesInCurrentSeason() {
         int fineNumber = 0;
         for (Match match : matches) {
             if (match.getSeason().equals(compareMatch.getSeason())) {
@@ -767,7 +761,7 @@ public class RandomFact {
     /**
      * @return vrátí text se zápasem nebo listem zápasů ve kterých se tuto sezonu rozdalo nejvíce pokut
      */
-    public String getMatchWithMostFinesInCurrentSeason() {
+    String getMatchWithMostFinesInCurrentSeason() {
         List<Match> returnMatches = new ArrayList<>();
         int maximumFines = 0;
         for (Match match : matches) {
@@ -811,7 +805,7 @@ public class RandomFact {
     /**
      * @return vrátí text se zápasem nebo listem zápasů ve kterých se tuto sezonu nejvíce vydělalo na pokutách
      */
-    public String getMatchWithMostFinesAmountInCurrentSeason() {
+    String getMatchWithMostFinesAmountInCurrentSeason() {
         List<Match> returnMatches = new ArrayList<>();
         int maximumFinesAmount = 0;
         for (Match match : matches) {
@@ -856,7 +850,7 @@ public class RandomFact {
     /**
      * @return vrátí text sezonu/sezony ve kterých padlo v historii nejvíce pokut, společně s počtem a počtem zápasů
      */
-    public String getSeasonWithMostFines() {
+    String getSeasonWithMostFines() {
         List<Season> returnSeasons = new ArrayList<>();
         List<Integer> numberOfMatches = new ArrayList<>();
         int maximumFines = 0;
@@ -912,7 +906,7 @@ public class RandomFact {
     /**
      * @return vrátí text sezonu/sezony ve kterých se vybralo v historii nejvíce za pokuty, společně s počtem zápasů
      */
-    public String getSeasonWithMostFinesAmount() {
+    String getSeasonWithMostFinesAmount() {
         List<Season> returnSeasons = new ArrayList<>();
         List<Integer> numberOfMatches = new ArrayList<>();
         int maximumFines = 0;
@@ -968,7 +962,7 @@ public class RandomFact {
     /**
      * @return vrátí průměrný počet pokut na hráče
      */
-    public String getAverageNumberOfFinesInMatchForPlayers() {
+    String getAverageNumberOfFinesInMatchForPlayers() {
         float finesNumber = 0;
         int playerNumber = 0;
         for (Match match : matches) {
@@ -999,7 +993,7 @@ public class RandomFact {
     /**
      * @return vrátí průměrný počet pokut na zápas
      */
-    public String getAverageNumberOfFinesInMatch() {
+    String getAverageNumberOfFinesInMatch() {
         float finesNumber = 0;
         for (Match match : matches) {
             finesNumber += match.getNumberOfFinesInMatch();
@@ -1011,7 +1005,7 @@ public class RandomFact {
     /**
      * @return vrátí průměrný počet vybranejch peněz v zápase
      */
-    public String getAverageNumberOfFinesAmountInMatch() {
+    String getAverageNumberOfFinesAmountInMatch() {
         float finesNumber = 0;
         for (Match match : matches) {
             finesNumber += match.getAmountOfFinesInMatch();
@@ -1023,7 +1017,7 @@ public class RandomFact {
     /**
      * @return vrátí nejčastěji udělovanou pokutu v zápasech
      */
-    public String getTheMostCommonFineInAllMatches() {
+    String getTheMostCommonFineInAllMatches() {
         List<Fine> returnFines = new ArrayList<>();
         int maximumFines = 0;
         for (Fine fine : fines) {
@@ -1066,7 +1060,7 @@ public class RandomFact {
     /**
      * @return vrátí nejvýdělečnější pokutu v zápasech
      */
-    public String getTheMostProfitableFineInAllMatches() {
+    String getTheMostProfitableFineInAllMatches() {
         List<Fine> returnFines = new ArrayList<>();
         int maximumFines = 0;
         for (Fine fine : fines) {
@@ -1106,7 +1100,7 @@ public class RandomFact {
         }
     }
 
-    public String getMatchWithBirthday() {
+    String getMatchWithBirthday() {
         Date date = new Date();
         List<Match> matchesWithBirthday = new ArrayList<>();
         List<Player> playersWithBirthday = new ArrayList<>();
