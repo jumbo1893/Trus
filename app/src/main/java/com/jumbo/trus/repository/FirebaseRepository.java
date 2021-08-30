@@ -232,8 +232,7 @@ public class FirebaseRepository {
     public void loadNotificationsFromRepository() {
         modelsDataSet = new ArrayList<>();
         CollectionReference crNotification = db.collection("notification");
-        //crNotification.orderBy("timestamp", Query.Direction.DESCENDING).limit(10);
-        crNotification.orderBy("timestamp", Query.Direction.DESCENDING).limit(10).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        crNotification.orderBy("timestamp", Query.Direction.DESCENDING).limit(50).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error != null) {

@@ -1,11 +1,15 @@
 package com.jumbo.trus;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarItemView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.notification.NotificationViewModel;
 import com.jumbo.trus.playerlist.MatchListFragment;
@@ -36,6 +40,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Objects;
 
 
 public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
@@ -45,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     private ViewPager viewPager;
     private BottomNavigationView navigation;
     private NotificationViewModel notificationViewModel;
-    private BottomNavigationItemView itemView;
+    private BadgeDrawable notificationBadge;
     private boolean firstInit = true;
 
     private Notification lastReadNotification;
@@ -53,11 +58,10 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     private int notificationsUnread;
 
     private User user;
+    private SharedPreferences pref;
 
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
+    private NavigationBarView.OnItemSelectedListener onItemSelectedListener = new NavigationBarView.OnItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
@@ -81,26 +85,22 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 case R.id.nav_notification:
                     viewPager.setCurrentItem(3);
                     setTitle("Notifikace");
-                    if (notificationsUnread > 0) {
-                        removeBadge();
-                        notificationsUnread = 0;
-                    }
-                    lastReadNotification = lastNotification;
-                    //badge.setVisibility(View.GONE);
+                    notificationBadge.clearNumber();
+                    notificationsUnread = 0;
+                    setLastReadNotification(lastNotification);
                     Log.d(TAG, "Přepnuto na navigaci notifikací");
                     return true;
             }
             return false;
         }
-
     };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         user = (User) getIntent().getSerializableExtra("user");
         Log.d(TAG, "onCreate: přihlásil se user " + user);
+        pref = getSharedPreferences("Notification", MODE_PRIVATE);
         setContentView(R.layout.activity_main);
         MainActivityViewModel model = new ViewModelProvider(this).get(MainActivityViewModel.class);
         model.init();
@@ -108,8 +108,10 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         viewPager = findViewById(R.id.viewpager);
         setupViewPager(viewPager);
         navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        initNotificationBadge();
+        navigation.setOnItemSelectedListener(onItemSelectedListener);
+        notificationBadge = navigation.getOrCreateBadge(navigation.getMenu().getItem(4).getItemId());
+        notificationBadge.setVisible(true);
+        notificationBadge.setMaxCharacterCount(2);
         notificationViewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
         notificationViewModel.init();
         notificationViewModel.getNotifications().observe(this, new Observer<List<Notification>>() {
@@ -118,26 +120,26 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 Log.d(TAG, "onChanged: nacetly se notifikace " + notifications);
                 lastNotification = notifications.get(0); //uložíme první načtenou modifikaci
                 if (firstInit) {
-                    Log.d(TAG, "firstinit: ");
-                    lastReadNotification = lastNotification; //první modifikaci označíme při startu jako poslední přečtenou - od této počítáme
-                    firstInit = false;
-                }
-                notificationsUnread = 0;
-                for (Notification notification : notifications) {
-                    if (!notification.equals(lastReadNotification)) {
-                        notificationsUnread++;
+                    if (!findLastLastReadNotificationFromPref()) { //první notifikaci najdeme ze sharedpref
+                        notificationBadge.setNumber(10);
                     }
                     else {
-                        break;
+                        findNumberOfLastReadNotification();
                     }
+                    firstInit = false;
                 }
-                if (notificationsUnread == 1) {
-                    showBadge(notificationsUnread); //to znamená, že se badge předtím odebíral nebo ještě nebyl načten
+                else {
+                    findNumberOfLastReadNotification();
                 }
-                else if (notificationsUnread > 1) { //musíme předtím odebrat aby nebyl 2x
-                    showBadge(notificationsUnread);
-                    removeBadge();
+                if (notificationsUnread == 0) {
+                    notificationBadge.clearNumber();
                 }
+                else {
+                    Log.d(TAG, "onChanged: tady by se mělo změnit číslo na " + notificationsUnread);
+                    notificationBadge.setNumber(notificationsUnread);
+                    //notificationBadge.
+                }
+                Log.d(TAG, "onChanged: notificationsUnread" + notificationsUnread);
             }
 
         });
@@ -227,25 +229,46 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         popup.show();
     }
 
-    private void initNotificationBadge() {
-        BottomNavigationMenuView bottomNavigationMenuView = (BottomNavigationMenuView) navigation.getChildAt(0);
-        View v = bottomNavigationMenuView.getChildAt(4);
-        itemView = (BottomNavigationItemView) v;
+    private void setLastReadNotification(Notification notification) {
+        Log.d(TAG, "setLastReadNotification: " + notification);
+        lastReadNotification = notification;
+        pref.edit().putString("lastReadNotification", notification.getId()).apply();
     }
-    private void showBadge(int numberUnread) {
-        View badge = LayoutInflater.from(this).inflate(R.layout.notification_badge, itemView, true);
-        TextView textView = badge.findViewById(R.id.notificationsbbadge);
-        if (numberUnread > 8) {
-            textView.setText("9+");
-        }
-        else {
-            textView.setText(" " + numberUnread + " ");
+
+    private void findNumberOfLastReadNotification() {
+        notificationsUnread = 0;
+        Log.d(TAG, "findNumberOfLastReadNotification: " + notificationViewModel.getNotifications().getValue());
+        for (Notification notification : Objects.requireNonNull(notificationViewModel.getNotifications().getValue())) {
+            Log.d(TAG, "findNumberOfLastReadNotification: " + notification.getUser().getId() + " " + user.getId());
+            if (!notification.equals(lastReadNotification)) {
+                if (!notification.getUser().equals(user)) {
+                    Log.d(TAG, "findNumberOfLastReadNotification: " + notification);
+                    notificationsUnread++;
+                }
+            }
+            else {
+                Log.d(TAG, "findNumberOfLastReadNotification: " + notificationsUnread);
+                break;
+            }
         }
     }
 
-    public void removeBadge() {
-        itemView.removeViewAt(itemView.getChildCount()-1);
-
+    private boolean findLastLastReadNotificationFromPref() {
+        Log.d(TAG, "findLastLastReadNotificationFromPref: seznam" + notificationViewModel.getNotifications().getValue());
+        String id = pref.getString("lastReadNotification", "id");
+        Log.d(TAG, "findLastLastReadNotificationFromPref: id" + id);
+        for (Notification notification : Objects.requireNonNull(notificationViewModel.getNotifications().getValue())) {
+            if (notification.getId().equals(id)) {
+                Log.d(TAG, "findLastLastReadNotificationFromPref: " + notification);
+                lastReadNotification = notification;
+                return true;
+            }
+        }
+        if (id.equals("id")) { //pro první přihlášení nějakého usera co ještě nemá nastavenou notifikaci v shared preferences
+            setLastReadNotification(lastNotification);
+        }
+        Log.d(TAG, "findLastLastReadNotificationFromPref: return false" );
+        return false;
     }
 
     @Override
