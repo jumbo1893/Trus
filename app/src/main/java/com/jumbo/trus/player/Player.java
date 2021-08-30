@@ -7,6 +7,7 @@ import com.jumbo.trus.Model;
 import com.jumbo.trus.fine.Fine;
 import com.jumbo.trus.fine.ReceivedFine;
 import com.jumbo.trus.match.Match;
+import com.jumbo.trus.repayment.Repayment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ public class Player extends Model {
     private int amountOfFinesInMatches;
     private List<ReceivedFine> receivedFines = new ArrayList<>();
     private boolean matchParticipant;
+    private List<Repayment> repayments;
 
     private Date date = new Date();
 
@@ -125,6 +127,23 @@ public class Player extends Model {
 
     public void setReceivedFines(List<ReceivedFine> receivedFines) {
         this.receivedFines = receivedFines;
+    }
+
+    public List<Repayment> getRepayments() {
+        return repayments;
+    }
+
+    public void setRepayments(List<Repayment> repayments) {
+        this.repayments = repayments;
+    }
+
+    public int getAmountOwed(List<Match> matchList) {
+        calculateAllFinesNumber(matchList);
+        int repaymentsAmount = 0;
+        for (Repayment repayment : repayments) {
+            repaymentsAmount += repayment.getAmount();
+        }
+        return (getAmountOfFinesInMatches() - repaymentsAmount);
     }
 
     public void addNewFine(Fine fine) {
