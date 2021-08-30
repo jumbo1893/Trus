@@ -25,7 +25,7 @@ public class Player extends Model {
     private int amountOfFinesInMatches;
     private List<ReceivedFine> receivedFines = new ArrayList<>();
     private boolean matchParticipant;
-    private List<Repayment> repayments;
+    private List<Repayment> repayments = new ArrayList<>();
 
     private Date date = new Date();
 
@@ -137,8 +137,8 @@ public class Player extends Model {
         this.repayments = repayments;
     }
 
-    public int getAmountOwed(List<Match> matchList) {
-        calculateAllFinesNumber(matchList);
+    public int getAmountOwed() {
+        repayments.size();
         int repaymentsAmount = 0;
         for (Repayment repayment : repayments) {
             repaymentsAmount += repayment.getAmount();

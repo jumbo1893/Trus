@@ -1,6 +1,11 @@
 package com.jumbo.trus.repayment;
 
-public class Repayment {
+import com.jumbo.trus.Date;
+import com.jumbo.trus.Model;
+
+import java.util.Objects;
+
+public class Repayment extends Model {
 
     private int amount;
     private long timestamp;
@@ -42,5 +47,26 @@ public class Repayment {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public String getDateOfTimestampInStringFormat() {
+        Date date = new Date();
+        return date.convertMillisToTextDate(timestamp);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Repayment)) return false;
+        if (!super.equals(o)) return false;
+        Repayment repayment = (Repayment) o;
+        return amount == repayment.amount &&
+                timestamp == repayment.timestamp &&
+                Objects.equals(note, repayment.note);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), amount, timestamp, note);
     }
 }

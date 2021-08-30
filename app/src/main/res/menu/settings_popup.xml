@@ -9,4 +9,7 @@
     <item
         android:id="@+id/user"
         android:title="Nastavení uživatele"/>
+    <item
+        android:id="@+id/owed"
+        android:title="Srovnání dluhů hráčů"/>
 </menu>

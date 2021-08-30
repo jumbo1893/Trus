@@ -18,6 +18,7 @@ import com.jumbo.trus.home.HomeFragment;
 import com.jumbo.trus.match.MatchFragment;
 import com.jumbo.trus.notification.NotificationFragment;
 import com.jumbo.trus.player.PlayerFragment;
+import com.jumbo.trus.repayment.RepaymentFragment;
 import com.jumbo.trus.season.SeasonsFragment;
 import com.jumbo.trus.statistics.BeerStatisticsFragment;
 import com.jumbo.trus.statistics.FineStatisticsFragment;
@@ -202,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         adapter.addFragment(new BeerStatisticsFragment());
         adapter.addFragment(new FineStatisticsFragment());
         adapter.addFragment(new UserInteractionFragment());
+        adapter.addFragment(new RepaymentFragment());
         viewPager.setAdapter(adapter);
     }
 
@@ -310,6 +312,10 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             case R.id.user:
                 setTitle("Nastavení uživatele");
                 viewPager.setCurrentItem(10);
+                return true;
+            case R.id.owed:
+                setTitle("Srovnání dluhů hráčů");
+                viewPager.setCurrentItem(11);
                 return true;
             default:
                 return false;
