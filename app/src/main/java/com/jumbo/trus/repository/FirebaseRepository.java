@@ -113,7 +113,7 @@ public class FirebaseRepository {
     public void loadSeasonsFromRepository() {
         modelsDataSet = new ArrayList<>();
         CollectionReference collectionReference1 = db.collection("season");
-        collectionReference1.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        collectionReference1.orderBy("seasonStart", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error != null) {
@@ -137,7 +137,7 @@ public class FirebaseRepository {
     public void loadFinesFromRepository() {
         modelsDataSet = new ArrayList<>();
         CollectionReference collectionReference1 = db.collection("fine");
-        collectionReference1.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        collectionReference1.orderBy("name", Query.Direction.ASCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error != null) {
@@ -161,7 +161,7 @@ public class FirebaseRepository {
     public void loadPlayersFromRepository() {
         modelsDataSet = new ArrayList<>();
         CollectionReference collectionReference = db.collection("player");
-        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        collectionReference.orderBy("name", Query.Direction.ASCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error != null) {
@@ -184,7 +184,7 @@ public class FirebaseRepository {
     public void loadMatchesFromRepository() {
         modelsDataSet = new ArrayList<>();
         CollectionReference collectionReference = db.collection("match");
-        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        collectionReference.orderBy("dateOfMatch", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error != null) {
