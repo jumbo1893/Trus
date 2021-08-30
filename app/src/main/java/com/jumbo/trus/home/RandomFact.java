@@ -1021,12 +1021,12 @@ class RandomFact {
         List<Fine> returnFines = new ArrayList<>();
         int maximumFines = 0;
         for (Fine fine : fines) {
-            if (fine.returnNumberOfFineInMatches(matches) > maximumFines) {
+            if (!fine.isForNonPlayers() && fine.returnNumberOfFineInMatches(matches) > maximumFines) {
                 returnFines.clear();
                 returnFines.add(fine);
                 maximumFines = fine.returnNumberOfFineInMatches(matches);
             }
-            else if (fine.returnNumberOfFineInMatches(matches) == maximumFines) {
+            else if (!fine.isForNonPlayers() && fine.returnNumberOfFineInMatches(matches) == maximumFines) {
                 returnFines.add(fine);
             }
         }
@@ -1078,7 +1078,7 @@ class RandomFact {
             return "Nelze zobrazit nejvýdělečnější pokutu, protože nikdo zatim žádnou nedostal?!";
         }
         else if (returnFines.size() == 1) {
-            return "Zatím nejvýdělečnější pokuta byla " + returnFines.get(0).getName() + ", na které se vybralo již" +
+            return "Zatím nejvýdělečnější pokuta byla " + returnFines.get(0).getName() + ", na které se vybralo již " +
                     maximumFines + " Kč, tedy průměrně " + average + " Kč v každém zápase";
 
         }
