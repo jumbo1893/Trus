@@ -36,7 +36,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         btn_reload.setOnClickListener(this);
         btn_logout.setOnClickListener(this);
         btn_facts.setOnClickListener(this);
-        homeViewModel = new ViewModelProvider(getActivity()).get(HomeViewModel.class);
+        homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         homeViewModel.init();
         Log.d(TAG, "onCreateView: ");
         homeViewModel.setRandomFact();
