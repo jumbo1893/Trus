@@ -13,10 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.jumbo.trus.Flag;
 import com.jumbo.trus.R;
-import com.jumbo.trus.match.MatchDialog;
-import com.jumbo.trus.match.MatchFragment;
 import com.jumbo.trus.user.LoginActivity;
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
@@ -30,7 +27,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         tv_oslavenec = view.findViewById(R.id.tv_oslavenec);
         tv_random = view.findViewById(R.id.tv_random);
@@ -81,7 +77,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 homeViewModel.setRandomFacts();
                 Log.d(TAG, "onClick: " + homeViewModel.getRandomFacts().size());
                 FactDialog factDialog = new FactDialog(homeViewModel.getRandomFacts());
-                factDialog.setTargetFragment(HomeFragment.this, 1);
                 factDialog.show(getParentFragmentManager(), "dialog");
         }
     }
