@@ -138,7 +138,6 @@ public class Player extends Model {
     }
 
     public int getAmountOwed() {
-        repayments.size();
         int repaymentsAmount = 0;
         for (Repayment repayment : repayments) {
             repaymentsAmount += repayment.getAmount();
