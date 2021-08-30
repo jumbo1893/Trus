@@ -39,6 +39,7 @@ public class RepaymentFragment extends CustomUserFragment implements OnListListe
 
     private static final String TAG = "RepaymentFragment";
 
+    private FloatingActionButton fab_plus;
     private RecyclerView rc_hraci;
     private PlayerRepaymentRecycleViewAdapter adapter;
     private ProgressBar progress_bar;
@@ -50,6 +51,8 @@ public class RepaymentFragment extends CustomUserFragment implements OnListListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_player, container, false);
+        fab_plus = view.findViewById(R.id.fab_plus);
+        fab_plus.setVisibility(View.GONE);
         rc_hraci = view.findViewById(R.id.rc_hraci);
         rc_hraci.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         progress_bar = view.findViewById(R.id.progress_bar);
