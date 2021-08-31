@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -115,13 +116,19 @@ public class BeerDialog extends Dialog implements OnPlusButtonListener, OnLineFi
             }
             public void onSwipeBottom() {
                 Log.d(TAG, "onSwipeBottom: ");
+                if (player.getNumberOfBeers() < BeerLayout.BEER_LIMIT) {
                 btn_back.setVisibility(View.GONE);
                 btn_forward.setVisibility(View.GONE);
-                if (lineDrawed) {
-                    lineDrawed = false;
-                    player.addBeer();
-                    beer_layout.addBeer(player);
+                    if (lineDrawed) {
+                        lineDrawed = false;
+                        player.addBeer();
+                        beer_layout.addBeer(player);
+                    }
                 }
+                else {
+                    Toast.makeText(getActivity(), "Víc jak " + BeerLayout.BEER_LIMIT + " se nedá zadat, tolik si stejně neměl", Toast.LENGTH_SHORT).show();
+                }
+
             }
 
         });

@@ -21,6 +21,7 @@ import java.util.Random;
 public class BeerLayout extends View {
 
     private static final String TAG = "BeerLayout";
+    public static final int BEER_LIMIT = 30;
 
     private Paint paint;
     private int x1;
@@ -151,8 +152,9 @@ public class BeerLayout extends View {
     private void divideLineIntoEqualParts() {
 
         listOfPoints.clear();
-        for (int k = 1; k <= 50; k++) {
-            listOfPoints.add(new PointF(x1 + ((k * (x2 - x1)) / 50),y1 + (k * (y2 - y1)) / 50));
+        int pixelsNumber = 30;
+        for (int k = 1; k <= pixelsNumber; k++) {
+            listOfPoints.add(new PointF(x1 + ((k * (x2 - x1)) / pixelsNumber),y1 + (k * (y2 - y1)) / pixelsNumber));
         }
 
         Log.d("listOfPoints : size : ",listOfPoints.size()+", x1: " + x1);
