@@ -49,8 +49,8 @@ public class FineViewModel extends ViewModel implements ChangeListener, INotific
         else if (!validator.checkNameFormat(name)) {
             response = "Tu pokutu bez píčovin";
         }
-        else if (!validator.fieldIsNotEmpty(String.valueOf(amount))) {
-            response = "Není vyplněná částka";
+        else if (amount == 0) {
+            response = "Nelze zadat nulová částka";
         }
         else if (!validator.checkAmount(amount)) {
             response = "Buď si napsal do částky nesmysly nebo je moc vysoká";

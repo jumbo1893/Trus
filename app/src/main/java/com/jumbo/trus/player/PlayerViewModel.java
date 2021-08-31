@@ -15,6 +15,7 @@ import com.jumbo.trus.Result;
 import com.jumbo.trus.Validator;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.notification.Notification;
+import com.jumbo.trus.repayment.Repayment;
 import com.jumbo.trus.user.User;
 import com.jumbo.trus.repository.FirebaseRepository;
 
@@ -122,6 +123,66 @@ public class PlayerViewModel extends ViewModel implements ChangeListener, INotif
         result.setText("Mažu hráče " + player.getName());
         result.setTrue(true);
         return result;
+    }
+
+    public boolean editPlayerRepaymentsInRepository(final int amount, final String note, Player player) {
+        isUpdating.setValue(true);
+        if (!checkNewRepayment(amount, note)) {
+            isUpdating.setValue(false);
+            return false;
+        }
+        Date date = new Date();
+        try {
+            long millis = date.getCurrentDateInMillis();
+            Repayment repayment = new Repayment(amount, millis, note);
+            player.addRepayment(repayment);
+            firebaseRepository.editModel(player);
+        }
+        catch (Exception e) {
+            alert.setValue("Chyba při komunikaci s db, zkus to znova " + player.getName());
+            Log.e(TAG, "addPlayerToRepository: toto by nemělo nastat, ošetřeno validací", e);
+            isUpdating.setValue(false);
+            return false;
+        }
+
+        alert.setValue("Přidávám transakci hráči " + player.getName());
+        isUpdating.setValue(false);
+        return true;
+    }
+
+    public boolean removePlayerRepaymentsInRepository(Repayment repayment, Player player) {
+        isUpdating.setValue(true);
+        try {
+            player.removeRepayment(repayment);
+            firebaseRepository.editModel(player);
+        }
+        catch (Exception e) {
+            alert.setValue("Chyba při komunikaci s db, zkus to znova " + player.getName());
+            Log.e(TAG, "addPlayerToRepository: toto by nemělo nastat, ošetřeno validací", e);
+            isUpdating.setValue(false);
+            return false;
+        }
+
+        alert.setValue("Odebírám transakci hráči " + player.getName());
+        isUpdating.setValue(false);
+        return true;
+    }
+
+    private boolean checkNewRepayment(int amount, String note) {
+        Validator validator = new Validator();
+        if (!validator.checkAmount(amount)) {
+            alert.setValue("Buď si napsal do částky nesmysly nebo je moc vysoká");
+            return false;
+        }
+        else if (amount == 0) {
+            alert.setValue("Nelze zadat nulová částka");
+            return false;
+        }
+        else if (!validator.checkNameFormat(note)) {
+            alert.setValue("Poznámku do 100 znaků, dík šéfe");
+            return false;
+        }
+        return true;
     }
 
     private void setPlayerAsAdded (final Player player, Flag flag) {

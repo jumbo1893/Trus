@@ -66,9 +66,7 @@ public class RepaymentFragment extends CustomUserFragment implements OnListListe
             public void onChanged(List<Player> hraci) {
                 Log.d(TAG, "onChanged: nacetli se hraci " + hraci);
                 filterPlayers(hraci);
-                if (adapter == null) {
-                    initHracRecycleView();
-                }
+                initHracRecycleView();
                 if (matchViewModel.getMatches().getValue() != null) {
                     enhancePlayers(matchViewModel.getMatches().getValue());
                 }
@@ -83,6 +81,7 @@ public class RepaymentFragment extends CustomUserFragment implements OnListListe
                 if (selectedPlayers != null) {
                     enhancePlayers(matches);
                 }
+                initHracRecycleView();
                 setAdapter();
                 adapter.notifyDataSetChanged(); //TODO notifyItemInserted
             }
@@ -111,6 +110,7 @@ public class RepaymentFragment extends CustomUserFragment implements OnListListe
     }
 
     private void initHracRecycleView() {
+        Log.d(TAG, "initHracRecycleView: ");
         adapter = new PlayerRepaymentRecycleViewAdapter(selectedPlayers, getActivity(), this);
     }
 
@@ -137,6 +137,7 @@ public class RepaymentFragment extends CustomUserFragment implements OnListListe
     }
 
     private void enhancePlayers(List<Match> matches) {
+        Log.d(TAG, "enhancePlayers: ");
         for (Player player : selectedPlayers) {
             player.calculateAllFinesNumber(matches);
         }
@@ -144,25 +145,29 @@ public class RepaymentFragment extends CustomUserFragment implements OnListListe
 
     @Override
     public void onItemClick(int position) {
-        Log.d(TAG, "onHracClick: kliknuto na pozici " + position + ", object: " + playerViewModel.getPlayers().getValue());
-        PlayerDialog playerDialog = new PlayerDialog(Flag.PLAYER_EDIT, playerViewModel.getPlayers().getValue().get(position));
-        playerDialog.setTargetFragment(RepaymentFragment.this, 1);
-        playerDialog.show(getParentFragmentManager(), "dialogplus");
+        Log.d(TAG, "onItemClick: kliknuto na pozici " + position + ", object: " + playerViewModel.getPlayers().getValue());
+        RepaymentDialog repaymentDialog = new RepaymentDialog(playerViewModel.getPlayers().getValue().get(position));
+        repaymentDialog.setTargetFragment(RepaymentFragment.this, 1);
+        repaymentDialog.show(getParentFragmentManager(), "dialogplus");
     }
 
     @Override
-    public boolean createNewRepayment(int amount, String note) {
+    public boolean createNewRepayment(int amount, String note, Player player) {
+        if (playerViewModel.editPlayerRepaymentsInRepository(amount, note, player)) {
+            String text = "Částka: " + amount + " Kč " + (!note.isEmpty() ? ", poznámka: " + note : "");
+            createNotification(new Notification("Přidána platba u hráče " + player.getName(), text), playerViewModel);
+            return true;
+        }
         return false;
     }
 
     @Override
-    public boolean deleteModel(Model model) {
-        Result removePlayerFromRepositoryResult = playerViewModel.removePlayerFromRepository((Player) model);
-        Toast.makeText(getActivity(), removePlayerFromRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
-        if (removePlayerFromRepositoryResult.isTrue()) {
-            String text = " narozen " + ((Player) model).getBirthdayInStringFormat();
-            createNotification(new Notification("Smazán " + (((Player) model).isFan() ? "fanoušek " : "hráč" ) + model.getName(), text), playerViewModel);
+    public boolean deleteRepayment(Repayment repayment, Player player) {
+        if (playerViewModel.removePlayerRepaymentsInRepository(repayment, player)) {
+            String text = "Částka: " + repayment.getAmount() + " Kč " + (!repayment.getNote().isEmpty() ? ", poznámka: " + repayment.getNote() : "");
+            createNotification(new Notification("Smazána platba u hráče " + player.getName(), text), playerViewModel);
+            return true;
         }
-        return removePlayerFromRepositoryResult.isTrue();
+        return false;
     }
 }

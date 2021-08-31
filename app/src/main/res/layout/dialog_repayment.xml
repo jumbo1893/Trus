@@ -20,15 +20,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rc_players"
+    <EditText
+        android:id="@+id/et_amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constrainedHeight="true"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title"
-        app:layout_constraintBottom_toTopOf="@+id/btn_commit" />
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:hint="částka"
+        android:inputType="number"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title"/>
 
+    <EditText
+        android:id="@+id/et_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:hint="poznámka"
+        android:inputType="text"
+        app:layout_constraintTop_toBottomOf="@+id/et_amount"/>
 
     <Button
         android:id="@+id/btn_commit"
@@ -37,8 +47,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:textColor="@color/zluta"
         style="?android:attr/borderlessButtonStyle"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:text="ok" />
+        app:layout_constraintTop_toBottomOf="@+id/et_note"
+        android:text="přidat splátku" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rc_players"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintTop_toBottomOf="@+id/btn_commit"
+        app:layout_constraintBottom_toTopOf="@+id/btn_cancel" />
+
 
     <Button
         android:id="@+id/btn_cancel"
@@ -47,7 +67,7 @@
         android:text="zavřít"
         android:textColor="@color/zluta"
         style="?android:attr/borderlessButtonStyle"
-        app:layout_constraintTop_toTopOf="@+id/btn_commit"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

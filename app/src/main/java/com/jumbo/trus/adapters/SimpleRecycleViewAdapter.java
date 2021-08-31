@@ -18,6 +18,7 @@ import com.jumbo.trus.fine.Fine;
 import com.jumbo.trus.fine.ReceivedFine;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.player.Player;
+import com.jumbo.trus.repayment.Repayment;
 
 import java.util.List;
 
@@ -68,6 +69,11 @@ public class SimpleRecycleViewAdapter extends RecyclerView.Adapter<SimpleRecycle
         else if (models.get(position) instanceof Fine) {
             holder.tv_title.setText(models.get(position).getName());
             holder.tv_text.setText("Pokuta ve výši: " + ((Fine) models.get(position)).getAmount() + " Kč");
+
+        }
+        else if (models.get(position) instanceof Repayment) {
+            holder.tv_title.setText("Uhrazená částka: " + ((Repayment) models.get(position)).getAmount() + " Kč");
+            holder.tv_text.setText("dne: " + ((Repayment) models.get(position)).getDateOfTimestampInStringFormat() + "\n" + ((Repayment) models.get(position)).getNote());
 
         }
         else {

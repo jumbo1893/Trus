@@ -137,6 +137,14 @@ public class Player extends Model {
         this.repayments = repayments;
     }
 
+    public void addRepayment(Repayment repayment) {
+        repayments.add(repayment);
+    }
+
+    public boolean removeRepayment(Repayment repayment) {
+        return repayments.remove(repayment);
+    }
+
     public int getAmountOwed() {
         int repaymentsAmount = 0;
         for (Repayment repayment : repayments) {
