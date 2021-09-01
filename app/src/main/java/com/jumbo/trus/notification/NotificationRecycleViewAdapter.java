@@ -1,8 +1,6 @@
 package com.jumbo.trus.notification;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +15,6 @@ import com.jumbo.trus.OnListListener;
 import com.jumbo.trus.R;
 
 import java.util.List;
-import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 

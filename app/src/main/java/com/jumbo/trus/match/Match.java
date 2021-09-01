@@ -1,13 +1,11 @@
 package com.jumbo.trus.match;
 
-import android.util.Log;
-
 import com.jumbo.trus.Date;
+import com.jumbo.trus.Model;
 import com.jumbo.trus.fine.Fine;
 import com.jumbo.trus.fine.ReceivedFine;
-import com.jumbo.trus.season.Season;
-import com.jumbo.trus.Model;
 import com.jumbo.trus.player.Player;
+import com.jumbo.trus.season.Season;
 
 import java.util.ArrayList;
 import java.util.List;

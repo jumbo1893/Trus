@@ -5,8 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -14,9 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jumbo.trus.OnListListener;
-import com.jumbo.trus.OnPlusButtonListener;
 import com.jumbo.trus.R;
-import com.jumbo.trus.fine.ReceivedFine;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.player.Player;
 

@@ -14,7 +14,6 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.Toast;
 
-
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -23,9 +22,7 @@ import com.jumbo.trus.CustomUserFragment;
 import com.jumbo.trus.MainActivityViewModel;
 import com.jumbo.trus.R;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.Objects;
 
 
 public class UserInteractionFragment extends CustomUserFragment implements View.OnClickListener, TextWatcher {

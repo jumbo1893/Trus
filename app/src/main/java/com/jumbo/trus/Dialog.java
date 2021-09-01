@@ -10,7 +10,6 @@ import android.widget.EditText;
 
 import androidx.fragment.app.DialogFragment;
 
-
 import java.util.Calendar;
 
 public abstract class Dialog extends DialogFragment implements View.OnClickListener {

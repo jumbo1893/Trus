@@ -1,11 +1,11 @@
 package com.jumbo.trus.user;
 
+import android.graphics.Color;
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-
-import android.graphics.Color;
-import android.util.Log;
 
 import com.jumbo.trus.ChangeListener;
 import com.jumbo.trus.Flag;

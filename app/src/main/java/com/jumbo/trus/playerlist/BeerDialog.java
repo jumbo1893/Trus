@@ -1,7 +1,6 @@
 package com.jumbo.trus.playerlist;
 
 
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -11,22 +10,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.jumbo.trus.INotificationSender;
-import com.jumbo.trus.comparator.OrderByBeerNonplayerLast;
-import com.jumbo.trus.layout.BeerLayout;
 import com.jumbo.trus.Dialog;
 import com.jumbo.trus.Flag;
+import com.jumbo.trus.INotificationSender;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.OnPlusButtonListener;
 import com.jumbo.trus.OnSwipeTouchListener;
 import com.jumbo.trus.R;
+import com.jumbo.trus.comparator.OrderByBeerNonplayerLast;
+import com.jumbo.trus.layout.BeerLayout;
 import com.jumbo.trus.layout.OnLineFinishedListener;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.notification.Notification;

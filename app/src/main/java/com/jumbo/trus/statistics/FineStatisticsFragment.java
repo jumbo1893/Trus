@@ -27,8 +27,6 @@ import com.jumbo.trus.OnListListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.SimpleDividerItemDecoration;
 import com.jumbo.trus.adapters.FineStatisticsRecycleViewAdapter;
-import com.jumbo.trus.adapters.FinesRecycleViewAdapter;
-import com.jumbo.trus.comparator.OrderByBeerNumber;
 import com.jumbo.trus.comparator.OrderByFineAmount;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.match.MatchViewModel;

@@ -2,7 +2,6 @@ package com.jumbo.trus.player;
 
 import android.util.Log;
 
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -11,12 +10,11 @@ import com.jumbo.trus.ChangeListener;
 import com.jumbo.trus.Date;
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.INotificationSender;
+import com.jumbo.trus.Model;
 import com.jumbo.trus.Result;
 import com.jumbo.trus.Validator;
-import com.jumbo.trus.Model;
 import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.repayment.Repayment;
-import com.jumbo.trus.user.User;
 import com.jumbo.trus.repository.FirebaseRepository;
 
 import java.time.DateTimeException;

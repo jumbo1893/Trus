@@ -19,14 +19,14 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.jumbo.trus.ChangeListener;
 import com.jumbo.trus.Flag;
+import com.jumbo.trus.Model;
 import com.jumbo.trus.NotificationListener;
-import com.jumbo.trus.user.User;
 import com.jumbo.trus.fine.Fine;
 import com.jumbo.trus.match.Match;
-import com.jumbo.trus.player.Player;
-import com.jumbo.trus.Model;
 import com.jumbo.trus.notification.Notification;
+import com.jumbo.trus.player.Player;
 import com.jumbo.trus.season.Season;
+import com.jumbo.trus.user.User;
 
 import java.util.ArrayList;
 

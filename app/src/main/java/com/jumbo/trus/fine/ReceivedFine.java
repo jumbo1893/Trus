@@ -1,7 +1,5 @@
 package com.jumbo.trus.fine;
 
-import android.util.Log;
-
 import com.jumbo.trus.Model;
 
 import java.util.Objects;

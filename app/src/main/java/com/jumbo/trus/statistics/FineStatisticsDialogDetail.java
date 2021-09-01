@@ -5,10 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,17 +21,11 @@ import com.jumbo.trus.OnListListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.SimpleDividerItemDecoration;
 import com.jumbo.trus.adapters.FinesPlayerNumberRecycleViewAdapter;
-import com.jumbo.trus.adapters.FinesStatsPlayerRecycleViewAdapter;
 import com.jumbo.trus.adapters.SimpleRecycleViewAdapter;
 import com.jumbo.trus.fine.ReceivedFine;
 import com.jumbo.trus.match.Match;
-import com.jumbo.trus.match.MatchViewModel;
 import com.jumbo.trus.player.Player;
-import com.jumbo.trus.player.PlayerViewModel;
-import com.jumbo.trus.season.Season;
-import com.jumbo.trus.season.SeasonsViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FineStatisticsDialogDetail extends Dialog implements OnListListener {

@@ -15,12 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jumbo.trus.OnPlusButtonListener;
 import com.jumbo.trus.R;
-import com.jumbo.trus.fine.Fine;
 import com.jumbo.trus.fine.ReceivedFine;
-import com.jumbo.trus.player.Player;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 public class FinesRecycleViewAdapter extends RecyclerView.Adapter<FinesRecycleViewAdapter.ViewHolder> {

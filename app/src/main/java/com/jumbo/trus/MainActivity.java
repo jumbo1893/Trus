@@ -1,44 +1,37 @@
 package com.jumbo.trus;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.PopupMenu;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.badge.BadgeDrawable;
-import com.google.android.material.bottomnavigation.BottomNavigationItemView;
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarItemView;
 import com.google.android.material.navigation.NavigationBarView;
-import com.jumbo.trus.notification.Notification;
-import com.jumbo.trus.notification.NotificationViewModel;
-import com.jumbo.trus.playerlist.MatchListFragment;
 import com.jumbo.trus.fine.FineFragment;
 import com.jumbo.trus.home.HomeFragment;
 import com.jumbo.trus.match.MatchFragment;
+import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.notification.NotificationFragment;
+import com.jumbo.trus.notification.NotificationViewModel;
 import com.jumbo.trus.player.PlayerFragment;
+import com.jumbo.trus.playerlist.MatchListFragment;
 import com.jumbo.trus.repayment.RepaymentFragment;
 import com.jumbo.trus.season.SeasonsFragment;
 import com.jumbo.trus.statistics.BeerStatisticsFragment;
 import com.jumbo.trus.statistics.FineStatisticsFragment;
 import com.jumbo.trus.user.User;
 import com.jumbo.trus.user.UserInteractionFragment;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.PopupMenu;
-import android.widget.TextView;
 
 import java.util.List;
 import java.util.Objects;

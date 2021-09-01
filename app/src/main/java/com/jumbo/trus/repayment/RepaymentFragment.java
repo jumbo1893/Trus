@@ -16,20 +16,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jumbo.trus.CustomUserFragment;
-import com.jumbo.trus.Flag;
-import com.jumbo.trus.Model;
 import com.jumbo.trus.OnListListener;
 import com.jumbo.trus.R;
-import com.jumbo.trus.Result;
 import com.jumbo.trus.SimpleDividerItemDecoration;
 import com.jumbo.trus.adapters.PlayerRepaymentRecycleViewAdapter;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.match.MatchViewModel;
 import com.jumbo.trus.notification.Notification;
-import com.jumbo.trus.player.IPlayerFragment;
 import com.jumbo.trus.player.Player;
-import com.jumbo.trus.player.PlayerDialog;
-import com.jumbo.trus.player.PlayerRecycleViewAdapter;
 import com.jumbo.trus.player.PlayerViewModel;
 
 import java.util.ArrayList;

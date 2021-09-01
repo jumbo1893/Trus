@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.jumbo.trus.OnListListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.fine.ReceivedFine;
-import com.jumbo.trus.match.Match;
 import com.jumbo.trus.player.Player;
 
 import java.util.List;

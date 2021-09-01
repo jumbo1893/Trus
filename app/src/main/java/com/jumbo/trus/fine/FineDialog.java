@@ -19,8 +19,6 @@ import com.jumbo.trus.Dialog;
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.R;
-import com.jumbo.trus.season.ISeasonFragment;
-import com.jumbo.trus.season.Season;
 
 public class FineDialog extends Dialog implements CompoundButton.OnCheckedChangeListener {
 

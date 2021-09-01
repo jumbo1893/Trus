@@ -1,7 +1,5 @@
 package com.jumbo.trus;
 
-import android.os.Parcelable;
-
 import java.io.Serializable;
 import java.util.Objects;
 

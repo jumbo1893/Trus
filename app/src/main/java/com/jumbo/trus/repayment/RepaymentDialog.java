@@ -1,7 +1,6 @@
 package com.jumbo.trus.repayment;
 
 
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -18,32 +17,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.jumbo.trus.Dialog;
-import com.jumbo.trus.INotificationSender;
-import com.jumbo.trus.Model;
 import com.jumbo.trus.OnListListener;
-import com.jumbo.trus.OnPlusButtonListener;
 import com.jumbo.trus.R;
-import com.jumbo.trus.adapters.FinesRecycleViewAdapter;
 import com.jumbo.trus.adapters.SimpleRecycleViewAdapter;
-import com.jumbo.trus.comparator.OrderByNonplayerFine;
-import com.jumbo.trus.fine.Fine;
-import com.jumbo.trus.fine.FineViewModel;
-import com.jumbo.trus.fine.ReceivedFine;
-import com.jumbo.trus.match.Match;
-import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.player.Player;
-import com.jumbo.trus.player.PlayerViewModel;
-import com.jumbo.trus.playerlist.IChangeFineListListener;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class RepaymentDialog extends DialogFragment implements View.OnClickListener, OnListListener {
 

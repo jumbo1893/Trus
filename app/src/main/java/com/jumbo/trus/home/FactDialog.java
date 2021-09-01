@@ -10,22 +10,13 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.jumbo.trus.Flag;
-import com.jumbo.trus.Model;
 import com.jumbo.trus.OnListListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.SimpleDividerItemDecoration;
-import com.jumbo.trus.adapters.FinesPlayerNumberRecycleViewAdapter;
-import com.jumbo.trus.adapters.SimpleRecycleViewAdapter;
 import com.jumbo.trus.adapters.StringRecycleViewAdapter;
-import com.jumbo.trus.fine.ReceivedFine;
-import com.jumbo.trus.match.Match;
-import com.jumbo.trus.player.Player;
-import com.jumbo.trus.statistics.StatisticsViewModel;
 
 import java.util.List;
 

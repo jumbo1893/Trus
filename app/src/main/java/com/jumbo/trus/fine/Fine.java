@@ -1,13 +1,9 @@
 package com.jumbo.trus.fine;
 
-import android.util.Log;
-
-import com.jumbo.trus.Date;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.match.Match;
 
 import java.util.List;
-import java.util.Objects;
 
 public class Fine extends Model {
 

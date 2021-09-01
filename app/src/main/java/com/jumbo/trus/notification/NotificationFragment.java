@@ -21,7 +21,6 @@ import com.jumbo.trus.OnListListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.SimpleDividerItemDecoration;
 
-
 import java.util.List;
 
 public class NotificationFragment extends Fragment implements OnListListener {

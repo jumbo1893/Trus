@@ -19,9 +19,6 @@ import com.jumbo.trus.Flag;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.R;
 
-
-import java.util.Calendar;
-
 public class PlayerDialog extends Dialog {
 
     private static final String TAG = "PlayerDialog";

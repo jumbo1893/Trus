@@ -2,10 +2,10 @@ package com.jumbo.trus.notification;
 
 import com.jumbo.trus.Date;
 import com.jumbo.trus.Model;
-import com.jumbo.trus.user.User;
 import com.jumbo.trus.fine.ReceivedFine;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.player.Player;
+import com.jumbo.trus.user.User;
 
 import java.util.List;
 
