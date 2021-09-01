@@ -32,7 +32,7 @@ public class UserInteractionFragment extends CustomUserFragment implements View.
     private static final String TAG = "UserInteractionFragment";
 
     private EditText et_old_password, et_new_password;
-    private Button btn_password_change;
+    private Button btn_password_change, btn_notification_color_change;
     private Switch sw_change_preferences;
     private ProgressBar progress_bar;
 
@@ -46,9 +46,11 @@ public class UserInteractionFragment extends CustomUserFragment implements View.
         et_old_password = view.findViewById(R.id.et_old_password);
         et_new_password = view.findViewById(R.id.et_new_password);
         btn_password_change = view.findViewById(R.id.btn_password_change);
+        btn_notification_color_change = view.findViewById(R.id.btn_notification_color_change);
         sw_change_preferences = view.findViewById(R.id.sw_change_preferences);
         progress_bar = view.findViewById(R.id.progress_bar);
         btn_password_change.setOnClickListener(this);
+        btn_notification_color_change.setOnClickListener(this);
         loginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
         loginViewModel.init();
         showProgressBar();
@@ -89,7 +91,7 @@ public class UserInteractionFragment extends CustomUserFragment implements View.
             public void onChanged(User user) {
                 Log.d(TAG, "změna hesla " + user);
                 if (sw_change_preferences.isChecked()) {
-                    Objects.requireNonNull(getActivity()).getSharedPreferences("Preferences", Context.MODE_PRIVATE)
+                    requireActivity().getSharedPreferences("Preferences", Context.MODE_PRIVATE)
                             .edit()
                             .putString("password", user.getPassword())
                             .apply();
@@ -132,6 +134,12 @@ public class UserInteractionFragment extends CustomUserFragment implements View.
         switch (v.getId()) {
             case R.id.btn_password_change:
                 loginViewModel.editUserPasswordInRepository(newPassword, oldPassword, user);
+                break;
+            case R.id.btn_notification_color_change:
+                int color = loginViewModel.changeColorOfUserInRepository(user);
+                if (color != 0) {
+                    btn_notification_color_change.setBackgroundColor(color);
+                }
                 break;
         }
     }

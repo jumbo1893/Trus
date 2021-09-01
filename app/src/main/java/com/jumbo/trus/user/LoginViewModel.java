@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import android.graphics.Color;
 import android.util.Log;
 
 import com.jumbo.trus.ChangeListener;
@@ -100,16 +101,31 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             alert.setValue("Chyba při šifrování, soráč");
+            isUpdating.setValue(false);
             return false;
         }
         try {
             firebaseRepository.editModel(user);
         } catch (Exception e) {
             alert.setValue("Nastala nějaká kokotina při ukládání změny hesla do db, tak se na to teď vyser");
+            isUpdating.setValue(false);
             return false;
         }
 
         return true;
+    }
+
+    public int changeColorOfUserInRepository(User user) {
+        isUpdating.setValue(true);
+        user.setRandomCharColor();
+        try {
+            firebaseRepository.editModel(user);
+        } catch (Exception e) {
+            isUpdating.setValue(false);
+            alert.setValue("Nastala nějaká kokotina při změně barvičky v db, tak se na to teď vyser");
+            return 0;
+        }
+        return user.getCharColor();
     }
 
     private boolean checkIfUsernameAlreadyExists(String name) {
@@ -203,7 +219,7 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
                 alert.setValue("Registrace uživatele " + user.getName() + " hotová, můžete se přihlásit");
                 break;
             case USER_EDIT:
-                alert.setValue("Heslo bylo úspěšně změněno");
+                alert.setValue("Upraveny údaje uživatele");
                 action = "Upraveny údaje uživatele";
                 break;
             case USER_DELETE:
@@ -211,7 +227,7 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
                 break;
         }
         if (flag == Flag.USER_PLUS) {
-            Notification newNotification = new Notification(action, new User("admin"));
+            Notification newNotification = new Notification(action, new User("admin", Color.parseColor("#FF8303")));
             sendNotificationToRepository(newNotification);
         }
         isUpdating.setValue(false);
