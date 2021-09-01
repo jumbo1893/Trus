@@ -20,6 +20,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.jumbo.trus.CustomUserFragment;
+import com.jumbo.trus.MainActivityViewModel;
 import com.jumbo.trus.R;
 
 import java.security.NoSuchAlgorithmException;
@@ -54,7 +55,8 @@ public class UserInteractionFragment extends CustomUserFragment implements View.
         loginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
         loginViewModel.init();
         showProgressBar();
-        initMainActivityViewModel();
+        initMainActivityViewModelAndChangeColor();
+
 
         loginViewModel.isUpdating().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
@@ -100,6 +102,17 @@ public class UserInteractionFragment extends CustomUserFragment implements View.
             }
         });
         return view;
+    }
+
+    private void initMainActivityViewModelAndChangeColor() {
+        mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
+        mainActivityViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                setUser(user);
+                btn_notification_color_change.setBackgroundColor(user.getCharColor());
+            }
+        });
     }
 
 

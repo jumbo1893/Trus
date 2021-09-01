@@ -29,7 +29,7 @@ public class CustomUserFragment extends Fragment {
         iNotificationSender.sendNotificationToRepository(notification);
     }
 
-    private void setUser(User user) {
+    protected void setUser(User user) {
         this.user = user;
     }
 }
