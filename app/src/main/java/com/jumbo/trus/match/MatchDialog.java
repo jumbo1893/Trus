@@ -166,7 +166,6 @@ public class MatchDialog extends Dialog implements AdapterView.OnItemSelectedLis
             case MATCH_EDIT: {
                 switch (view.getId()) {
                     case R.id.btn_potvrdit: {
-                        Log.d(TAG, "onClick: kliknuti na upravit zápas");
                         String opponent = et_jmeno.getText().toString();
                         String date = et_datum.getText().toString();
                         boolean homeMatch = sw_switch.isChecked();

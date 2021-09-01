@@ -103,7 +103,7 @@ public class MatchViewModel extends ViewModel implements ChangeListener, INotifi
         Result result = new Result(false);
         match.setOpponent(opponent);
         match.setHomeMatch(homeMatch);
-        match.setPlayerList(createListOfPlayers(playerList, match.getPlayerList()));
+        match.setPlayerList(editListOfPlayers(playerList, match.getPlayerList()));
         try {
             long millis = date.convertTextDateToMillis(datum);
             match.setDateOfMatch(millis);
@@ -129,7 +129,7 @@ public class MatchViewModel extends ViewModel implements ChangeListener, INotifi
     public Result editMatchBeers(final List<Player> playerList, Match match) {
         isUpdating.setValue(true);
         Result result = new Result(false);
-        match.setPlayerList(editListOfPlayers(playerList, match.getPlayerList()));
+        match.setPlayerList(playerList);
         try {
             firebaseRepository.editModel(match);
         }
@@ -217,8 +217,8 @@ public class MatchViewModel extends ViewModel implements ChangeListener, INotifi
         return matchList;
     }
 
-    private List<Player> createListOfPlayers(List<Player> playerList, List<Player> allPlayerList) {
-        List<Player> nonPlayerList = new ArrayList<>();
+    private List<Player> createListOfPlayers(List<Player> playerList, List<Player> allPlayerList) {//nový, původní
+        List<Player> newPlayerList = new ArrayList<>();
         for (Player player : allPlayerList) {
             if (playerList.contains(player)) {
                 player.setMatchParticipant(true);
@@ -226,18 +226,27 @@ public class MatchViewModel extends ViewModel implements ChangeListener, INotifi
             else {
                 player.setMatchParticipant(false);
             }
-            nonPlayerList.add(player);
+            newPlayerList.add(player);
         }
-        return nonPlayerList;
+        return newPlayerList;
     }
 
-    private List<Player> editListOfPlayers(List<Player> playerList, List<Player> allPlayerList) {
+    private List<Player> editListOfPlayers(List<Player> playerList, List<Player> currentPlayerList) {
         List<Player> newPlayerList = new ArrayList<>();
-        for (Player player : allPlayerList) {
+        for (Player player : currentPlayerList) {
             if (playerList.contains(player)) {
-                newPlayerList.add(playerList.get(playerList.indexOf(player)));
+                player.setMatchParticipant(true);
+                newPlayerList.add(player);
             }
             else {
+                player.setMatchParticipant(false);
+                newPlayerList.add(player);
+            }
+
+        }
+        for (Player player : playerList) {
+            if (!newPlayerList.contains(player)) {
+                player.setMatchParticipant(true);
                 newPlayerList.add(player);
             }
         }
