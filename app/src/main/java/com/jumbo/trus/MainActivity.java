@@ -241,15 +241,12 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         notificationsUnread = 0;
         Log.d(TAG, "findNumberOfLastReadNotification: " + notificationViewModel.getNotifications().getValue());
         for (Notification notification : Objects.requireNonNull(notificationViewModel.getNotifications().getValue())) {
-            Log.d(TAG, "findNumberOfLastReadNotification: " + notification.getUser().getId() + " " + user.getId());
             if (!notification.equals(lastReadNotification)) {
                 if (!notification.getUser().equals(user)) {
-                    Log.d(TAG, "findNumberOfLastReadNotification: " + notification);
                     notificationsUnread++;
                 }
             }
             else {
-                Log.d(TAG, "findNumberOfLastReadNotification: " + notificationsUnread);
                 break;
             }
         }
@@ -259,6 +256,10 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         Log.d(TAG, "findLastLastReadNotificationFromPref: seznam" + notificationViewModel.getNotifications().getValue());
         String id = pref.getString("lastReadNotification", "id");
         Log.d(TAG, "findLastLastReadNotificationFromPref: id" + id);
+        if (id.equals("id")) {
+            setLastReadNotification(lastNotification);
+            return true;
+        }
         for (Notification notification : Objects.requireNonNull(notificationViewModel.getNotifications().getValue())) {
             if (notification.getId().equals(id)) {
                 Log.d(TAG, "findLastLastReadNotificationFromPref: " + notification);
