@@ -153,7 +153,7 @@ public class StatisticsViewModel extends ViewModel {
     public List<Match> findAllMatchesWithPlayerParticipant (List<Match> matches, Player player) {
         List<Match> filteredMatches = new ArrayList<>();
         for (Match match : matches) {
-            if (match.getPlayerListWithoutFans().contains(player)) {
+            if (match.getPlayerListOnlyWithParticipants().contains(player)) {
                 filteredMatches.add(match);
             }
         }

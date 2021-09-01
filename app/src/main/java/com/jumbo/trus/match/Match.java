@@ -93,7 +93,8 @@ public class Match extends Model {
         return newPlayerList;
     }
 
-    public List<Player> getPlayerListOnlyWithParticipantsAndWithoutFans() {
+
+    /*public List<Player> getPlayerListOnlyWithParticipantsAndWithoutFans() {
         List<Player> newPlayerList = new ArrayList<>();
         for (Player player : playerList) {
             if (player.isMatchParticipant() && !player.isFan()) {
@@ -111,7 +112,7 @@ public class Match extends Model {
             }
         }
         return newPlayerList;
-    }
+    }*/
 
     public List<Player> getPlayerListWithoutFans() {
         List<Player> newPlayerList = new ArrayList<>();
@@ -178,7 +179,7 @@ public class Match extends Model {
      */
     public int getNumberOfBeersInMatch() {
         int beerNumber = 0;
-        for (Player player : playerList) {
+        for (Player player : getPlayerListOnlyWithParticipants()) {
             beerNumber += player.getNumberOfBeers();
         }
         return beerNumber;
@@ -214,7 +215,7 @@ public class Match extends Model {
      */
     public int getNumberOfBeersInMatchForPlayers() {
         int beerNumber = 0;
-        for (Player player : playerList) {
+        for (Player player : getPlayerListOnlyWithParticipants()) {
             if (!player.isFan()) {
                 beerNumber += player.getNumberOfBeers();
             }
