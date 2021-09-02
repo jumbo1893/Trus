@@ -50,17 +50,17 @@ class RandomFact {
             }
         }
         if (minimumDays == 367) {
-            return ("Nelze dny do narozenin hráčů, hrajou vůbec nějaký za Trus?");
+            return ("Nelze najít dny do narozenin hráčů, hrajou vůbec nějaký za Trus?");
         }
         else if (minimumDays > 0) {
             if (returnPlayers.size() == 1) {
                 if (returnPlayers.get(0).isFan()) {
                     return ("Příští rundu platí věrný fanoušek " + returnPlayers.get(0).getName() + ", který bude mít za " + minimumDays +
-                            " dní své " + (returnPlayers.get(0).getVek()+1) + ". narozeniny");
+                            " dní své " + (returnPlayers.get(0).getAge()+1) + ". narozeniny");
                 }
                 else {
                     return ("Příští rundu platí " + returnPlayers.get(0).getName() + ", který bude mít za " + minimumDays +
-                            " dní své " + (returnPlayers.get(0).getVek()+1) + ". narozeniny");
+                            " dní své " + (returnPlayers.get(0).getAge()+1) + ". narozeniny");
                 }
             }
             else {
@@ -79,7 +79,7 @@ class RandomFact {
                 }
                 text += "kteří mají za " + minimumDays + " dní své ";
                 for (int i = 0; i < returnPlayers.size(); i++) {
-                    text += (returnPlayers.get(i).getVek()+1) + ".";
+                    text += (returnPlayers.get(i).getAge()+1) + ".";
                     if (i == returnPlayers.size()-1) {
                         text += " narozeniny";
                     }
@@ -98,11 +98,11 @@ class RandomFact {
         else {
             if (returnPlayers.size() == 1) {
                 if (returnPlayers.get(0).isFan()) {
-                    return ("Dnes slaví narozeniny fanoušek " + returnPlayers.get(0).getName() + ", který má " + returnPlayers.get(0).getVek() +
+                    return ("Dnes slaví narozeniny fanoušek " + returnPlayers.get(0).getName() + ", který má " + returnPlayers.get(0).getAge() +
                             " let. Už ten sud vyval a ať ti slouží splávek!");
                 }
                 else {
-                    return ("Dnes slaví narozeniny " + returnPlayers.get(0).getName() + ", který má " + returnPlayers.get(0).getVek() +
+                    return ("Dnes slaví narozeniny " + returnPlayers.get(0).getName() + ", který má " + returnPlayers.get(0).getAge() +
                             " let. Už ten sud vyval a ať ti slouží splávek! Na Trus!!");
                 }
             }
@@ -120,7 +120,7 @@ class RandomFact {
                 }
                 text += "kteří mají slaví své nádherné ";
                 for (int i = 0; i < returnPlayers.size(); i++) {
-                    text += returnPlayers.get(i).getVek() + ".";
+                    text += returnPlayers.get(i).getAge() + ".";
                     if (i == returnPlayers.size() - 1) {
                         text += " narozeniny. Pánové, všichni doufáme že se pochlapíte. Na Trus!!!!";
                     } else if (i == returnPlayers.size() - 2) {

@@ -48,11 +48,12 @@ public class Player extends Model {
         this.matchParticipant = matchParticipant;
     }
 
-    public int getVek() {
+    public int getAge() {
+        age = date.calculateAge(dateOfBirth);
         return age;
     }
 
-    public void setVek(int age) {
+    public void setAge(int age) {
         this.age = age;
     }
 
