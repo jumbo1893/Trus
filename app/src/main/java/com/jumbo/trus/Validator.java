@@ -40,7 +40,7 @@ public class Validator {
     }
 
     public boolean checkNameFormat (String name) {
-        String regex = "^[a-zA-Z0-9_ áčďéěíňóřšťůúýžÁČĎÉĚÍŇÓŘŠŤŮÚÝŽ-]{0,100}$";
+        String regex = "^[a-zA-Z0-9_ áčďéěíňóřšťůúýžÁČĎÉĚÍŇÓŘŠŤŮÚÝŽ.()-]{0,100}$";
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(name);
         if (m.matches()) {
