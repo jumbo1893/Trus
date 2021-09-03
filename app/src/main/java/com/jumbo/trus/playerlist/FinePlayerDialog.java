@@ -20,6 +20,7 @@ import com.jumbo.trus.Dialog;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.OnListListener;
 import com.jumbo.trus.R;
+import com.jumbo.trus.SimpleDividerItemDecoration;
 import com.jumbo.trus.adapters.SimpleRecycleViewAdapter;
 import com.jumbo.trus.comparator.OrderByNonPlayerThenName;
 import com.jumbo.trus.match.Match;
@@ -55,6 +56,7 @@ public class FinePlayerDialog extends Dialog implements OnListListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_fine_player, container, false);
         rc_players = view.findViewById(R.id.rc_players);
+        rc_players.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         btn_cancel = view.findViewById(R.id.btn_cancel);
         btn_commit = view.findViewById(R.id.btn_commit);
         tv_title = view.findViewById(R.id.tv_title);
