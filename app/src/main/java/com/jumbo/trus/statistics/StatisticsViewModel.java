@@ -163,12 +163,12 @@ public class StatisticsViewModel extends ViewModel {
     public List<ReceivedFine> returnListOfAllFinesInMatch(Match match) {
         List<ReceivedFine> receivedFines = new ArrayList<>();
         List<Player> playerList = match.getPlayerList();
-        Log.d(TAG, "returnListOfAllFinesInMatch: " + playerList);
         for (Player player : playerList) {
-            Log.d(TAG, "returnListOfAllFinesInMatch: " + player.getReceivedFines());
             for (ReceivedFine receivedFine : player.getReceivedFines()) {
-                if (receivedFines.contains(receivedFine)) {
-                    Log.d(TAG, "returnListOfAllFinesInMatch: " + receivedFine + " plus");
+                if (receivedFine.getCount() <= 0) {
+
+                }
+                else if (receivedFines.contains(receivedFine)) {
                     receivedFines.get(receivedFines.indexOf(receivedFine)).addFineCount(receivedFine.getCount());
                 }
                 else {
