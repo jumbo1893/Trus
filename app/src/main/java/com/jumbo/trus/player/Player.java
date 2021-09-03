@@ -283,6 +283,16 @@ public class Player extends Model {
         return 0;
     }
 
+    public List<ReceivedFine> returnReceivedFineWithCount() {
+        List<ReceivedFine> returnFines = new ArrayList<>();
+        for (ReceivedFine receivedFine : receivedFines) {
+            if (receivedFine.getCount() > 0) {
+                returnFines.add(receivedFine);
+            }
+        }
+        return returnFines;
+    }
+
     @Override
     public String toString() {
         return "Hrac{" +

@@ -35,6 +35,7 @@ import com.jumbo.trus.season.SeasonsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class FineStatisticsDialog extends Dialog implements AdapterView.OnItemSelectedListener, OnListListener {
 
@@ -174,7 +175,6 @@ public class FineStatisticsDialog extends Dialog implements AdapterView.OnItemSe
         else {
             tv_overall.setVisibility(View.GONE);
         }
-
     }
 
     private void decideTextsToShow() {
@@ -193,10 +193,20 @@ public class FineStatisticsDialog extends Dialog implements AdapterView.OnItemSe
         tv_title.setText(model.getName());
         sp_select_player_season.setVisibility(View.VISIBLE);
         addSeasonSpinnerOptions();
-        useSeasonsFilter(matchViewModel.getMatches().getValue());
+        useSeasonsFilter(returnMatchesWithPlayer(Objects.requireNonNull(matchViewModel.getMatches().getValue())));
         initSpinnerSeasons();
         setSpinnerAdapter();
         addPlayerText();
+    }
+
+    private List<Match> returnMatchesWithPlayer(List<Match> matches) {
+        List<Match> returnMatches = new ArrayList<>();
+        for (Match match : matches) {
+            if (match.isInMatchPlayerWithFine((Player) model)) {
+                returnMatches.add(match);
+            }
+        }
+        return returnMatches;
     }
 
     private void setLayoutToMatches() {
@@ -218,7 +228,7 @@ public class FineStatisticsDialog extends Dialog implements AdapterView.OnItemSe
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         spinnerPosition = position;
-        useSeasonsFilter(matchViewModel.getMatches().getValue());
+        useSeasonsFilter(returnMatchesWithPlayer(Objects.requireNonNull(matchViewModel.getMatches().getValue())));
         addPlayerText();
     }
 

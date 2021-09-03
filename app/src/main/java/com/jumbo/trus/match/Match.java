@@ -283,6 +283,20 @@ public class Match extends Model {
         }
     }
 
+    /**
+     * @param player Hráč, kterým chceme prohledat playerlist
+     * @return true pokud daný hráč má alespoň jednu pokutu
+     */
+    public boolean isInMatchPlayerWithFine(Player player) {
+        if (!playerList.contains(player)) {
+            return false;
+        }
+        if (playerList.get(playerList.indexOf(player)).returnNumberOfAllReceviedFines() > 0) {
+            return true;
+        }
+        return false;
+    }
+
     public String toStringNameWithOpponent() {
         if (homeMatch) {
             return "Liščí trus - " + opponent;

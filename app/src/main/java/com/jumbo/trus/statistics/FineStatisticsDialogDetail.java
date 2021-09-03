@@ -84,7 +84,7 @@ public class FineStatisticsDialogDetail extends Dialog implements OnListListener
 
     private void initFinesRecycleView() {
         Log.d(TAG, "initRecycleView: ");
-        receivedFines = ((Player) model).getReceivedFines();
+        receivedFines = ((Player) model).returnReceivedFineWithCount();
         simpleRecycleViewAdapter = new SimpleRecycleViewAdapter(receivedFines, getActivity(), this);
     }
 
