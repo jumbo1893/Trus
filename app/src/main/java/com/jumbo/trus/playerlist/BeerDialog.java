@@ -23,7 +23,7 @@ import com.jumbo.trus.Model;
 import com.jumbo.trus.OnPlusButtonListener;
 import com.jumbo.trus.OnSwipeTouchListener;
 import com.jumbo.trus.R;
-import com.jumbo.trus.comparator.OrderByNonplayerThenBeerThenName;
+import com.jumbo.trus.comparator.OrderByBeerThenName;
 import com.jumbo.trus.layout.BeerLayout;
 import com.jumbo.trus.layout.OnLineFinishedListener;
 import com.jumbo.trus.match.Match;
@@ -62,8 +62,8 @@ public class BeerDialog extends Dialog implements OnPlusButtonListener, OnLineFi
 
     public BeerDialog(Flag flag, Model model) {
         super(flag, model);
-        selectedPlayers = ((Match) model).getPlayerListOnlyWithParticipants();
-        Collections.sort(selectedPlayers, new OrderByNonplayerThenBeerThenName());
+        selectedPlayers = ((Match) model).returnPlayerListOnlyWithParticipants();
+        Collections.sort(selectedPlayers, new OrderByBeerThenName());
         selectedPlayersSize = selectedPlayers.size();
         player = selectedPlayers.get(0);
         selectedPlayer = 0;

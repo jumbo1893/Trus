@@ -146,7 +146,7 @@ public class Player extends Model {
         return repayments.remove(repayment);
     }
 
-    public int getAmountOwed() {
+    public int returnAmountOwed() {
         int repaymentsAmount = 0;
         for (Repayment repayment : repayments) {
             repaymentsAmount += repayment.getAmount();
@@ -179,7 +179,7 @@ public class Player extends Model {
     public void calculateAllBeersNumber(List<Match> matchList) {
         numberOfBeersInMatches = 0;
         for (Match match : matchList) {
-            for (Player player : match.getPlayerListOnlyWithParticipants()) {
+            for (Player player : match.returnPlayerListOnlyWithParticipants()) {
                 if (player.equals(this)) {
                     numberOfBeersInMatches += player.numberOfBeers;
                     break;
@@ -196,10 +196,10 @@ public class Player extends Model {
         numberOfFinesInMatches = 0;
         amountOfFinesInMatches = 0;
         for (Match match : matchList) {
-            for (Player player : match.getPlayerListWithoutFans()) {
+            for (Player player : match.returnPlayerListWithoutFans()) {
                 if (player.equals(this)) {
-                    numberOfFinesInMatches += player.getNumberOfAllReceviedFines();
-                    amountOfFinesInMatches += player.getAmountOfAllReceviedFines();
+                    numberOfFinesInMatches += player.returnNumberOfAllReceviedFines();
+                    amountOfFinesInMatches += player.returnAmountOfAllReceviedFines();
                     break;
                 }
             }
@@ -210,7 +210,7 @@ public class Player extends Model {
      * použití pro jeden zápas
      * @return celkovou částku všech udělených pokut
      */
-    public int getAmountOfAllReceviedFines() {
+    public int returnAmountOfAllReceviedFines() {
         int amount = 0;
         for (ReceivedFine receivedFine : receivedFines) {
             amount += receivedFine.getAmountOfAllFines();
@@ -222,7 +222,7 @@ public class Player extends Model {
      * použití pro jeden zápas
      * @return počet všech udělených pokut hráči
      */
-    public int getNumberOfAllReceviedFines() {
+    public int returnNumberOfAllReceviedFines() {
         int fineCount = 0;
         for (ReceivedFine receivedFine : receivedFines) {
             fineCount += receivedFine.getCount();
@@ -239,7 +239,7 @@ public class Player extends Model {
      * použití pro jeden zápas, nutné použít na hráče co je v zápase
      * @return počet pokut udělených hráči
      */
-    public int getNumberOfReceviedFine(ReceivedFine fine) {
+    public int returnNumberOfReceviedFine(ReceivedFine fine) {
         for (ReceivedFine receivedFine : receivedFines) {
             if (fine.equals(receivedFine))
             return receivedFine.getCount();
@@ -251,7 +251,7 @@ public class Player extends Model {
      * použití pro jeden zápas, nutné použít na hráče co je v zápase
      * @return částku, která tato pokuta stála hráče v zápase
      */
-    public int getAmountOfReceviedFine(ReceivedFine fine) {
+    public int returnAmountOfReceviedFine(ReceivedFine fine) {
         for (ReceivedFine receivedFine : receivedFines) {
             if (fine.equals(receivedFine))
                 return receivedFine.getAmountOfAllFines();
@@ -263,7 +263,7 @@ public class Player extends Model {
      * použití pro jeden zápas, nutné použít na hráče co je v zápase
      * @return počet pokut tohoto typu, které padly v zápase
      */
-    public int getNumberOfReceviedFine(Fine fine) {
+    public int returnNumberOfReceviedFine(Fine fine) {
         for (ReceivedFine receivedFine : receivedFines) {
             if (fine.equals(receivedFine))
                 return receivedFine.getCount();
@@ -275,7 +275,7 @@ public class Player extends Model {
      * použití pro jeden zápas, nutné použít na hráče co je v zápase
      * @return částka za pokuty tohoto typu, které padly v zápase
      */
-    public int getAmountOfReceviedFine(Fine fine) {
+    public int returnAmountOfReceviedFine(Fine fine) {
         for (ReceivedFine receivedFine : receivedFines) {
             if (fine.equals(receivedFine))
                 return receivedFine.getAmountOfAllFines();

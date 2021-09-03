@@ -46,7 +46,7 @@ public class BeerStatisticsRecycleViewAdapter extends RecyclerView.Adapter<BeerS
         Log.d(TAG, "onBindViewHolder: called");
         if (models.get(position) instanceof Match) {
             holder.tv_title.setText(((Match) models.get(position)).toStringNameWithOpponent());
-            holder.tv_text.setText("Počet pivek v zápase: " + ((Match) models.get(position)).getNumberOfBeersInMatch());
+            holder.tv_text.setText("Počet pivek v zápase: " + ((Match) models.get(position)).returnNumberOfBeersInMatch());
         }
         else if (models.get(position) instanceof Player) {
             holder.tv_title.setText((models.get(position)).getName());

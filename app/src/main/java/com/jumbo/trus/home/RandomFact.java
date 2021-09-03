@@ -183,12 +183,12 @@ class RandomFact {
         List<Match> returnMatches = new ArrayList<>();
         int maximumBeers = 0;
         for (Match match : matches) {
-            if (match.getNumberOfBeersInMatch() > maximumBeers) {
+            if (match.returnNumberOfBeersInMatch() > maximumBeers) {
                 returnMatches.clear();
                 returnMatches.add(match);
-                maximumBeers = match.getNumberOfBeersInMatch();
+                maximumBeers = match.returnNumberOfBeersInMatch();
             }
-            else if (match.getNumberOfBeersInMatch() == maximumBeers) {
+            else if (match.returnNumberOfBeersInMatch() == maximumBeers) {
                 returnMatches.add(match);
             }
         }
@@ -225,7 +225,7 @@ class RandomFact {
         int beerNumber = 0;
         for (Match match : matches) {
             if (match.getSeason().equals(compareMatch.getSeason())) {
-                beerNumber += match.getNumberOfBeersInMatch();
+                beerNumber += match.returnNumberOfBeersInMatch();
             }
         }
         return "V aktuální sezoně " + compareMatch.getSeason().getName() + " se vypilo " + beerNumber + " piv";
@@ -239,12 +239,12 @@ class RandomFact {
         int maximumBeers = 0;
         for (Match match : matches) {
             if (match.getSeason().equals(compareMatch.getSeason())) {
-                if (match.getNumberOfBeersInMatch() > maximumBeers) {
+                if (match.returnNumberOfBeersInMatch() > maximumBeers) {
                     returnMatches.clear();
                     returnMatches.add(match);
-                    maximumBeers = match.getNumberOfBeersInMatch();
+                    maximumBeers = match.returnNumberOfBeersInMatch();
                 }
-                else if (match.getNumberOfBeersInMatch() == maximumBeers) {
+                else if (match.returnNumberOfBeersInMatch() == maximumBeers) {
                     returnMatches.add(match);
                 }
             }
@@ -289,7 +289,7 @@ class RandomFact {
             for (Match match : matches) {
                 if (match.getSeason().equals(season)) {
                     matchesNumber++;
-                    seasonBeers += match.getNumberOfBeersInMatch();
+                    seasonBeers += match.returnNumberOfBeersInMatch();
                 }
             }
             if (seasonBeers > maximumBeers) {
@@ -339,8 +339,8 @@ class RandomFact {
         float beerNumber = 0;
         int playerNumber = 0;
         for (Match match : matches) {
-            beerNumber += match.getNumberOfBeersInMatch();
-            playerNumber += match.getNumberOfPlayersAndFansInMatch();
+            beerNumber += match.returnNumberOfBeersInMatch();
+            playerNumber += match.returnNumberOfPlayersAndFansInMatch();
         }
         float average = beerNumber/playerNumber;
 
@@ -353,8 +353,8 @@ class RandomFact {
         float beerNumber = 0;
         int playerNumber = 0;
         for (Match match : matches) {
-            beerNumber += match.getNumberOfBeersInMatchForPlayers();
-            playerNumber += match.getNumberOfPlayersInMatch();
+            beerNumber += match.returnNumberOfBeersInMatchForPlayers();
+            playerNumber += match.returnNumberOfPlayersInMatch();
         }
         float average = beerNumber/playerNumber;
 
@@ -367,8 +367,8 @@ class RandomFact {
         float beerNumber = 0;
         int fanNumber = 0;
         for (Match match : matches) {
-            beerNumber += (match.getNumberOfBeersInMatch() - match.getNumberOfBeersInMatchForPlayers());
-            fanNumber += (match.getNumberOfPlayersAndFansInMatch() - match.getNumberOfPlayersInMatch());
+            beerNumber += (match.returnNumberOfBeersInMatch() - match.returnNumberOfBeersInMatchForPlayers());
+            fanNumber += (match.returnNumberOfPlayersAndFansInMatch() - match.returnNumberOfPlayersInMatch());
         }
         float average = beerNumber/fanNumber;
 
@@ -381,7 +381,7 @@ class RandomFact {
     public String getAverageNumberOfBeersInMatch() {
         float beerNumber = 0;
         for (Match match : matches) {
-            beerNumber += match.getNumberOfBeersInMatch();
+            beerNumber += match.returnNumberOfBeersInMatch();
         }
         float average = beerNumber/matches.size();
         return "V naprosto průměrném zápasu Trusu se vypije " + average + " piv";
@@ -394,11 +394,11 @@ class RandomFact {
         List<Match> returnMatches = new ArrayList<>();
         float average = 0;
         for (Match match : matches) {
-            if (match.getNumberOfBeersInMatch() / (float) match.getNumberOfPlayersAndFansInMatch() > average) {
-                average = match.getNumberOfBeersInMatch() / (float) match.getNumberOfPlayersAndFansInMatch();
+            if (match.returnNumberOfBeersInMatch() / (float) match.returnNumberOfPlayersAndFansInMatch() > average) {
+                average = match.returnNumberOfBeersInMatch() / (float) match.returnNumberOfPlayersAndFansInMatch();
                 returnMatches.clear();
                 returnMatches.add(match);
-            } else if (match.getNumberOfBeersInMatch() / (float) match.getNumberOfPlayersAndFansInMatch() == average) {
+            } else if (match.returnNumberOfBeersInMatch() / (float) match.returnNumberOfPlayersAndFansInMatch() == average) {
                 returnMatches.add(match);
             }
         }
@@ -407,14 +407,14 @@ class RandomFact {
         } else if (returnMatches.size() == 1) {
             return "Nejvyšší průměr počtu vypitých piv v zápase proběhl na zápase se soupeřem " + returnMatches.get(0).getOpponent() +
                     " hraném v sezoně " + returnMatches.get(0).getSeason().getName() + " konkrétně " + returnMatches.get(0).getDateOfMatchInStringFormat() +
-                    ". Vypilo se " + returnMatches.get(0).getNumberOfBeersInMatch() + " piv v " + returnMatches.get(0).getNumberOfPlayersAndFansInMatch() +
+                    ". Vypilo se " + returnMatches.get(0).returnNumberOfBeersInMatch() + " piv v " + returnMatches.get(0).returnNumberOfPlayersAndFansInMatch() +
                     " lidech, což dělá průměr " + average + " na hráče. Tak ještě jedno, ať to překonáme!";
 
         } else {
             String result = "Nejvyšší průměr počtu vypitých piv v zápase proběhl na v zápasech se ";
             for (int i = 0; i < returnMatches.size(); i++) {
                 result += "soupeřem " + returnMatches.get(i).getOpponent() + " hraném " + returnMatches.get(i).getDateOfMatchInStringFormat() +
-                        " s celkovým počtem " + returnMatches.get(i).getNumberOfBeersInMatch() + ". piv v " + returnMatches.get(i).getNumberOfPlayersAndFansInMatch() +
+                        " s celkovým počtem " + returnMatches.get(i).returnNumberOfBeersInMatch() + ". piv v " + returnMatches.get(i).returnNumberOfPlayersAndFansInMatch() +
                         " lidech";
                 if (i == returnMatches.size() - 1) {
                     result += ".\n Celkový průměr pro tyto zápasy je " + average + " piv.";
@@ -435,11 +435,11 @@ class RandomFact {
         List<Match> returnMatches = new ArrayList<>();
         float average = 1000;
         for (Match match : matches) {
-            if ((match.getNumberOfBeersInMatch() / (float) match.getNumberOfPlayersAndFansInMatch() < average) && match.getNumberOfBeersInMatch() != 0) {
-                average = match.getNumberOfBeersInMatch() / (float) match.getNumberOfPlayersAndFansInMatch();
+            if ((match.returnNumberOfBeersInMatch() / (float) match.returnNumberOfPlayersAndFansInMatch() < average) && match.returnNumberOfBeersInMatch() != 0) {
+                average = match.returnNumberOfBeersInMatch() / (float) match.returnNumberOfPlayersAndFansInMatch();
                 returnMatches.clear();
                 returnMatches.add(match);
-            } else if ((match.getNumberOfBeersInMatch() / (float) match.getNumberOfPlayersAndFansInMatch()) == average && match.getNumberOfBeersInMatch() != 0) {
+            } else if ((match.returnNumberOfBeersInMatch() / (float) match.returnNumberOfPlayersAndFansInMatch()) == average && match.returnNumberOfBeersInMatch() != 0) {
                 returnMatches.add(match);
             }
         }
@@ -448,7 +448,7 @@ class RandomFact {
         } else if (returnMatches.size() == 1) {
             return "Ostudný den Liščího Trusu, kdy byl pokořen rekord v nejnižším průměru počtu vypitých piv v zápase proběhl na zápase se soupeřem " + returnMatches.get(0).getOpponent() +
                     " hraném v sezoně " + returnMatches.get(0).getSeason().getName() + " konkrétně " + returnMatches.get(0).getDateOfMatchInStringFormat() +
-                    ". Vypilo se " + returnMatches.get(0).getNumberOfBeersInMatch() + " piv v " + returnMatches.get(0).getNumberOfPlayersAndFansInMatch() +
+                    ". Vypilo se " + returnMatches.get(0).returnNumberOfBeersInMatch() + " piv v " + returnMatches.get(0).returnNumberOfPlayersAndFansInMatch() +
                     " lidech, což dělá průměr " + average + " na hráče. Vzpomeňte si na to, až si budete objednávat další rundu!";
 
         } else {
@@ -456,7 +456,7 @@ class RandomFact {
                     "vypitých piv v zápase. Stalo se tak se ";
             for (int i = 0; i < returnMatches.size(); i++) {
                 result += "soupeřem " + returnMatches.get(i).getOpponent() + " hraném " + returnMatches.get(i).getDateOfMatchInStringFormat() +
-                        " s celkovým počtem " + returnMatches.get(i).getNumberOfBeersInMatch() + ". piv v " + returnMatches.get(i).getNumberOfPlayersAndFansInMatch() +
+                        " s celkovým počtem " + returnMatches.get(i).returnNumberOfBeersInMatch() + ". piv v " + returnMatches.get(i).returnNumberOfPlayersAndFansInMatch() +
                         " lidech";
                 if (i == returnMatches.size() - 1) {
                     result += ".\n Celkový průměr pro tyto zápasy je " + average + " piv.";
@@ -477,12 +477,12 @@ class RandomFact {
         List<Match> returnMatches = new ArrayList<>();
         int matchAttendance = 0;
         for (Match match : matches) {
-            if (match.getNumberOfPlayersAndFansInMatch() > matchAttendance) {
+            if (match.returnNumberOfPlayersAndFansInMatch() > matchAttendance) {
                 returnMatches.clear();
                 returnMatches.add(match);
-                matchAttendance = match.getNumberOfPlayersAndFansInMatch();
+                matchAttendance = match.returnNumberOfPlayersAndFansInMatch();
             }
-            else if (match.getNumberOfPlayersAndFansInMatch() == matchAttendance) {
+            else if (match.returnNumberOfPlayersAndFansInMatch() == matchAttendance) {
                 returnMatches.add(match);
             }
         }
@@ -492,17 +492,17 @@ class RandomFact {
         else if (returnMatches.size() == 1) {
             return "Největší účast na zápase Liščího Trusu proběhla " + returnMatches.get(0).getDateOfMatchInStringFormat() + " se soupeřem "
                     + returnMatches.get(0).getOpponent() + " kdy celkový počet účastníků byl " +
-                    (matchAttendance-returnMatches.get(0).getNumberOfPlayersInMatch()) + " fanoušků a "  + returnMatches.get(0).getNumberOfPlayersInMatch() +
+                    (matchAttendance-returnMatches.get(0).returnNumberOfPlayersInMatch()) + " fanoušků a "  + returnMatches.get(0).returnNumberOfPlayersInMatch() +
                     " hráčů, celkem tedy " + matchAttendance + " lidí. Celkově se v tomto zápase vypilo " +
-                    returnMatches.get(0).getNumberOfBeersInMatch() + " piv";
+                    returnMatches.get(0).returnNumberOfBeersInMatch() + " piv";
         }
         else {
             String result = "Největší účast na zápase Liščího Trusu proběhla se soupeři ";
             for (int i = 0; i < returnMatches.size(); i++) {
                 result += returnMatches.get(i).getOpponent() + ", hraný " + returnMatches.get(0).getDateOfMatchInStringFormat() +
                         ", kdy celkový počet účastníků byl " +
-                        (matchAttendance-returnMatches.get(i).getNumberOfPlayersInMatch()) + " fanoušků a "  + returnMatches.get(i).getNumberOfPlayersInMatch() +
-                        " hráčů s počtem " + returnMatches.get(i).getNumberOfBeersInMatch() + ". vypitých piv";
+                        (matchAttendance-returnMatches.get(i).returnNumberOfPlayersInMatch()) + " fanoušků a "  + returnMatches.get(i).returnNumberOfPlayersInMatch() +
+                        " hráčů s počtem " + returnMatches.get(i).returnNumberOfBeersInMatch() + ". vypitých piv";
                 if (i == returnMatches.size()-1) {
                     result += ".";
                 }
@@ -524,12 +524,12 @@ class RandomFact {
         List<Match> returnMatches = new ArrayList<>();
         int matchAttendance = 1000;
         for (Match match : matches) {
-            if ((match.getNumberOfPlayersAndFansInMatch() < matchAttendance) && match.getNumberOfPlayersAndFansInMatch() != 0) {
+            if ((match.returnNumberOfPlayersAndFansInMatch() < matchAttendance) && match.returnNumberOfPlayersAndFansInMatch() != 0) {
                 returnMatches.clear();
                 returnMatches.add(match);
-                matchAttendance = match.getNumberOfPlayersAndFansInMatch();
+                matchAttendance = match.returnNumberOfPlayersAndFansInMatch();
             }
-            else if ((match.getNumberOfPlayersAndFansInMatch() == matchAttendance) && match.getNumberOfPlayersAndFansInMatch() != 0) {
+            else if ((match.returnNumberOfPlayersAndFansInMatch() == matchAttendance) && match.returnNumberOfPlayersAndFansInMatch() != 0) {
                 returnMatches.add(match);
             }
         }
@@ -539,17 +539,17 @@ class RandomFact {
         else if (returnMatches.size() == 1) {
             return "Nejnižší účast na zápase Liščího Trusu proběhla " + returnMatches.get(0).getDateOfMatchInStringFormat() + " se soupeřem "
                     + returnMatches.get(0).getOpponent() + " kdy celkový počet účastníků byl " +
-                    (matchAttendance-returnMatches.get(0).getNumberOfPlayersInMatch()) + " fanoušků a "  + returnMatches.get(0).getNumberOfPlayersInMatch() +
+                    (matchAttendance-returnMatches.get(0).returnNumberOfPlayersInMatch()) + " fanoušků a "  + returnMatches.get(0).returnNumberOfPlayersInMatch() +
                     " hráčů, celkem tedy " + matchAttendance + " lidí. Celkově se v tomto zápase vypilo " +
-                    returnMatches.get(0).getNumberOfBeersInMatch() + " piv";
+                    returnMatches.get(0).returnNumberOfBeersInMatch() + " piv";
         }
         else {
             String result = "Nejnižší účast na zápase Liščího Trusu proběhla se soupeři ";
             for (int i = 0; i < returnMatches.size(); i++) {
                 result += returnMatches.get(i).getOpponent() + ", hraný " + returnMatches.get(0).getDateOfMatchInStringFormat() +
                         ", kdy celkový počet účastníků byl " +
-                        (matchAttendance-returnMatches.get(i).getNumberOfPlayersInMatch()) + " fanoušků a "  + returnMatches.get(i).getNumberOfPlayersInMatch() +
-                        " hráčů s počtem " + returnMatches.get(i).getNumberOfBeersInMatch() + ". vypitých piv";
+                        (matchAttendance-returnMatches.get(i).returnNumberOfPlayersInMatch()) + " fanoušků a "  + returnMatches.get(i).returnNumberOfPlayersInMatch() +
+                        " hráčů s počtem " + returnMatches.get(i).returnNumberOfBeersInMatch() + ". vypitých piv";
                 if (i == returnMatches.size()-1) {
                     result += ".";
                 }
@@ -613,12 +613,12 @@ class RandomFact {
         List<Match> returnMatches = new ArrayList<>();
         int maximumFines = 0;
         for (Match match : matches) {
-            if (match.getNumberOfFinesInMatch() > maximumFines) {
+            if (match.returnNumberOfFinesInMatch() > maximumFines) {
                 returnMatches.clear();
                 returnMatches.add(match);
-                maximumFines = match.getNumberOfFinesInMatch();
+                maximumFines = match.returnNumberOfFinesInMatch();
             }
-            else if (match.getNumberOfFinesInMatch() == maximumFines) {
+            else if (match.returnNumberOfFinesInMatch() == maximumFines) {
                 returnMatches.add(match);
             }
         }
@@ -698,12 +698,12 @@ class RandomFact {
         List<Match> returnMatches = new ArrayList<>();
         int maximumFinesAmount = 0;
         for (Match match : matches) {
-            if (match.getAmountOfFinesInMatch() > maximumFinesAmount) {
+            if (match.returnAmountOfFinesInMatch() > maximumFinesAmount) {
                 returnMatches.clear();
                 returnMatches.add(match);
-                maximumFinesAmount = match.getAmountOfFinesInMatch();
+                maximumFinesAmount = match.returnAmountOfFinesInMatch();
             }
-            else if (match.getAmountOfFinesInMatch() == maximumFinesAmount) {
+            else if (match.returnAmountOfFinesInMatch() == maximumFinesAmount) {
                 returnMatches.add(match);
             }
         }
@@ -740,7 +740,7 @@ class RandomFact {
         int fineNumber = 0;
         for (Match match : matches) {
             if (match.getSeason().equals(compareMatch.getSeason())) {
-                fineNumber += match.getNumberOfFinesInMatch();
+                fineNumber += match.returnNumberOfFinesInMatch();
             }
         }
         return "V aktuální sezoně " + compareMatch.getSeason().getName() + " se rozdalo již " + fineNumber + " pokut";
@@ -753,7 +753,7 @@ class RandomFact {
         int fineNumber = 0;
         for (Match match : matches) {
             if (match.getSeason().equals(compareMatch.getSeason())) {
-                fineNumber += match.getAmountOfFinesInMatch();
+                fineNumber += match.returnAmountOfFinesInMatch();
             }
         }
         return "V aktuální sezoně " + compareMatch.getSeason().getName() + " se na pokutách vybralo již " + fineNumber + " Kč.";
@@ -767,12 +767,12 @@ class RandomFact {
         int maximumFines = 0;
         for (Match match : matches) {
             if (match.getSeason().equals(compareMatch.getSeason())) {
-                if (match.getNumberOfFinesInMatch() > maximumFines) {
+                if (match.returnNumberOfFinesInMatch() > maximumFines) {
                     returnMatches.clear();
                     returnMatches.add(match);
-                    maximumFines = match.getNumberOfFinesInMatch();
+                    maximumFines = match.returnNumberOfFinesInMatch();
                 }
-                else if (match.getNumberOfFinesInMatch() == maximumFines) {
+                else if (match.returnNumberOfFinesInMatch() == maximumFines) {
                     returnMatches.add(match);
                 }
             }
@@ -811,12 +811,12 @@ class RandomFact {
         int maximumFinesAmount = 0;
         for (Match match : matches) {
             if (match.getSeason().equals(compareMatch.getSeason())) {
-                if (match.getAmountOfFinesInMatch() > maximumFinesAmount) {
+                if (match.returnAmountOfFinesInMatch() > maximumFinesAmount) {
                     returnMatches.clear();
                     returnMatches.add(match);
-                    maximumFinesAmount = match.getAmountOfFinesInMatch();
+                    maximumFinesAmount = match.returnAmountOfFinesInMatch();
                 }
-                else if (match.getAmountOfFinesInMatch() == maximumFinesAmount) {
+                else if (match.returnAmountOfFinesInMatch() == maximumFinesAmount) {
                     returnMatches.add(match);
                 }
             }
@@ -861,7 +861,7 @@ class RandomFact {
             for (Match match : matches) {
                 if (match.getSeason().equals(season)) {
                     matchesNumber++;
-                    seasonFines += match.getNumberOfFinesInMatch();
+                    seasonFines += match.returnNumberOfFinesInMatch();
                 }
             }
             if (seasonFines > maximumFines) {
@@ -917,7 +917,7 @@ class RandomFact {
             for (Match match : matches) {
                 if (match.getSeason().equals(season)) {
                     matchesNumber++;
-                    seasonFines += match.getAmountOfFinesInMatch();
+                    seasonFines += match.returnAmountOfFinesInMatch();
                 }
             }
             if (seasonFines > maximumFines) {
@@ -967,8 +967,8 @@ class RandomFact {
         float finesNumber = 0;
         int playerNumber = 0;
         for (Match match : matches) {
-            finesNumber += match.getNumberOfFinesInMatch();
-            playerNumber += match.getNumberOfPlayersInMatch();
+            finesNumber += match.returnNumberOfFinesInMatch();
+            playerNumber += match.returnNumberOfPlayersInMatch();
         }
         float average = finesNumber/playerNumber;
 
@@ -982,8 +982,8 @@ class RandomFact {
         float finesNumber = 0;
         int playerNumber = 0;
         for (Match match : matches) {
-            finesNumber += match.getAmountOfFinesInMatch();
-            playerNumber += match.getNumberOfPlayersInMatch();
+            finesNumber += match.returnAmountOfFinesInMatch();
+            playerNumber += match.returnNumberOfPlayersInMatch();
         }
         float average = finesNumber/playerNumber;
 
@@ -997,7 +997,7 @@ class RandomFact {
     String getAverageNumberOfFinesInMatch() {
         float finesNumber = 0;
         for (Match match : matches) {
-            finesNumber += match.getNumberOfFinesInMatch();
+            finesNumber += match.returnNumberOfFinesInMatch();
         }
         float average = finesNumber/matches.size();
         return "V naprosto průměrném zápasu Trusu se udělí " + average + " pokut";
@@ -1009,7 +1009,7 @@ class RandomFact {
     String getAverageNumberOfFinesAmountInMatch() {
         float finesNumber = 0;
         for (Match match : matches) {
-            finesNumber += match.getAmountOfFinesInMatch();
+            finesNumber += match.returnAmountOfFinesInMatch();
         }
         float average = finesNumber/matches.size();
         return "V naprosto průměrném zápasu Trusu se vybere " + average + " Kč na pokutách";
@@ -1122,7 +1122,7 @@ class RandomFact {
             List<Match> returnMatches = new ArrayList<>();
             List<Player> returnPlayers = new ArrayList<>();
             for (int i = 0; i < matchesWithBirthday.size(); i++) {
-                for (Player player : matchesWithBirthday.get(i).getPlayerListOnlyWithParticipants()) {
+                for (Player player : matchesWithBirthday.get(i).returnPlayerListOnlyWithParticipants()) {
                     if (player.equals(playersWithBirthday.get(i))) {
                         returnPlayers.add(player);
                         returnMatches.add(matchesWithBirthday.get(i));
@@ -1149,7 +1149,7 @@ class RandomFact {
             else if (returnMatches.size() == 1) {
                 return  "Zatím jediný zápas, kdy někdo z Trusu zapíjel narozky byl " + returnMatches.get(0).getDateOfMatchInStringFormat() +
                         " se soupeřem " + returnMatches.get(0).getOpponent() + " kdy slavil " + returnPlayers.get(0).getName() + ", který vypil " +
-                        returnPlayers.get(0).getNumberOfBeers() + " piv. Celkově se tento zápas vypilo " + returnMatches.get(0).getNumberOfBeersInMatch() + " piv";
+                        returnPlayers.get(0).getNumberOfBeers() + " piv. Celkově se tento zápas vypilo " + returnMatches.get(0).returnNumberOfBeersInMatch() + " piv";
             }
             //pokud jich bylo víc
             else {
@@ -1157,7 +1157,7 @@ class RandomFact {
                 for (int i = 0; i < returnMatches.size(); i++) {
                     result += returnMatches.get(i).getOpponent() + ", hraném " + returnMatches.get(i).getDateOfMatchInStringFormat() + ", kdy slavil narozky "
                             + returnPlayers.get(i).getName() + ", který vypil " + returnPlayers.get(i).getNumberOfBeers() +
-                            " piv. Celkově se tento zápas vypilo " + returnMatches.get(i).getNumberOfBeersInMatch() + " piv";
+                            " piv. Celkově se tento zápas vypilo " + returnMatches.get(i).returnNumberOfBeersInMatch() + " piv";
                     if (i == returnMatches.size() - 1) {
                         result += ".";
                     } else if (i == returnMatches.size() - 2) {

@@ -90,7 +90,7 @@ public class FineStatisticsDialogDetail extends Dialog implements OnListListener
 
     private void initPlayersRecycleView() {
         Log.d(TAG, "initRecycleView: ");
-        finesPlayerNumberRecycleViewAdapter = new FinesPlayerNumberRecycleViewAdapter(((Match)model).getPlayerListOnlyWithFine(receivedFine), receivedFine, getActivity(), this);
+        finesPlayerNumberRecycleViewAdapter = new FinesPlayerNumberRecycleViewAdapter(((Match)model).returnPlayerListOnlyWithFine(receivedFine), receivedFine, getActivity(), this);
     }
 
     private void setAdapter() {

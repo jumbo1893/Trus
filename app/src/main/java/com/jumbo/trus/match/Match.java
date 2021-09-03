@@ -83,7 +83,7 @@ public class Match extends Model {
         return playerList;
     }
 
-    public List<Player> getPlayerListOnlyWithParticipants() {
+    public List<Player> returnPlayerListOnlyWithParticipants() {
         List<Player> newPlayerList = new ArrayList<>();
         for (Player player : playerList) {
             if (player.isMatchParticipant()) {
@@ -114,7 +114,7 @@ public class Match extends Model {
         return newPlayerList;
     }*/
 
-    public List<Player> getPlayerListWithoutFans() {
+    public List<Player> returnPlayerListWithoutFans() {
         List<Player> newPlayerList = new ArrayList<>();
         for (Player player : playerList) {
             if (!player.isFan()) {
@@ -124,7 +124,7 @@ public class Match extends Model {
         return newPlayerList;
     }
 
-    public List<Player> getPlayerListOnlyWithFine(ReceivedFine receivedFine) {
+    public List<Player> returnPlayerListOnlyWithFine(ReceivedFine receivedFine) {
         List<Player> newPlayerList = new ArrayList<>();
         for (Player player : playerList) {
             for (ReceivedFine playerFine : player.getReceivedFines()) {
@@ -177,9 +177,9 @@ public class Match extends Model {
     /**
      * @return počet piv, která se vypila v zápase
      */
-    public int getNumberOfBeersInMatch() {
+    public int returnNumberOfBeersInMatch() {
         int beerNumber = 0;
-        for (Player player : getPlayerListOnlyWithParticipants()) {
+        for (Player player : returnPlayerListOnlyWithParticipants()) {
             beerNumber += player.getNumberOfBeers();
         }
         return beerNumber;
@@ -187,7 +187,7 @@ public class Match extends Model {
     /**
      * @return počet účastníků zápasu
      */
-    public int getNumberOfPlayersAndFansInMatch() {
+    public int returnNumberOfPlayersAndFansInMatch() {
         int playerNumber = 0;
         for (Player player : playerList) {
             if (player.isMatchParticipant()) {
@@ -200,7 +200,7 @@ public class Match extends Model {
     /**
      * @return počet hráčů v zápase
      */
-    public int getNumberOfPlayersInMatch() {
+    public int returnNumberOfPlayersInMatch() {
         int playerNumber = 0;
         for (Player player : playerList) {
             if (!player.isFan() && player.isMatchParticipant()) {
@@ -213,9 +213,9 @@ public class Match extends Model {
     /**
      * @return počet piv, kteří v zápase vypili hráči
      */
-    public int getNumberOfBeersInMatchForPlayers() {
+    public int returnNumberOfBeersInMatchForPlayers() {
         int beerNumber = 0;
-        for (Player player : getPlayerListOnlyWithParticipants()) {
+        for (Player player : returnPlayerListOnlyWithParticipants()) {
             if (!player.isFan()) {
                 beerNumber += player.getNumberOfBeers();
             }
@@ -227,10 +227,10 @@ public class Match extends Model {
     /**
      * @return vrátí celkový počet pokut, které padly v zápase
      */
-    public int getNumberOfFinesInMatch() {
+    public int returnNumberOfFinesInMatch() {
         int fineNumber = 0;
         for (Player player : playerList) {
-            fineNumber += player.getNumberOfAllReceviedFines();
+            fineNumber += player.returnNumberOfAllReceviedFines();
         }
         return fineNumber;
     }
@@ -238,10 +238,10 @@ public class Match extends Model {
     /**
      * @return vrátí celkovou částku, která padla v zápase za pokuty
      */
-    public int getAmountOfFinesInMatch() {
+    public int returnAmountOfFinesInMatch() {
         int fineAmount = 0;
         for (Player player : playerList) {
-            fineAmount += player.getAmountOfAllReceviedFines();
+            fineAmount += player.returnAmountOfAllReceviedFines();
         }
         return fineAmount;
     }
@@ -250,10 +250,10 @@ public class Match extends Model {
      * @param fine Pokuta, jejíž počet chceme nalézt
      * @return kolikrát se tato pokuta udělila v tomto zápase
      */
-    public int getNumberOfReceviedFineInMatch(Fine fine) {
+    public int returnNumberOfReceviedFineInMatch(Fine fine) {
         int count = 0;
         for (Player player : playerList) {
-            count += player.getNumberOfReceviedFine(fine);
+            count += player.returnNumberOfReceviedFine(fine);
         }
         return count;
     }
@@ -262,10 +262,10 @@ public class Match extends Model {
      * @param fine Pokuta, u které chceme znát kolik se za ní v tomto zápase vybralo
      * @return počet peněz, které v tomto zápase přinesla tato pokuta
      */
-    public int getAmountOfReceviedFineInMatch(Fine fine) {
+    public int returnAmountOfReceviedFineInMatch(Fine fine) {
         int count = 0;
         for (Player player : playerList) {
-            count += player.getAmountOfReceviedFine(fine);
+            count += player.returnAmountOfReceviedFine(fine);
         }
         return count;
     }

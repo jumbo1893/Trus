@@ -45,7 +45,7 @@ public class PlayerRepaymentRecycleViewAdapter extends RecyclerView.Adapter<Play
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         Log.d(TAG, "onBindViewHolder: called");
         holder.tv_title.setText(players.get(position).getName());
-        holder.tv_text.setText("Dlužná částka na pokutách: " + players.get(position).getAmountOwed() + " Kč");
+        holder.tv_text.setText("Dlužná částka na pokutách: " + players.get(position).returnAmountOwed() + " Kč");
 
     }
 

@@ -153,8 +153,8 @@ public class BeerStatisticsDialog extends Dialog implements AdapterView.OnItemSe
             else {
                 text += "Venkovní ";
             }
-            text += "zápas proti " + match.getOpponent() + ", počet piv: " + match.getPlayerListOnlyWithParticipants().get(match.getPlayerListOnlyWithParticipants().indexOf(model)).getNumberOfBeers() + "\n\n";
-            allBeers += match.getPlayerListOnlyWithParticipants().get(match.getPlayerListOnlyWithParticipants().indexOf(model)).getNumberOfBeers();
+            text += "zápas proti " + match.getOpponent() + ", počet piv: " + match.returnPlayerListOnlyWithParticipants().get(match.returnPlayerListOnlyWithParticipants().indexOf(model)).getNumberOfBeers() + "\n\n";
+            allBeers += match.returnPlayerListOnlyWithParticipants().get(match.returnPlayerListOnlyWithParticipants().indexOf(model)).getNumberOfBeers();
         }
         tv_list.setText("Celkový počet piv: " + allBeers + "\n\n" + text);
     }
@@ -162,7 +162,7 @@ public class BeerStatisticsDialog extends Dialog implements AdapterView.OnItemSe
     private void addMatchText() {
         String text = "";
         int allBeers = 0;
-        for (Player player : ((Match)model).getPlayerListOnlyWithParticipants()) {
+        for (Player player : ((Match)model).returnPlayerListOnlyWithParticipants()) {
             if (spinnerPosition == 0) {
                 text += player.getName() + " v zápase vypil " + player.getNumberOfBeers() + "\n\n";
                 allBeers += player.getNumberOfBeers();

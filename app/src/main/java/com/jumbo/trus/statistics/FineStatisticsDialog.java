@@ -134,8 +134,8 @@ public class FineStatisticsDialog extends Dialog implements AdapterView.OnItemSe
         for (Match match : matchesWithPlayer) {
             Player player = match.getPlayerList().get(match.getPlayerList().indexOf(model));
             selectedPlayers.add(player);
-            allfines[0] += match.getPlayerList().get(match.getPlayerList().indexOf(model)).getNumberOfAllReceviedFines();
-            allfines[1] += match.getPlayerList().get(match.getPlayerList().indexOf(model)).getAmountOfAllReceviedFines();
+            allfines[0] += match.getPlayerList().get(match.getPlayerList().indexOf(model)).returnNumberOfAllReceviedFines();
+            allfines[1] += match.getPlayerList().get(match.getPlayerList().indexOf(model)).returnAmountOfAllReceviedFines();
         }
         tv_overall.setText("Celkem hráč dostal " + allfines[0] + " pokut v celkové částce " + allfines[1] + " Kč.");
         initRecycleView();

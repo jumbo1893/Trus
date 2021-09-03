@@ -46,8 +46,8 @@ public class FineStatisticsRecycleViewAdapter extends RecyclerView.Adapter<FineS
         Log.d(TAG, "onBindViewHolder: called");
         if (models.get(position) instanceof Match) {
             holder.tv_title.setText(((Match) models.get(position)).toStringNameWithOpponent());
-            holder.tv_text.setText("Počet pokut: " + ((Match) models.get(position)).getNumberOfFinesInMatch() + " v celkové výši: "
-                    + ((Match) models.get(position)).getAmountOfFinesInMatch() + " Kč");
+            holder.tv_text.setText("Počet pokut: " + ((Match) models.get(position)).returnNumberOfFinesInMatch() + " v celkové výši: "
+                    + ((Match) models.get(position)).returnAmountOfFinesInMatch() + " Kč");
         }
         else if (models.get(position) instanceof Player) {
             holder.tv_title.setText((models.get(position)).getName());

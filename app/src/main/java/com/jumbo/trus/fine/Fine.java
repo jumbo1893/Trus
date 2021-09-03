@@ -49,7 +49,7 @@ public class Fine extends Model {
     public int returnNumberOfFineInMatches(List<Match> matchList) {
         int count = 0;
         for (Match match : matchList) {
-            count += match.getNumberOfReceviedFineInMatch(this);
+            count += match.returnNumberOfReceviedFineInMatch(this);
         }
         return count;
     }
@@ -57,7 +57,7 @@ public class Fine extends Model {
     public int returnAmountOfFineInMatches(List<Match> matchList) {
         int count = 0;
         for (Match match : matchList) {
-            count += match.getAmountOfReceviedFineInMatch(this);
+            count += match.returnAmountOfReceviedFineInMatch(this);
         }
         return count;
     }

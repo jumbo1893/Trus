@@ -46,8 +46,8 @@ public class FinesPlayerNumberRecycleViewAdapter extends RecyclerView.Adapter<Fi
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         Log.d(TAG, "onBindViewHolder: called");
         holder.tv_title.setText(players.get(position).getName());
-        holder.tv_text.setText("Dostal " + players.get(position).getNumberOfReceviedFine(receivedFine) + " pokut " +
-        " v celkové výši " + players.get(position).getAmountOfReceviedFine(receivedFine) + " Kč");
+        holder.tv_text.setText("Dostal " + players.get(position).returnNumberOfReceviedFine(receivedFine) + " pokut " +
+        " v celkové výši " + players.get(position).returnAmountOfReceviedFine(receivedFine) + " Kč");
     }
 
     @Override

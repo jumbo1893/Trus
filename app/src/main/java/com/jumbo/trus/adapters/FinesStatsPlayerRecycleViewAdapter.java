@@ -46,8 +46,8 @@ public class FinesStatsPlayerRecycleViewAdapter extends RecyclerView.Adapter<Fin
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         Log.d(TAG, "onBindViewHolder: called");
         holder.tv_title.setText(((Match) matches.get(position)).toStringNameWithOpponent());
-        holder.tv_text.setText("Počet pokut pro hráče: " + players.get(position).getNumberOfAllReceviedFines() +
-        " v celkové výši " + players.get(position).getAmountOfAllReceviedFines() + " Kč");
+        holder.tv_text.setText("Počet pokut pro hráče: " + players.get(position).returnNumberOfAllReceviedFines() +
+        " v celkové výši " + players.get(position).returnAmountOfAllReceviedFines() + " Kč");
     }
 
     @Override

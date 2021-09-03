@@ -20,14 +20,14 @@ public class OrderByFineAmount implements Comparator<Model> {
             if (o1 instanceof Player && o2 instanceof Player) {
                 return ((Player) o2).getAmountOfFinesInMatches() - ((Player) o1).getAmountOfFinesInMatches();
             } else if (o1 instanceof Match && o2 instanceof Match) {
-                return ((Match) o2).getAmountOfFinesInMatch() - ((Match) o1).getAmountOfFinesInMatch() ;
+                return ((Match) o2).returnAmountOfFinesInMatch() - ((Match) o1).returnAmountOfFinesInMatch() ;
             }
         }
         else {
             if (o1 instanceof Player && o2 instanceof Player) {
                 return ((Player) o1).getAmountOfFinesInMatches() - ((Player) o2).getAmountOfFinesInMatches();
             } else if (o1 instanceof Match && o2 instanceof Match) {
-                return ((Match) o1).getAmountOfFinesInMatch()  - ((Match) o2).getAmountOfFinesInMatch() ;
+                return ((Match) o1).returnAmountOfFinesInMatch()  - ((Match) o2).returnAmountOfFinesInMatch() ;
             }
         }
         return 0;
