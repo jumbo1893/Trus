@@ -119,6 +119,7 @@ public class MatchDialog extends Dialog implements AdapterView.OnItemSelectedLis
         btn_potvrdit.setText("Upravit zápas");
         btn_smazat.setVisibility(View.VISIBLE);
         sw_switch.setText("domácí?");
+        sw_switch.setChecked(((Match) model).isHomeMatch());
     }
 
     private void initSpinnerSeasons() {

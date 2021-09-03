@@ -90,7 +90,8 @@ public class PlayerDialog extends Dialog {
         et_datum.setText(((Player)model).getBirthdayInStringFormat());
         btn_potvrdit.setText("Upravit hráče");
         btn_smazat.setVisibility(View.VISIBLE);
-        sw_switch.setText("domácí?");
+        sw_switch.setText("fanoušek?");
+        sw_switch.setChecked(((Player) model).isFan());
     }
 
 
