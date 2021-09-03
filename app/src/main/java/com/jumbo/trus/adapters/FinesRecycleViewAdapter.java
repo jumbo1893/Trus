@@ -1,5 +1,6 @@
 package com.jumbo.trus.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,10 +42,11 @@ public class FinesRecycleViewAdapter extends RecyclerView.Adapter<FinesRecycleVi
         return viewHolder;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         Log.d(TAG, "onBindViewHolder: called");
-        holder.tv_title.setText(fines.get(position).getFine().getName());
+        holder.tv_title.setText(fines.get(position).getFine().getName() + " (" + fines.get(position).getFine().getAmount() + " Kč)");
         holder.et_number.setText(String.valueOf(fines.get(position).getCount()));
     }
 
