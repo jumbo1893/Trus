@@ -21,7 +21,7 @@ import com.jumbo.trus.Model;
 import com.jumbo.trus.OnListListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.adapters.SimpleRecycleViewAdapter;
-import com.jumbo.trus.comparator.OrderByBeerNonplayerLast;
+import com.jumbo.trus.comparator.OrderByNonplayerThenBeerThenName;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.player.Player;
 
@@ -47,7 +47,7 @@ public class FinePlayerDialog extends Dialog implements OnListListener {
     public FinePlayerDialog(Model model) {
         super(model);
         selectedPlayers = ((Match) model).getPlayerListWithoutFans();
-        Collections.sort(selectedPlayers, new OrderByBeerNonplayerLast());
+        Collections.sort(selectedPlayers, new OrderByNonplayerThenBeerThenName());
     }
 
     @Nullable

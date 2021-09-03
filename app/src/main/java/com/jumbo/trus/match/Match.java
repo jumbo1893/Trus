@@ -270,6 +270,19 @@ public class Match extends Model {
         return count;
     }
 
+    /**
+     * metoda vezme existující playerList u tohoto mače a připojí k němu nový playerlist
+     * Stejné hráče nahradí z toho novýho listu, pokud neexistují, tak je přidá
+     * @param players noví hráči
+     */
+    public void mergePlayerLists(List<Player> players) {
+        for (Player player : players) {
+            playerList.remove(player);
+            playerList.add(player);
+
+        }
+    }
+
     public String toStringNameWithOpponent() {
         if (homeMatch) {
             return "Liščí trus - " + opponent;

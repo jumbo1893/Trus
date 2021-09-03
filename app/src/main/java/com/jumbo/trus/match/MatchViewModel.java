@@ -129,7 +129,7 @@ public class MatchViewModel extends ViewModel implements ChangeListener, INotifi
     public Result editMatchBeers(final List<Player> playerList, Match match) {
         isUpdating.setValue(true);
         Result result = new Result(false);
-        match.setPlayerList(playerList);
+        match.mergePlayerLists(playerList);
         try {
             firebaseRepository.editModel(match);
         }

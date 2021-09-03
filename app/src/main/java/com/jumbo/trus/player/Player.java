@@ -165,7 +165,6 @@ public class Player extends Model {
      */
     public void mergeFineLists(List<Fine> fines) {
         for (int i = 0; i < fines.size(); i++) {
-            Log.d(TAG, "mergeFineLists: receviedFines: " + receivedFines);
             Log.d(TAG, "mergeFineLists: fine: " + fines.get(i));
             if (!receivedFines.contains(fines.get(i))) {
                 addNewFine(fines.get(i));
