@@ -471,6 +471,32 @@ class RandomFact {
     }
 
     /**
+     * @return vrátí průměrný piv v domácím a venkovním zápase
+     */
+    public String getAverageNumberOfBeersInHomeAndAwayMatch() {
+        float homeBeerNumber = 0;
+        float awayBeerNumber = 0;
+        int homeMatches = 0;
+        for (Match match : matches) {
+            if (match.isHomeMatch()) {
+                homeBeerNumber += match.returnNumberOfBeersInMatch();
+                homeMatches++;
+            }
+            else {
+                awayBeerNumber += match.returnNumberOfBeersInMatch();
+            }
+
+        }
+        float homeAverage = homeBeerNumber/homeMatches;
+        float awayAverage = awayBeerNumber/(matches.size()-homeMatches);
+        String response = "Průměrně se na domácím zápase vypije " + homeAverage + " piv, oproti venkovním zápasům, kde je průměr " + awayAverage + " piv na zápas. ";
+        if (homeAverage > awayAverage) {
+            return response + "Tak to má být, soupeř musí prohrávat o 2 piva už u Průhonic!";
+        }
+        return response + "Není načase změnit domácí hospodu?";
+    }
+
+    /**
      * @return Vrací dosud nejvyšší účast jednom zápase spolu s podrobnými údaji
      */
     String getHighestAttendanceInMatch() {

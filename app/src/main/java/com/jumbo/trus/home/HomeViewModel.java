@@ -98,6 +98,7 @@ public class HomeViewModel extends ViewModel implements ChangeListener {
         randomFacts.add(fact.getAverageNumberOfBeersInMatch()); //vrátí průměrný počet vypitejch piv v jednom zápase
         randomFacts.add(fact.getMatchWithHighestAverageBeers()); //vrátí zápas s nejvyšším průměrem piv
         randomFacts.add(fact.getMatchWithLowestAverageBeers()); //vrátí zápas s nejnižším průměrem piv
+        randomFacts.add(fact.getAverageNumberOfBeersInHomeAndAwayMatch()); // vrátí průměrný piv v domácím a venkovním zápase
         randomFacts.add(fact.getHighestAttendanceInMatch()); //vrátí zápas s nejvyšší účastí
         randomFacts.add(fact.getLowestAttendanceInMatch()); //vrátí zápas s nejnižší účastí
         randomFacts.add(fact.getMatchWithBirthday()); //vrátí zápas na kterém někdo slavil narozky
