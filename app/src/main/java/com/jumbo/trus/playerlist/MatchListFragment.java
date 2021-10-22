@@ -212,21 +212,23 @@ public class MatchListFragment extends CustomUserFragment implements OnListListe
     @Override
     public boolean editMatch(List<Player> playerList, Match match) {
         Result result = matchViewModel.editMatchBeers(playerList, match);
-        Toast.makeText(getActivity(), result.getText(), Toast.LENGTH_SHORT).show();
+        matchViewModel.alertSent(result.getText());
         return result.isTrue();
     }
 
     @Override
     public boolean editPlayer(List<ReceivedFine> fineList, Player player, Match match) {
         Result result = matchViewModel.editMatchPlayerFines(fineList, player, match);
-        Toast.makeText(getActivity(), result.getText(), Toast.LENGTH_SHORT).show();
+        matchViewModel.alertSent(result.getText());
+        //Toast.makeText(getActivity(), result.getText(), Toast.LENGTH_SHORT).show();
         return result.isTrue();
     }
 
     @Override
     public boolean editMatchFines(List<Player> playerList, List<Fine> fineList, List<Integer> finesPlus, Match match) {
         Result result = matchViewModel.editMatchPlayersFines(playerList, fineList, finesPlus, match);
-        Toast.makeText(getActivity(), result.getText(), Toast.LENGTH_SHORT).show();
+        matchViewModel.alertSent(result.getText());
+        //Toast.makeText(getActivity(), result.getText(), Toast.LENGTH_SHORT).show();
         return result.isTrue();
     }
 

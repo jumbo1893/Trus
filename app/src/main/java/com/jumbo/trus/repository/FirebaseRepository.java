@@ -38,7 +38,7 @@ public class FirebaseRepository {
     public static final String FINE_TABLE = "fine";
     public static final String MATCH_TABLE = "match";
     public static final String USER_TABLE = "user";
-    public static final String NOTIFICATION_TABLE = "notification";
+    public static final String NOTIFICATION_TABLE = "notification_test";
 
     private FirebaseFirestore db;
     private CollectionReference collectionReference;
@@ -261,7 +261,7 @@ public class FirebaseRepository {
 
     public void addNotification(final Notification notification) {
         Log.d(TAG, "addNotification: " + notification);
-        CollectionReference crNotification = db.collection("notification");
+        CollectionReference crNotification = db.collection(NOTIFICATION_TABLE);
         DocumentReference newPlayerRef = crNotification.document();
 
         newPlayerRef.set(notification).addOnCompleteListener(new OnCompleteListener<Void>() {
