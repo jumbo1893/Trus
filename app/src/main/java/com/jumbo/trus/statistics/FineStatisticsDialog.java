@@ -252,4 +252,9 @@ public class FineStatisticsDialog extends Dialog implements AdapterView.OnItemSe
         fineStatisticsDialogDetail.show(getFragmentManager(), "dialogplus");
 
     }
+
+    @Override
+    public void onItemLongClick(int position) {
+
+    }
 }

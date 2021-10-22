@@ -33,6 +33,12 @@ import java.util.ArrayList;
 public class FirebaseRepository {
 
     private static final String TAG = "FirebaseRepository";
+    public static final String SEASON_TABLE = "season";
+    public static final String PLAYER_TABLE = "player";
+    public static final String FINE_TABLE = "fine";
+    public static final String MATCH_TABLE = "match";
+    public static final String USER_TABLE = "user";
+    public static final String NOTIFICATION_TABLE = "notification";
 
     private FirebaseFirestore db;
     private CollectionReference collectionReference;
@@ -112,7 +118,7 @@ public class FirebaseRepository {
 
     public void loadSeasonsFromRepository() {
         modelsDataSet = new ArrayList<>();
-        CollectionReference collectionReference1 = db.collection("season");
+        CollectionReference collectionReference1 = db.collection(SEASON_TABLE);
         collectionReference1.orderBy("seasonStart", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -136,7 +142,7 @@ public class FirebaseRepository {
 
     public void loadFinesFromRepository() {
         modelsDataSet = new ArrayList<>();
-        CollectionReference collectionReference1 = db.collection("fine");
+        CollectionReference collectionReference1 = db.collection(FINE_TABLE);
         collectionReference1.orderBy("name", Query.Direction.ASCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -160,7 +166,7 @@ public class FirebaseRepository {
 
     public void loadPlayersFromRepository() {
         modelsDataSet = new ArrayList<>();
-        CollectionReference collectionReference = db.collection("player");
+        CollectionReference collectionReference = db.collection(PLAYER_TABLE);
         collectionReference.orderBy("name", Query.Direction.ASCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -183,7 +189,7 @@ public class FirebaseRepository {
 
     public void loadMatchesFromRepository() {
         modelsDataSet = new ArrayList<>();
-        CollectionReference collectionReference = db.collection("match");
+        CollectionReference collectionReference = db.collection(MATCH_TABLE);
         collectionReference.orderBy("dateOfMatch", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -207,7 +213,7 @@ public class FirebaseRepository {
 
     public void loadUsersFromRepository() {
         modelsDataSet = new ArrayList<>();
-        CollectionReference collectionReference = db.collection("user");
+        CollectionReference collectionReference = db.collection(USER_TABLE);
         collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -231,7 +237,7 @@ public class FirebaseRepository {
 
     public void loadNotificationsFromRepository() {
         modelsDataSet = new ArrayList<>();
-        CollectionReference crNotification = db.collection("notification");
+        CollectionReference crNotification = db.collection(NOTIFICATION_TABLE);
         crNotification.orderBy("timestamp", Query.Direction.DESCENDING).limit(50).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {

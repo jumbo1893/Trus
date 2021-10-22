@@ -22,7 +22,7 @@ public class NotificationViewModel extends ViewModel implements NotificationList
     private FirebaseRepository firebaseRepository;
 
     public void init() {
-        firebaseRepository = new FirebaseRepository("notification", this);
+        firebaseRepository = new FirebaseRepository(FirebaseRepository.NOTIFICATION_TABLE, this);
         if (notifications == null) {
             notifications = new MutableLiveData<>();
             firebaseRepository.loadNotificationsFromRepository();

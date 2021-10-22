@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +25,7 @@ import com.jumbo.trus.Model;
 import com.jumbo.trus.OnPlusButtonListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.adapters.FinesRecycleViewAdapter;
+import com.jumbo.trus.adapters.MultiFinesRecycleViewAdapter;
 import com.jumbo.trus.comparator.OrderByNonplayerFine;
 import com.jumbo.trus.fine.Fine;
 import com.jumbo.trus.fine.FineViewModel;
@@ -50,14 +52,21 @@ public class AddFineDialog extends Dialog implements OnPlusButtonListener {
     private List<ReceivedFine> playerFines;
     private List<Integer> finesCompesation;
     private FinesRecycleViewAdapter adapter;
+    private MultiFinesRecycleViewAdapter multiAdapter;
     private boolean commit = false;
     private FineViewModel fineViewModel;
-    private Match match;
+    private Player player; //pokud je player null, tak se rozdávají multi-pokuty. Poznávací znamení
+    private List<Player> multiPlayers;
 
 
-    public AddFineDialog(Model model, Match match) {
-        super(model);
-        this.match = match;
+    public AddFineDialog(Model match, Player player) {
+        super(match);
+        this.player = player;
+    }
+
+    public AddFineDialog(Model match, List<Player> multiPlayers) {
+        super(match);
+        this.multiPlayers = multiPlayers;
     }
 
     @Nullable
@@ -75,24 +84,28 @@ public class AddFineDialog extends Dialog implements OnPlusButtonListener {
             @Override
             public void onChanged(List<Fine> fines) {
                 Log.d(TAG, "onChanged: nacetly se pokuty " + fines);
-                ((Player)model).mergeFineLists(fines);
-                if (((Player) model).isMatchParticipant()) {
-                    Collections.sort(((Player) model).getReceivedFines(), new OrderByNonplayerFine(true));
+                if (player != null) {
+                    player.mergeFineLists(fines);
+                    if (player.isMatchParticipant()) {
+                        Collections.sort(player.getReceivedFines(), new OrderByNonplayerFine(true));
+                    } else {
+                        Collections.sort(player.getReceivedFines(), new OrderByNonplayerFine(false));
+                    }
+                    playerFines = player.getReceivedFines();
+                    initFineCompensation();
+                    initRecycleView();
+                    setAdapter();
+                    adapter.notifyDataSetChanged(); //TODO notifyItemInserted
                 }
                 else {
-                    Collections.sort(((Player) model).getReceivedFines(), new OrderByNonplayerFine(false));
+                    for (Player player : multiPlayers) {
+                        player.mergeFineLists(fines);
+                    }
+                    initMultiRecycleView(fines);
+                    setMultiAdapter();
                 }
-                playerFines = ((Player)model).getReceivedFines();
-                Log.d(TAG, "onChanged: " + ((Player)model).getReceivedFines());
-                initFineCompensation();
-                initRecycleView();
-
-                setAdapter();
-                adapter.notifyDataSetChanged(); //TODO notifyItemInserted
             }
         });
-        //initFineCompensation();
-        //initRecycleView();
 
         return view;
     }
@@ -103,10 +116,33 @@ public class AddFineDialog extends Dialog implements OnPlusButtonListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_commit: {
-                if (iChangeFineListListener.editPlayer(playerFines, (Player) model, match)) {
-                    commit = true;
-                    iNotificationSender.sendNotificationToRepository(new Notification(match, (Player) model, playerFines, finesCompesation));
-                    getDialog().dismiss();
+                if (player != null) {
+                    if (iChangeFineListListener.editPlayer(playerFines, player, (Match) model)) {
+                        commit = true;
+                        iNotificationSender.sendNotificationToRepository(new Notification((Match) model, player, playerFines, finesCompesation));
+                        getDialog().dismiss();
+                    }
+                }
+                else {
+                    StringBuilder notificationText = new StringBuilder();
+                    StringBuilder notificationTitle = new StringBuilder("V zápase proti " + ((Match) model).getOpponent() + " byly změněny pokuty u hráčů: ");
+                    //pro notifikaci, ať to neprojíždí přes všechny hráče
+                    for (int i = 0; i < multiAdapter.getItemCount(); i++) {
+                        int count =  multiAdapter.getFinesNumber().get(i);
+                        if (count > 0) {
+                            notificationText.append(multiAdapter.getFines().get(i).getName()).append(" navýšeno o ").append(count).append("\n");
+
+                        }
+                    }
+                    for (Player player : multiPlayers) {
+                      notificationTitle.append(player.getName() + ", ");
+                    }
+                    if (iChangeFineListListener.editMatchFines(multiPlayers, multiAdapter.getFines(), multiAdapter.getFinesNumber(), (Match) model)) {
+                        commit = true;
+                        Notification notification = new Notification(notificationTitle.toString(), notificationText.toString());
+                        iNotificationSender.sendNotificationToRepository(notification);
+                        getDialog().dismiss();
+                    }
                 }
                 break;
             }
@@ -122,9 +158,18 @@ public class AddFineDialog extends Dialog implements OnPlusButtonListener {
         adapter = new FinesRecycleViewAdapter(playerFines, getActivity(), this);
     }
 
+    private void initMultiRecycleView(List<Fine> fines) {
+        multiAdapter = new MultiFinesRecycleViewAdapter(fines, getActivity());
+    }
+
+    private void setMultiAdapter() {
+        rc_players.setAdapter(multiAdapter);
+        rc_players.setLayoutManager(new LinearLayoutManager(getActivity()));
+    }
+
     private void initFineCompensation() {
         finesCompesation = new ArrayList<>();
-        for (ReceivedFine receivedFine : ((Player)model).getReceivedFines()) {
+        for (ReceivedFine receivedFine : player.getReceivedFines()) {
             finesCompesation.add(receivedFine.getCount());
         }
     }
@@ -155,7 +200,7 @@ public class AddFineDialog extends Dialog implements OnPlusButtonListener {
 
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
-        if (!commit) {
+        if (!commit && (player != null)) {
             returnOriginalFineNumber();
         }
         super.onDismiss(dialog);

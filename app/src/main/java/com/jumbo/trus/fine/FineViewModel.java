@@ -29,7 +29,7 @@ public class FineViewModel extends ViewModel implements ChangeListener, INotific
 
 
     public void init() {
-        firebaseRepository = new FirebaseRepository("fine", this);
+        firebaseRepository = new FirebaseRepository(FirebaseRepository.FINE_TABLE, this);
         if (fines == null) {
             fines = new MutableLiveData<>();
             firebaseRepository.loadFinesFromRepository();

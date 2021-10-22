@@ -192,6 +192,11 @@ public class MatchFragment extends CustomUserFragment implements OnListListener,
         matchDialog.show(getParentFragmentManager(), "dialogplus");
     }
 
+    @Override
+    public void onItemLongClick(int position) {
+
+    }
+
 
     @Override
     public boolean createNewMatch(String opponent, String date, boolean homeMatch, Season season, List<Player> playerList) {

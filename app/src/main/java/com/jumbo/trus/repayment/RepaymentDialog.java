@@ -139,4 +139,9 @@ public class RepaymentDialog extends DialogFragment implements View.OnClickListe
     public void onItemClick(int position) {
         displayDeleteConfirmationDialog(player.getRepayments().get(position));
     }
+
+    @Override
+    public void onItemLongClick(int position) {
+
+    }
 }

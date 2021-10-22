@@ -117,6 +117,11 @@ public class PlayerFragment extends CustomUserFragment implements OnListListener
     }
 
     @Override
+    public void onItemLongClick(int position) {
+
+    }
+
+    @Override
     public boolean createNewPlayer(String name, String birthday, boolean fan) {
 
         Result result = playerViewModel.checkNewPlayerValidation(name, birthday);

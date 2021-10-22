@@ -25,6 +25,7 @@ import com.jumbo.trus.R;
 import com.jumbo.trus.Result;
 import com.jumbo.trus.SimpleDividerItemDecoration;
 import com.jumbo.trus.adapters.SimpleRecycleViewAdapter;
+import com.jumbo.trus.fine.Fine;
 import com.jumbo.trus.fine.ReceivedFine;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.match.MatchViewModel;
@@ -185,6 +186,11 @@ public class MatchListFragment extends CustomUserFragment implements OnListListe
         }
     }
 
+    @Override
+    public void onItemLongClick(int position) {
+
+    }
+
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -213,6 +219,13 @@ public class MatchListFragment extends CustomUserFragment implements OnListListe
     @Override
     public boolean editPlayer(List<ReceivedFine> fineList, Player player, Match match) {
         Result result = matchViewModel.editMatchPlayerFines(fineList, player, match);
+        Toast.makeText(getActivity(), result.getText(), Toast.LENGTH_SHORT).show();
+        return result.isTrue();
+    }
+
+    @Override
+    public boolean editMatchFines(List<Player> playerList, List<Fine> fineList, List<Integer> finesPlus, Match match) {
+        Result result = matchViewModel.editMatchPlayersFines(playerList, fineList, finesPlus, match);
         Toast.makeText(getActivity(), result.getText(), Toast.LENGTH_SHORT).show();
         return result.isTrue();
     }

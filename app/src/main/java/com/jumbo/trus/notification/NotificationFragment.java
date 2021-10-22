@@ -111,4 +111,9 @@ public class NotificationFragment extends Fragment implements OnListListener {
                 }).show();
         builder.create();
     }
+
+    @Override
+    public void onItemLongClick(int position) {
+
+    }
 }

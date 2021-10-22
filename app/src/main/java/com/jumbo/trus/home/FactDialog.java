@@ -77,4 +77,9 @@ public class FactDialog extends DialogFragment implements View.OnClickListener, 
     public void onItemClick(int position) {
         //dialog_fine_statistics_detail
     }
+
+    @Override
+    public void onItemLongClick(int position) {
+
+    }
 }

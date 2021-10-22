@@ -32,7 +32,7 @@ public class SeasonsViewModel extends ViewModel implements ChangeListener, INoti
 
 
     public void init() {
-        firebaseRepository = new FirebaseRepository("season", this);
+        firebaseRepository = new FirebaseRepository(FirebaseRepository.SEASON_TABLE, this);
         if (seasons == null) {
             seasons = new MutableLiveData<>();
             firebaseRepository.loadSeasonsFromRepository();

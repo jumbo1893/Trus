@@ -117,4 +117,9 @@ public class FineStatisticsDialogDetail extends Dialog implements OnListListener
     public void onItemClick(int position) {
         //dialog_fine_statistics_detail
     }
+
+    @Override
+    public void onItemLongClick(int position) {
+
+    }
 }

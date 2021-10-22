@@ -30,7 +30,7 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
     private PasswordEncryption encryption;
 
     public void init() {
-        firebaseRepository = new FirebaseRepository("user", this);
+        firebaseRepository = new FirebaseRepository(FirebaseRepository.USER_TABLE, this);
         encryption = new PasswordEncryption();
         if (users == null) {
             users = new MutableLiveData<>();

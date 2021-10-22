@@ -13,6 +13,7 @@ import com.jumbo.trus.INotificationSender;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.Result;
 import com.jumbo.trus.Validator;
+import com.jumbo.trus.fine.Fine;
 import com.jumbo.trus.fine.ReceivedFine;
 import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.player.Player;
@@ -35,7 +36,7 @@ public class MatchViewModel extends ViewModel implements ChangeListener, INotifi
     private FirebaseRepository firebaseRepository;
 
     public void init() {
-        firebaseRepository = new FirebaseRepository("match", this);
+        firebaseRepository = new FirebaseRepository(FirebaseRepository.MATCH_TABLE, this);
         if (matches == null) {
             matches = new MutableLiveData<>();
             firebaseRepository.loadMatchesFromRepository();
@@ -141,6 +142,40 @@ public class MatchViewModel extends ViewModel implements ChangeListener, INotifi
         }
 
         result.setText("Měním pivka u zápasu se soupeřem " + match.getOpponent());
+        result.setTrue(true);
+        return result;
+    }
+
+    public Result editMatchPlayersFines (List<Player> playerList, List<Fine> fineList, List<Integer> finesPlus, Match match) {
+        isUpdating.setValue(true);
+        Result result = new Result(false);
+        StringBuilder resultText = new StringBuilder();
+        for (Player player : playerList) {
+            for (int i = 0; i < fineList.size(); i++) {
+                int count =  finesPlus.get(i);
+                if (count > 0) {
+                    if(!player.addNewFineCount(fineList.get(i), count)) {
+                        resultText.append("Nelze přidat pokutu ").append(fineList.get(i).getName()).append(" hráči ").append(player.getName()).append(". Pravděpodobně ji nemá v repertoáru\n");
+                        Log.d(TAG, "onClick: Chyba při přidávání pokut " + fineList.get(i).getName() + " hráči " + player.getName());
+                    }
+                }
+            }
+        }
+        match.mergePlayerLists(playerList);
+        try {
+            firebaseRepository.editModel(match);
+        }
+        catch (Exception e) {
+            Log.e(TAG, "editMatchInRepository: toto by nemělo nastat, ošetřeno validací", e);
+            result.setText("Něco se posralo při přidávání do db, zkus to znova");
+            isUpdating.setValue(true);
+            return result;
+        }
+        resultText.append("Měním pokuty u zápasu se soupeřem " + match.getOpponent() + " u hráčů: ");
+        for (Player player : playerList) {
+            resultText.append(player.getName() + ", ");
+        }
+        result.setText(resultText.toString());
         result.setTrue(true);
         return result;
     }

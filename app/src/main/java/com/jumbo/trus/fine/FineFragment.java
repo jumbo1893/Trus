@@ -125,6 +125,10 @@ public class FineFragment extends CustomUserFragment implements OnListListener, 
         dialog.show(getParentFragmentManager(), "dialogplus");
     }
 
+    @Override
+    public void onItemLongClick(int position) {
+
+    }
 
 
     @Override

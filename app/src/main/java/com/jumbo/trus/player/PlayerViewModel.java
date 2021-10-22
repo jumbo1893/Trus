@@ -32,7 +32,7 @@ public class PlayerViewModel extends ViewModel implements ChangeListener, INotif
     private FirebaseRepository firebaseRepository;
 
     public void init() {
-        firebaseRepository = new FirebaseRepository("player", this);
+        firebaseRepository = new FirebaseRepository(FirebaseRepository.PLAYER_TABLE, this);
         if (players == null) {
             players = new MutableLiveData<>();
             firebaseRepository.loadPlayersFromRepository();

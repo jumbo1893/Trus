@@ -284,6 +284,11 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
         fineStatisticsDialog.show(getFragmentManager(), "dialogplus");
     }
 
+    @Override
+    public void onItemLongClick(int position) {
+
+    }
+
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

@@ -146,6 +146,11 @@ public class RepaymentFragment extends CustomUserFragment implements OnListListe
     }
 
     @Override
+    public void onItemLongClick(int position) {
+
+    }
+
+    @Override
     public boolean createNewRepayment(int amount, String note, Player player) {
         if (playerViewModel.editPlayerRepaymentsInRepository(amount, note, player)) {
             String text = "Částka: " + amount + " Kč " + (!note.isEmpty() ? ", poznámka: " + note : "");

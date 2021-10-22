@@ -129,6 +129,11 @@ public class SeasonsFragment extends CustomUserFragment implements OnListListene
     }
 
     @Override
+    public void onItemLongClick(int position) {
+
+    }
+
+    @Override
     public boolean createNewSeason(String name, String seasonStart, String seasonEnd) {
 
         Result result = seasonsViewModel.checkNewSeasonValidation(name, seasonStart, seasonEnd, null);

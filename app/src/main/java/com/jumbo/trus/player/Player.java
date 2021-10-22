@@ -158,6 +158,16 @@ public class Player extends Model {
         receivedFines.add(new ReceivedFine(fine, 0));
     }
 
+    public boolean addNewFineCount(Fine fine, int count) {
+        for (ReceivedFine receivedFine : receivedFines) {
+            if (receivedFine.getFine().equals(fine)) {
+                receivedFine.addFineCount(count);
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * metoda vezme dostupné pokuty a přidá je již k existujícím pokutám co má hráč
      * Pokud jsou pokuty stejné, tak zůstane ta co má hráč (včetně výše, atd.)
