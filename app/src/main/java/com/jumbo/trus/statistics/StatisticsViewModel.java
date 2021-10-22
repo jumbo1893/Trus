@@ -21,10 +21,15 @@ public class StatisticsViewModel extends ViewModel {
      * @param playerList hráči, které chceme obohatit počtem piv ze zápasů
      * @param matchList zápasy, kterými obohacujeme počet piv
      */
-    public void enhancePlayersWithBeersFromMatches(List<Player> playerList, List<Match> matchList) {
+    public List<Player> enhancePlayersWithBeersFromMatches(List<Player> playerList, List<Match> matchList) {
+        List<Player> returnPlayers = new ArrayList<>();
         for (Player player : playerList) {
-            player.calculateAllBeersNumber(matchList);
+            returnPlayers.add(player);
         }
+        for (Player player : returnPlayers) {
+          player.calculateAllBeersNumber(matchList);
+        }
+        return returnPlayers;
     }
     /**
      * nutno zavolat pokud chceme vědět počet pokut/výši ze všech zvolených zápasů pro zobrazení v recycleview

@@ -50,12 +50,18 @@ public class BeerStatisticsDialog extends Dialog implements AdapterView.OnItemSe
     private List<String> seasonsNames = new ArrayList<>();
     private List<String> playerSpinnerOptions = new ArrayList<>();
 
-    private int spinnerPosition = 0;
-    private boolean userSelect = false;
+    private int spinnerPosition;
+    private int firstSpinnerPosition;
 
+
+    public BeerStatisticsDialog(Flag flag, Model model, int spinnerPosition) {
+        super(flag, model);
+        this.firstSpinnerPosition = spinnerPosition;
+    }
 
     public BeerStatisticsDialog(Flag flag, Model model) {
         super(flag, model);
+        spinnerPosition = 0;
     }
 
     @Nullable
@@ -79,28 +85,12 @@ public class BeerStatisticsDialog extends Dialog implements AdapterView.OnItemSe
 
         btn_commit.setOnClickListener(this);
 
-        /*seasonsViewModel.getSeasons().observe(this, new Observer<List<Season>>() {
-            @Override
-            public void onChanged(List<Season> seasons) {
-                Log.d(TAG, "onChanged: nacetli se sezony " + seasons);
-                if (seasonArrayAdapter == null) {
-                    initSpinnerSeasons();
-                }
-                seasonsNames.clear();
-                seasonsNames.add("Všechny sezony");
-                for (Season season : seasons) {
-                    seasonsNames.add(season.getName());
-                }
-                setSpinnerAdapter();
-                seasonArrayAdapter.notifyDataSetChanged(); //TODO notifyItemInserted
-            }
-        });*/
-
         return view;
     }
 
     private void useSeasonsFilter(List<Match> matches) {
         Log.d(TAG, "useSeasonsFilter: " + matches);
+        Log.d(TAG, "useSeasonsFilter: " + spinnerPosition);
         if (spinnerPosition == 0) {
             selectedMatches = matches;
             return;
@@ -223,7 +213,13 @@ public class BeerStatisticsDialog extends Dialog implements AdapterView.OnItemSe
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        spinnerPosition = position;
+        if (firstSpinnerPosition != 0) {
+            spinnerPosition = firstSpinnerPosition;
+            firstSpinnerPosition = 0;
+        }
+        else {
+            spinnerPosition = position;
+        }
         switch (flag) {
             case PLAYER:
                 useSeasonsFilter(matchViewModel.getMatches().getValue());

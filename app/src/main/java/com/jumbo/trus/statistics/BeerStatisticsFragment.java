@@ -83,7 +83,7 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
         progress_bar = view.findViewById(R.id.progress_bar);
         btn_search = view.findViewById(R.id.btn_search);
         et_search = view.findViewById(R.id.et_search);
-        addPlayerSpinnerOptions();
+        //addPlayerSpinnerOptions();
         initSpinnerSeasons();
         setSpinnerAdapter();
         statisticsViewModel = new ViewModelProvider(requireActivity()).get(StatisticsViewModel.class);
@@ -126,8 +126,9 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
             @Override
             public void onChanged(List<Player> hraci) {
                 Log.d(TAG, "onChanged: nacetli se hraci " + hraci);
-                usePlayerFilter(hraci);
+                selectedPlayers = hraci;
                 if (adapter == null && checkedPlayers) {
+                    enhancePlayersFromStatisticViewModel();
                     initRecycleViewForPlayers();
                     setAdapter();
                     adapter.notifyDataSetChanged(); //TODO notifyItemInserted
@@ -182,25 +183,11 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
         }
     }
 
-    private void usePlayerFilter(List<Player> players) {
-        Log.d(TAG, "usePlayerFilter: " + players);
-        if (spinnerPosition == 0) {
-            selectedPlayers = players;
-            return;
-        }
-        selectedPlayers = new ArrayList<>();
-        if (spinnerPosition == 1) {
-
-        }
-        for (Player player : players) {
-            if (!player.isFan() && spinnerPosition == 1) {
-                selectedPlayers.add(player);
-            }
-            else if (player.isFan() && spinnerPosition == 2) {
-                selectedPlayers.add(player);
-            }
-        }
+    private void enhancePlayersFromStatisticViewModel() {
+        selectedPlayers = statisticsViewModel.enhancePlayersWithBeersFromMatches(playerViewModel.getPlayers().getValue(), selectedMatches);
     }
+
+
     private void setSpinnerAdapter() {
         sp_select_player_season.setAdapter(seasonArrayAdapter);
     }
@@ -209,7 +196,7 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
         seasonArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, seasonsNames);
         seasonArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     }
-    private void initSpinnerPlayers() {
+    /*private void initSpinnerPlayers() {
         seasonArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, playerSpinnerOptions);
         seasonArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     }
@@ -219,11 +206,10 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
         playerSpinnerOptions.add("Zobraz vše");
         playerSpinnerOptions.add("Hráči");
         playerSpinnerOptions.add("Fanoušci");
-    }
+    }*/
 
     private void initRecycleViewForPlayers() {
         Log.d(TAG, "initRecycleViewForPlayers: " + matchViewModel.getMatches().getValue());
-        statisticsViewModel.enhancePlayersWithBeersFromMatches(selectedPlayers, matchViewModel.getMatches().getValue());
         adapter = new BeerStatisticsRecycleViewAdapter(selectedPlayers, getActivity(), this);
     }
 
@@ -262,7 +248,7 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
         alert.show();
     }
 
-        private void displayOverallPlayerDialog() {
+    private void displayOverallPlayerDialog() {
         Log.d(TAG, "displayOverallPlayerDialog zobrazen");
         String text = "Celkový počet piv u zobrazených hráčů: " + statisticsViewModel.countNumberOfAllBeers(selectedPlayers,
                 matchViewModel.getMatches().getValue());
@@ -287,7 +273,7 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
         Log.d(TAG, "onHracClick: kliknuto na pozici " + position + ", object: " + playerViewModel.getPlayers().getValue());
         BeerStatisticsDialog beerStatisticsDialog;
         if (checkedPlayers) {
-            beerStatisticsDialog = new BeerStatisticsDialog(Flag.PLAYER, selectedPlayers.get(position));
+            beerStatisticsDialog = new BeerStatisticsDialog(Flag.PLAYER, selectedPlayers.get(position), spinnerPosition);
         }
         else {
             beerStatisticsDialog = new BeerStatisticsDialog(Flag.MATCH, selectedMatches.get(position));
@@ -308,8 +294,8 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
         if (isChecked) {
             checkedPlayers = true;
             sw_player_match.setText("Přepni pro zobrazení zápasů");
-            initSpinnerPlayers();
             setSpinnerAdapter();
+            enhancePlayersFromStatisticViewModel();
             initRecycleViewForPlayers();
             setAdapter();
         }
@@ -327,14 +313,14 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         Log.d(TAG, "onItemSelected: sezona " + parent.getItemAtPosition(position) + position);
         spinnerPosition = position;
+        useSeasonsFilter(matchViewModel.getMatches().getValue());
         if (adapter != null && !checkedPlayers) {
-            useSeasonsFilter(matchViewModel.getMatches().getValue());
             initRecycleViewForMatches();
             setAdapter();
             adapter.notifyDataSetChanged();
         }
         else if (adapter != null) {
-            usePlayerFilter(playerViewModel.getPlayers().getValue());
+            enhancePlayersFromStatisticViewModel();
             initRecycleViewForPlayers();
             setAdapter();
             adapter.notifyDataSetChanged();
@@ -371,7 +357,7 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
             }
             case R.id.btn_search: {
                 if (checkedPlayers) {
-                    usePlayerFilter(playerViewModel.getPlayers().getValue());
+                    enhancePlayersFromStatisticViewModel();
                     selectedPlayers = statisticsViewModel.filterPlayers(selectedPlayers, et_search.getText().toString());
                     initRecycleViewForPlayers();
                     setAdapter();
