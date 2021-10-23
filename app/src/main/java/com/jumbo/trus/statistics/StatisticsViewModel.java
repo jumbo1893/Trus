@@ -36,10 +36,17 @@ public class StatisticsViewModel extends ViewModel {
      * @param playerList hráči, které chceme obohatit počtem/výší pokut ze zápasů
      * @param matchList zápasy, kterými obohacujeme počet pokut
      */
-    public void enhancePlayersWithFinesFromMatches(List<Player> playerList, List<Match> matchList) {
+    public List<Player> enhancePlayersWithFinesFromMatches(List<Player> playerList, List<Match> matchList) {
+        List<Player> returnPlayers = new ArrayList<>();
         for (Player player : playerList) {
+            if (!player.isFan()) {
+                returnPlayers.add(player);
+            }
+        }
+        for (Player player : returnPlayers) {
             player.calculateAllFinesNumber(matchList);
         }
+        return returnPlayers;
     }
 
     /**
@@ -128,7 +135,7 @@ public class StatisticsViewModel extends ViewModel {
     public List<Player> filterPlayers (List<Player> players, String searchText) {
         List<Player> filteredPlayers = new ArrayList<>();
         for (Player player : players) {
-            if (player.getName().contains(searchText) || player.getBirthdayInStringFormat().contains(searchText)) {
+            if (player.getName().toLowerCase().contains(searchText.toLowerCase()) || player.getBirthdayInStringFormat().contains(searchText)) {
                 filteredPlayers.add(player);
             }
         }
@@ -138,7 +145,7 @@ public class StatisticsViewModel extends ViewModel {
     public List<Match> filterMatches (List<Match> matches, String searchText) {
         List<Match> filteredMatches = new ArrayList<>();
         for (Match match : matches) {
-            if (match.getOpponent().contains(searchText) || match.getDateOfMatchInStringFormat().contains(searchText)) {
+            if (match.getOpponent().toLowerCase().contains(searchText.toLowerCase()) || match.getDateOfMatchInStringFormat().contains(searchText)) {
                 filteredMatches.add(match);
             }
         }

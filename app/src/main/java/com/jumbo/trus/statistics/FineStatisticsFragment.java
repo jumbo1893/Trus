@@ -61,7 +61,6 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
     private List<Player> selectedPlayers;
     private List<Match> selectedMatches;
     private List<String> seasonsNames = new ArrayList<>();
-    private List<String> playerSpinnerOptions = new ArrayList<>();
 
     private boolean checkedPlayers = false;
     private boolean orderByDesc = true;
@@ -85,7 +84,6 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
         progress_bar = view.findViewById(R.id.progress_bar);
         btn_search = view.findViewById(R.id.btn_search);
         et_search = view.findViewById(R.id.et_search);
-        addPlayerSpinnerOptions();
         initSpinnerSeasons();
         setSpinnerAdapter();
         statisticsViewModel = new ViewModelProvider(requireActivity()).get(StatisticsViewModel.class);
@@ -128,8 +126,9 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
             @Override
             public void onChanged(List<Player> hraci) {
                 Log.d(TAG, "onChanged: nacetli se hraci " + hraci);
-                usePlayerFilter(hraci);
+                selectedPlayers = hraci;
                 if (adapter == null && checkedPlayers) {
+                    enhancePlayersFromStatisticViewModel();
                     initRecycleViewForPlayers();
                     setAdapter();
                     adapter.notifyDataSetChanged(); //TODO notifyItemInserted
@@ -183,16 +182,6 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
             }
         }
     }
-
-    private void usePlayerFilter(List<Player> players) {
-        Log.d(TAG, "usePlayerFilter: " + players);
-        selectedPlayers = new ArrayList<>();
-        for (Player player : players) {
-            if (!player.isFan()) {
-                selectedPlayers.add(player);
-            }
-        }
-    }
     private void setSpinnerAdapter() {
         sp_select_player_season.setAdapter(seasonArrayAdapter);
     }
@@ -202,16 +191,8 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
         seasonArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     }
 
-    private void addPlayerSpinnerOptions() {
-        playerSpinnerOptions.clear();
-        playerSpinnerOptions.add("Zobraz vše");
-        playerSpinnerOptions.add("Hráči");
-        playerSpinnerOptions.add("Fanoušci");
-    }
-
     private void initRecycleViewForPlayers() {
         Log.d(TAG, "initRecycleViewForPlayers: " + matchViewModel.getMatches().getValue());
-        statisticsViewModel.enhancePlayersWithFinesFromMatches(selectedPlayers, matchViewModel.getMatches().getValue());
         adapter = new FineStatisticsRecycleViewAdapter(selectedPlayers, getActivity(), this);
     }
 
@@ -270,12 +251,16 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
         alert.show();
     }
 
+    private void enhancePlayersFromStatisticViewModel() {
+        selectedPlayers = statisticsViewModel.enhancePlayersWithFinesFromMatches(playerViewModel.getPlayers().getValue(), selectedMatches);
+    }
+
     @Override
     public void onItemClick(int position) {
         Log.d(TAG, "onItemClick: kliknuto na pozici " + position + ", object: " + playerViewModel.getPlayers().getValue() + checkedPlayers);
         FineStatisticsDialog fineStatisticsDialog;
         if (checkedPlayers) {
-            fineStatisticsDialog = new FineStatisticsDialog(Flag.PLAYER, selectedPlayers.get(position));
+            fineStatisticsDialog = new FineStatisticsDialog(Flag.PLAYER, selectedPlayers.get(position), spinnerPosition);
         }
         else {
             fineStatisticsDialog = new FineStatisticsDialog(Flag.MATCH, selectedMatches.get(position));
@@ -293,19 +278,18 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         Log.d(TAG, "onCheckedChanged: " + isChecked);
+        setSpinnerAdapter();
         if (isChecked) {
             checkedPlayers = true;
             sw_player_match.setText("Přepni pro zobrazení zápasů");
-            sp_select_player_season.setVisibility(View.INVISIBLE);
+            enhancePlayersFromStatisticViewModel();
             initRecycleViewForPlayers();
             setAdapter();
         }
         else {
             checkedPlayers = false;
             sw_player_match.setText("Přepni pro zobrazení hráčů");
-            sp_select_player_season.setVisibility(View.VISIBLE);
-            initSpinnerSeasons();
-            setSpinnerAdapter();
+            //initSpinnerSeasons();
             initRecycleViewForMatches();
             setAdapter();
         }
@@ -315,9 +299,15 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         Log.d(TAG, "onItemSelected: sezona " + parent.getItemAtPosition(position) + position);
         spinnerPosition = position;
+        useSeasonsFilter(matchViewModel.getMatches().getValue());
         if (adapter != null && !checkedPlayers) {
-            useSeasonsFilter(matchViewModel.getMatches().getValue());
             initRecycleViewForMatches();
+            setAdapter();
+            adapter.notifyDataSetChanged();
+        }
+        else if (adapter != null) {
+            enhancePlayersFromStatisticViewModel();
+            initRecycleViewForPlayers();
             setAdapter();
             adapter.notifyDataSetChanged();
         }
@@ -353,7 +343,7 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
             }
             case R.id.btn_search: {
                 if (checkedPlayers) {
-                    usePlayerFilter(playerViewModel.getPlayers().getValue());
+                    enhancePlayersFromStatisticViewModel();
                     selectedPlayers = statisticsViewModel.filterPlayers(selectedPlayers, et_search.getText().toString());
                     initRecycleViewForPlayers();
                     setAdapter();

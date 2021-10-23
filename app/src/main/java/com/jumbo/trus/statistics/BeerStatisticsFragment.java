@@ -83,7 +83,6 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
         progress_bar = view.findViewById(R.id.progress_bar);
         btn_search = view.findViewById(R.id.btn_search);
         et_search = view.findViewById(R.id.et_search);
-        //addPlayerSpinnerOptions();
         initSpinnerSeasons();
         setSpinnerAdapter();
         statisticsViewModel = new ViewModelProvider(requireActivity()).get(StatisticsViewModel.class);
@@ -196,17 +195,6 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
         seasonArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, seasonsNames);
         seasonArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     }
-    /*private void initSpinnerPlayers() {
-        seasonArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, playerSpinnerOptions);
-        seasonArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-    }
-
-    private void addPlayerSpinnerOptions() {
-        playerSpinnerOptions.clear();
-        playerSpinnerOptions.add("Zobraz vše");
-        playerSpinnerOptions.add("Hráči");
-        playerSpinnerOptions.add("Fanoušci");
-    }*/
 
     private void initRecycleViewForPlayers() {
         Log.d(TAG, "initRecycleViewForPlayers: " + matchViewModel.getMatches().getValue());

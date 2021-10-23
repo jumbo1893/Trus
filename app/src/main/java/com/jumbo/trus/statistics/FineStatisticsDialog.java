@@ -63,10 +63,18 @@ public class FineStatisticsDialog extends Dialog implements AdapterView.OnItemSe
 
     private List<String> seasonsNames = new ArrayList<>();
 
-    private int spinnerPosition = 0;
+    private int spinnerPosition;
+    private int firstSpinnerPosition;
+
+    public FineStatisticsDialog(Flag flag, Model model, int spinnerPosition) {
+        super(flag, model);
+        this.firstSpinnerPosition = spinnerPosition;
+        Log.d(TAG, "FineStatisticsDialog: " + flag + model);
+    }
 
     public FineStatisticsDialog(Flag flag, Model model) {
         super(flag, model);
+        spinnerPosition = 0;
         Log.d(TAG, "FineStatisticsDialog: " + flag + model);
     }
 
@@ -227,7 +235,13 @@ public class FineStatisticsDialog extends Dialog implements AdapterView.OnItemSe
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        spinnerPosition = position;
+        if (firstSpinnerPosition != 0) {
+            spinnerPosition = firstSpinnerPosition;
+            firstSpinnerPosition = 0;
+        }
+        else {
+            spinnerPosition = position;
+        }
         useSeasonsFilter(returnMatchesWithPlayer(Objects.requireNonNull(matchViewModel.getMatches().getValue())));
         addPlayerText();
     }
