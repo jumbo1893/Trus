@@ -8,6 +8,11 @@ public class PlayerLines {
     private List<Float> x2;
     private List<Float> y1;
     private List<Float> y2;
+
+    private List<Float> liquor_x1;
+    private List<Float> liquor_x2;
+    private List<Float> liquor_y1;
+    private List<Float> liquor_y2;
     private boolean isLiquorImage;
 
     public PlayerLines() {
@@ -15,22 +20,42 @@ public class PlayerLines {
         x2 = new ArrayList<>();
         y1 = new ArrayList<>();
         y2 = new ArrayList<>();
+        liquor_x1 = new ArrayList<>();
+        liquor_x2 = new ArrayList<>();
+        liquor_y1 = new ArrayList<>();
+        liquor_y2 = new ArrayList<>();
         isLiquorImage = false;
     }
 
-    public void addAllPositions(float x1, float x2, float y1, float y2) {
+    public void addAllBeerPositions(float x1, float x2, float y1, float y2) {
         this.x1.add(x1);
         this.x2.add(x2);
         this.y1.add(y1);
         this.y2.add(y2);
     }
 
-    public void removeLastPosition() {
+    public void addAllLiquorPositions(float x1, float x2, float y1, float y2) {
+        this.liquor_x1.add(x1);
+        this.liquor_x2.add(x2);
+        this.liquor_y1.add(y1);
+        this.liquor_y2.add(y2);
+    }
+
+    public void removeLastBeerPosition() {
         if (x1.size() > 0) {
             x1.remove(x1.size() - 1);
             x2.remove(x2.size() - 1);
             y1.remove(y1.size() - 1);
             y2.remove(y2.size() - 1);
+        }
+    }
+
+    public void removeLastLiquorPosition() {
+        if (x1.size() > 0) {
+            x1.remove(liquor_x1.size() - 1);
+            x2.remove(liquor_x2.size() - 1);
+            y1.remove(liquor_y1.size() - 1);
+            y2.remove(liquor_y2.size() - 1);
         }
     }
 
@@ -64,6 +89,22 @@ public class PlayerLines {
 
     public void setY2(List<Float> y2) {
         this.y2 = y2;
+    }
+
+    public List<Float> getLiquor_x1() {
+        return liquor_x1;
+    }
+
+    public List<Float> getLiquor_x2() {
+        return liquor_x2;
+    }
+
+    public List<Float> getLiquor_y1() {
+        return liquor_y1;
+    }
+
+    public List<Float> getLiquor_y2() {
+        return liquor_y2;
     }
 
     public boolean isLiquorImage() {

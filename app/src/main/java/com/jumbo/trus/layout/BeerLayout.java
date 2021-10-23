@@ -23,6 +23,7 @@ public class BeerLayout extends View {
 
     private static final String TAG = "BeerLayout";
     public static final int BEER_LIMIT = 30;
+    public static final int LIQUOR_LIMIT = 20;
 
     private Paint paint;
     private int x1;
@@ -38,6 +39,7 @@ public class BeerLayout extends View {
     boolean animated;
     private OnLineFinishedListener onLineFinishedListener;
     private Drawable liquorImage;
+    private boolean liquerDraw;
 
     public BeerLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -50,6 +52,7 @@ public class BeerLayout extends View {
         listOfPoints = new ArrayList<>();
         random = new Random();
         initLiquorImage();
+        liquerDraw = false;
     }
 
     /** nutno tuto metodu zavolat před jakoukoliv další akcí.
@@ -64,8 +67,13 @@ public class BeerLayout extends View {
         }
         for (int i = 0; i < playerList.size(); i++) {
             for (int j = 0; j < playerList.get(i).getNumberOfBeers(); j++) {
-                calculateLinePosition(j);
-                playerLinesList.get(i).addAllPositions(x1, x2, y1, y2);
+                calculateBeerLinePosition(j);
+                playerLinesList.get(i).addAllBeerPositions(x1, x2, y1, y2);
+            }
+            for (int j = 0; j < playerList.get(i).getNumberOfLiquors(); j++) {
+                calculateLiquorLinePosition(j);
+                playerLinesList.get(i).addAllLiquorPositions(x1, x2, y1, y2);
+                playerLinesList.get(i).setLiquorImage(true);
             }
         }
     }
@@ -74,9 +82,10 @@ public class BeerLayout extends View {
         this.onLineFinishedListener = onLineFinishedListener;
     }
 
+
     private void initLiquorImage() {
         liquorImage = getResources().getDrawable(R.drawable.tvrdej, null);
-        liquorImage.setBounds(20,700, 300, 900);
+        liquorImage.setBounds(0,700, 270, 900);
     }
 
     /** vyhledá uloženého hráče z metody loadPlayers a zadá vykreslení jeho piv
@@ -92,14 +101,14 @@ public class BeerLayout extends View {
      * @param player hráč, kterého se přidání piva týká
      */
     public void addBeer(Player player) {
-        calculateLinePosition(player.getNumberOfBeers()-1);
+        calculateBeerLinePosition(player.getNumberOfBeers()-1);
         onLineFinishedListener.drawFinished(false);
         playerIndex = playerList.indexOf(player);
         divideLineIntoEqualParts();
         animated = true;
+        liquerDraw = false;
         invalidate();
         onLineFinishedListener.drawFinished(false);
-        //drawBeers(player);
     }
 
     /** odebere lajnu piva z instance třídy PlayerLines a vykreslí výsledek
@@ -107,7 +116,30 @@ public class BeerLayout extends View {
      */
     public void removeBeer(Player player) {
         playerIndex = playerList.indexOf(player);
-        playerLinesList.get(playerIndex).removeLastPosition();
+        playerLinesList.get(playerIndex).removeLastBeerPosition();
+        drawBeers(player);
+    }
+
+    /** přidá lajnu tvrdýho (body) do instance třídy PlayerLines a vykreslí výsledek
+     * @param player hráč, kterého se přidání piva týká
+     */
+    public void addLiquor(Player player) {
+        calculateLiquorLinePosition(player.getNumberOfLiquors()-1);
+        onLineFinishedListener.drawFinished(false);
+        playerIndex = playerList.indexOf(player);
+        divideLineIntoEqualParts();
+        animated = true;
+        liquerDraw = true;
+        invalidate();
+        onLineFinishedListener.drawFinished(false);
+    }
+
+    /** odebere lajnu tvrdýho z instance třídy PlayerLines a vykreslí výsledek
+     * @param player hráč, kterého se odebrání piva týká
+     */
+    public void removeLiquor(Player player) {
+        playerIndex = playerList.indexOf(player);
+        playerLinesList.get(playerIndex).removeLastLiquorPosition();
         drawBeers(player);
     }
 
@@ -133,7 +165,7 @@ public class BeerLayout extends View {
      * vypočítá pozice čáry dalšího přidaného piva
      * @param i kolikáté pivo hráče to je
      */
-    private void calculateLinePosition(int i) {
+    private void calculateBeerLinePosition(int i) {
         if (i == 4 || i == 9 || i == 14) {
             y1 = 175 + random.nextInt(100)-50;
             y2 = 175 + random.nextInt(100)-50;
@@ -147,8 +179,8 @@ public class BeerLayout extends View {
             y2 = 300 + random.nextInt(80)-40;
         }
         else {
-            y1 = 350 + random.nextInt(40)-20;
-            y2 = 600 + random.nextInt(40)-20;
+            y1 = 350 + random.nextInt(60)-30;
+            y2 = 600 + random.nextInt(60)-30;
         }
         if (i == 4 || i == 19) {
             x1 = 50 + random.nextInt(60)-30;
@@ -171,6 +203,41 @@ public class BeerLayout extends View {
         }
     }
 
+    /**
+     * vypočítá pozice čáry dalšího přidaného piva
+     * @param i kolikáté pivo hráče to je
+     */
+    private void calculateLiquorLinePosition(int i) {
+        if (i == 4 || i == 9 || i == 14 || i == 19) {
+            y1 = 800 + random.nextInt(80)-40;
+            y2 = 800 + random.nextInt(80)-40;
+        }
+        else {
+            y1 = 730 + random.nextInt(80)-40;
+            y2 = 870 + random.nextInt(80)-40;
+        }
+        if (i == 4) {
+            x1 = 300 + random.nextInt(40)-20;
+            x2 = 410 + random.nextInt(40)-20;
+        }
+        else if (i == 9) {
+            x1 = 450 + random.nextInt(40)-20;
+            x2 = 560 + random.nextInt(40)-20;
+        }
+        else if (i == 14) {
+            x1 = 600 + random.nextInt(40)-20;
+            x2 = 710 + random.nextInt(40)-20;
+        }
+        else if (i == 19) {
+            x1 = 750 + random.nextInt(40)-20;
+            x2 = 860 + random.nextInt(40)-20;
+        }
+        else {
+            x1 = 300 + i * 30 + random.nextInt(20) - 10;
+            x2 = 300 + i * 30 + random.nextInt(20) - 10;
+        }
+    }
+
 
     /**
      * rozkouskuje čáru pro nakreslení na dílčích 50 kusů, které se pak budou poatupně kreslit
@@ -178,7 +245,7 @@ public class BeerLayout extends View {
     private void divideLineIntoEqualParts() {
 
         listOfPoints.clear();
-        int pixelsNumber = 30;
+        int pixelsNumber = 20;
         for (int k = 1; k <= pixelsNumber; k++) {
             listOfPoints.add(new PointF(x1 + ((k * (x2 - x1)) / pixelsNumber),y1 + (k * (y2 - y1)) / pixelsNumber));
         }
@@ -195,6 +262,9 @@ public class BeerLayout extends View {
         for (int i = 0; i < playerLines.getX1().size(); i++) {
             canvas.drawLine(playerLines.getX1().get(i), playerLines.getY1().get(i), playerLines.getX2().get(i), playerLines.getY2().get(i), paint);
         }
+        for (int i = 0; i < playerLines.getLiquor_x1().size(); i++) {
+            canvas.drawLine(playerLines.getLiquor_x1().get(i), playerLines.getLiquor_y1().get(i), playerLines.getLiquor_x2().get(i), playerLines.getLiquor_y2().get(i), paint);
+        }
 
         if(inte < listOfPoints.size() && animated){
             canvas.drawLine(listOfPoints.get(0).x, listOfPoints.get(0).y, listOfPoints.get(inte).x,listOfPoints.get(inte).y, paint);
@@ -206,7 +276,12 @@ public class BeerLayout extends View {
             else {
                 animated = false;
                 inte = 0;
-                playerLinesList.get(playerIndex).addAllPositions(x1, x2, y1, y2);
+                if (liquerDraw) {
+                    playerLinesList.get(playerIndex).addAllLiquorPositions(x1, x2, y1, y2);
+                }
+                else {
+                    playerLinesList.get(playerIndex).addAllBeerPositions(x1, x2, y1, y2);
+                }
                 onLineFinishedListener.drawFinished(true);
             }
         }

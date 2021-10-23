@@ -55,11 +55,13 @@ public class BeerDialog extends Dialog implements OnPlusButtonListener, OnLineFi
     private INotificationSender iNotificationSender;
     private List<Player> selectedPlayers;
     private List<Integer> beerCompensation;
+    private List<Integer> liquorCompensation;
     private Player player;
     private int selectedPlayersSize;
     private int selectedPlayer;
     private boolean commit = false;
     private boolean lineDrawed; //příznak pomocí kterého poznáme, zda se již nakreslila čátka v layoutu. Defaultně true, pak vrací inteface hodnotu
+    private boolean beerDraw; //switch, podle kterýho rozlišujem jestli kreslit kořalky nebo piva
 
 
     public BeerDialog(Flag flag, Model model) {
@@ -69,6 +71,7 @@ public class BeerDialog extends Dialog implements OnPlusButtonListener, OnLineFi
         selectedPlayersSize = selectedPlayers.size();
         player = selectedPlayers.get(0);
         selectedPlayer = 0;
+        beerDraw = true;
     }
 
 
@@ -90,55 +93,86 @@ public class BeerDialog extends Dialog implements OnPlusButtonListener, OnLineFi
         beer_layout.loadPlayers(selectedPlayers);
         beer_layout.attachListener(this);
         beer_layout.drawBeers(player);
-        //lineDrawed = true;
-        initBeerCompensation();
+        initBeerAndLiquorCompensation();
         view.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
             public void onSwipeTop() {
                 Log.d(TAG, "onSwipeTop: " + lineDrawed);
-                if (lineDrawed) {
-                    lineDrawed = false;
-                    player.removeBeer();
-                    beer_layout.removeBeer(player);
+                if (beerDraw) {
+                    if (lineDrawed) {
+                        lineDrawed = false;
+                        player.removeBeer();
+                        beer_layout.removeBeer(player);
+                    }
+                }
+                else {
+                    if (lineDrawed) {
+                        lineDrawed = false;
+                        player.removeLiquor();
+                        beer_layout.removeLiquor(player);
+                    }
                 }
             }
             public void onSwipeRight() {
                 Log.d(TAG, "onSwipeRight: ");
                 if (lineDrawed) {
                     setPreviousPlayer();
+                    beerDraw = true;
                 }
-
             }
             public void onSwipeLeft() {
                 Log.d(TAG, "onSwipeLeft: ");
                 if (lineDrawed) {
                     setNextPlayer();
+                    beerDraw = true;
                 }
             }
             public void onSwipeBottom() {
                 Log.d(TAG, "onSwipeBottom: ");
-                if (player.getNumberOfBeers() < BeerLayout.BEER_LIMIT) {
-                btn_back.setVisibility(View.GONE);
-                btn_forward.setVisibility(View.GONE);
-                    if (lineDrawed) {
-                        lineDrawed = false;
-                        player.addBeer();
-                        beer_layout.addBeer(player);
+                if (beerDraw) {
+                    if (player.getNumberOfBeers() < BeerLayout.BEER_LIMIT) {
+                        btn_back.setVisibility(View.GONE);
+                        btn_forward.setVisibility(View.GONE);
+                        if (lineDrawed) {
+                            lineDrawed = false;
+                            player.addBeer();
+                            beer_layout.addBeer(player);
+                        }
+                    } else {
+                        Toast.makeText(getActivity(), "Víc jak " + BeerLayout.BEER_LIMIT + " se nedá zadat, tolik si stejně neměl", Toast.LENGTH_SHORT).show();
                     }
                 }
                 else {
-                    Toast.makeText(getActivity(), "Víc jak " + BeerLayout.BEER_LIMIT + " se nedá zadat, tolik si stejně neměl", Toast.LENGTH_SHORT).show();
+                    if (player.getNumberOfLiquors() < BeerLayout.LIQUOR_LIMIT) {
+                        btn_back.setVisibility(View.GONE);
+                        btn_forward.setVisibility(View.GONE);
+                        if (lineDrawed) {
+                            lineDrawed = false;
+                            player.addLiquor();
+                            beer_layout.addLiquor(player);
+                        }
+                    } else {
+                        Toast.makeText(getActivity(), "Víc jak " + BeerLayout.LIQUOR_LIMIT + " kořalek se nedá zadat, tolik si stejně neměl", Toast.LENGTH_SHORT).show();
+                    }
                 }
-
             }
 
             @Override
             public void onLongClick() {
+                if (beerDraw) {
+                    beerDraw = false;
+                    beer_layout.drawLiquorText(player);
+                    Toast.makeText(getActivity(), "Přitvrdíme", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    beerDraw = true;
+                    if (player.getNumberOfLiquors() == 0) {
+                        beer_layout.removeLiquorText(player);
+                    }
+                    Toast.makeText(getActivity(), "Zpátky k pivku", Toast.LENGTH_SHORT).show();
+                }
                 Log.d(TAG, "onLongClick: ");
-                beer_layout.drawLiquorText(player);
             }
-            
         });
-
         return view;
     }
 
@@ -176,10 +210,12 @@ public class BeerDialog extends Dialog implements OnPlusButtonListener, OnLineFi
     /**
      * načte seznam piv v v původní nezměněné podobě
      */
-    private void initBeerCompensation() {
+    private void initBeerAndLiquorCompensation() {
         beerCompensation = new ArrayList<>();
+        liquorCompensation = new ArrayList<>();
         for (Player player : selectedPlayers) {
             beerCompensation.add(player.getNumberOfBeers());
+            liquorCompensation.add(player.getNumberOfLiquors());
         }
         Log.d(TAG, "initSelectedPlayers: " + selectedPlayers);
     }
@@ -187,9 +223,10 @@ public class BeerDialog extends Dialog implements OnPlusButtonListener, OnLineFi
     /**
      * vezme z listu počet piv načtených před přidáváním nových piv a nastaví je zpět
      */
-    private void returnOriginalBeerNumber() {
+    private void returnOriginalBeerAndLiquorNumber() {
         for (int i = 0; i < selectedPlayers.size(); i++) {
             selectedPlayers.get(i).setNumberOfBeers(beerCompensation.get(i));
+            selectedPlayers.get(i).setNumberOfLiquors(liquorCompensation.get(i));
         }
     }
 
@@ -237,7 +274,7 @@ public class BeerDialog extends Dialog implements OnPlusButtonListener, OnLineFi
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         if (!commit) {
-            returnOriginalBeerNumber();
+            returnOriginalBeerAndLiquorNumber();
         }
         super.onDismiss(dialog);
     }

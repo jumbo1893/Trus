@@ -20,7 +20,9 @@ public class Player extends Model {
     private boolean fan;
     private long dateOfBirth;
     private int numberOfBeers;
+    private int numberOfLiquors;
     private int numberOfBeersInMatches;
+    private int numberOfLiquorsInMatches;
     private int numberOfFinesInMatches;
     private int amountOfFinesInMatches;
     private List<ReceivedFine> receivedFines = new ArrayList<>();
@@ -87,12 +89,28 @@ public class Player extends Model {
         this.numberOfBeers = numberOfBeers;
     }
 
+    public int getNumberOfLiquors() {
+        return numberOfLiquors;
+    }
+
+    public void setNumberOfLiquors(int numberOfLiquors) {
+        this.numberOfLiquors = numberOfLiquors;
+    }
+
     public int getNumberOfBeersInMatches() {
         return numberOfBeersInMatches;
     }
 
     public void setNumberOfBeersInMatches(int numberOfBeersInMatches) {
         this.numberOfBeersInMatches = numberOfBeersInMatches;
+    }
+
+    public int getNumberOfLiquorsInMatches() {
+        return numberOfLiquorsInMatches;
+    }
+
+    public void setNumberOfLiquorsInMatches(int numberOfLiquorsInMatches) {
+        this.numberOfLiquorsInMatches = numberOfLiquorsInMatches;
     }
 
     public int getNumberOfFinesInMatches() {
@@ -119,6 +137,17 @@ public class Player extends Model {
         numberOfBeers--;
         if (numberOfBeers < 0) {
             numberOfBeers = 0;
+        }
+    }
+
+    public void addLiquor() {
+        numberOfLiquors++;
+    }
+
+    public void removeLiquor() {
+        numberOfLiquors--;
+        if (numberOfLiquors < 0) {
+            numberOfLiquors = 0;
         }
     }
 
@@ -192,6 +221,23 @@ public class Player extends Model {
             for (Player player : match.returnPlayerListOnlyWithParticipants()) {
                 if (player.equals(this)) {
                     numberOfBeersInMatches += player.numberOfBeers;
+                    break;
+                }
+            }
+        }
+    }
+
+
+    /**
+     * vypočítá do parametru numberOfLiquorsInMatches celkový počet tvrdýho v zápasech
+     * @param matchList seznam zápasů, ze kterých se to počítá
+     */
+    public void calculateAllLiquorsNumber(List<Match> matchList) {
+        numberOfLiquorsInMatches = 0;
+        for (Match match : matchList) {
+            for (Player player : match.returnPlayerListOnlyWithParticipants()) {
+                if (player.equals(this)) {
+                    numberOfLiquorsInMatches += player.numberOfLiquors;
                     break;
                 }
             }
