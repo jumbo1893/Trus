@@ -8,12 +8,14 @@ public class PlayerLines {
     private List<Float> x2;
     private List<Float> y1;
     private List<Float> y2;
+    private boolean isLiquorImage;
 
     public PlayerLines() {
         x1 = new ArrayList<>();
         x2 = new ArrayList<>();
         y1 = new ArrayList<>();
         y2 = new ArrayList<>();
+        isLiquorImage = false;
     }
 
     public void addAllPositions(float x1, float x2, float y1, float y2) {
@@ -62,5 +64,13 @@ public class PlayerLines {
 
     public void setY2(List<Float> y2) {
         this.y2 = y2;
+    }
+
+    public boolean isLiquorImage() {
+        return isLiquorImage;
+    }
+
+    public void setLiquorImage(boolean liquorImage) {
+        isLiquorImage = liquorImage;
     }
 }

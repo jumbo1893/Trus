@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -20,8 +22,8 @@ import com.jumbo.trus.Dialog;
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.INotificationSender;
 import com.jumbo.trus.Model;
-import com.jumbo.trus.OnPlusButtonListener;
-import com.jumbo.trus.OnSwipeTouchListener;
+import com.jumbo.trus.listener.OnPlusButtonListener;
+import com.jumbo.trus.listener.OnSwipeTouchListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.comparator.OrderByBeerThenName;
 import com.jumbo.trus.layout.BeerLayout;
@@ -37,7 +39,7 @@ import java.util.List;
 /**
  *
  */
-public class BeerDialog extends Dialog implements OnPlusButtonListener, OnLineFinishedListener {
+public class BeerDialog extends Dialog implements OnPlusButtonListener, OnLineFinishedListener, GestureDetector.OnGestureListener {
 
     private static final String TAG = "BeerDialog";
 
@@ -129,6 +131,12 @@ public class BeerDialog extends Dialog implements OnPlusButtonListener, OnLineFi
 
             }
 
+            @Override
+            public void onLongClick() {
+                Log.d(TAG, "onLongClick: ");
+                beer_layout.drawLiquorText(player);
+            }
+            
         });
 
         return view;
@@ -256,5 +264,35 @@ public class BeerDialog extends Dialog implements OnPlusButtonListener, OnLineFi
             btn_back.setVisibility(View.VISIBLE);
             btn_forward.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public boolean onDown(MotionEvent motionEvent) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent motionEvent) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent motionEvent) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent motionEvent) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+        return false;
     }
 }

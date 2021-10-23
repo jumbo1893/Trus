@@ -18,7 +18,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jumbo.trus.CustomUserFragment;
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.Model;
-import com.jumbo.trus.OnListListener;
+import com.jumbo.trus.listener.OnListListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.Result;
 import com.jumbo.trus.SimpleDividerItemDecoration;

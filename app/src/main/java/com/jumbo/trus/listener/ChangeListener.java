@@ -1,4 +1,7 @@
-package com.jumbo.trus;
+package com.jumbo.trus.listener;
+
+import com.jumbo.trus.Flag;
+import com.jumbo.trus.Model;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.jumbo.trus;
+package com.jumbo.trus.listener;
 
 import com.jumbo.trus.notification.Notification;
 

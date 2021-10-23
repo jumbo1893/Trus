@@ -1,4 +1,4 @@
-package com.jumbo.trus;
+package com.jumbo.trus.listener;
 
 import android.content.Context;
 import android.view.GestureDetector;
@@ -59,6 +59,16 @@ public class OnSwipeTouchListener implements OnTouchListener {
             }
             return result;
         }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            onLongClick();
+        }
+
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            return super.onDoubleTap(e);
+        }
     }
 
     public void onSwipeRight() {
@@ -71,5 +81,9 @@ public class OnSwipeTouchListener implements OnTouchListener {
     }
 
     public void onSwipeBottom() {
+    }
+
+    public void onLongClick() {
+
     }
 }

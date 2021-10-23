@@ -20,7 +20,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.jumbo.trus.OnListListener;
+import com.jumbo.trus.listener.OnListListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.adapters.SimpleRecycleViewAdapter;
 import com.jumbo.trus.player.Player;

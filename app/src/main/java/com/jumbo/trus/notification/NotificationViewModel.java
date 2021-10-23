@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.jumbo.trus.NotificationListener;
+import com.jumbo.trus.listener.NotificationListener;
 import com.jumbo.trus.repository.FirebaseRepository;
 
 import java.util.List;

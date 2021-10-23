@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.jumbo.trus.Dialog;
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.Model;
-import com.jumbo.trus.OnListListener;
+import com.jumbo.trus.listener.OnListListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.SimpleDividerItemDecoration;
 import com.jumbo.trus.adapters.FinesPlayerNumberRecycleViewAdapter;

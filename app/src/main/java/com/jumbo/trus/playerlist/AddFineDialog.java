@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.jumbo.trus.Dialog;
 import com.jumbo.trus.INotificationSender;
 import com.jumbo.trus.Model;
-import com.jumbo.trus.OnPlusButtonListener;
+import com.jumbo.trus.listener.OnPlusButtonListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.adapters.FinesRecycleViewAdapter;
 import com.jumbo.trus.adapters.MultiFinesRecycleViewAdapter;

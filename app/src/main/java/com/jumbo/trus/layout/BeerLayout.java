@@ -5,12 +5,14 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import com.jumbo.trus.R;
 import com.jumbo.trus.player.Player;
 
 import java.util.ArrayList;
@@ -35,6 +37,7 @@ public class BeerLayout extends View {
     private int inte = 0;
     boolean animated;
     private OnLineFinishedListener onLineFinishedListener;
+    private Drawable liquorImage;
 
     public BeerLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -46,6 +49,7 @@ public class BeerLayout extends View {
         paint.setStrokeCap(Paint.Cap.ROUND);
         listOfPoints = new ArrayList<>();
         random = new Random();
+        initLiquorImage();
     }
 
     /** nutno tuto metodu zavolat před jakoukoliv další akcí.
@@ -68,6 +72,11 @@ public class BeerLayout extends View {
 
     public void attachListener(OnLineFinishedListener onLineFinishedListener) {
         this.onLineFinishedListener = onLineFinishedListener;
+    }
+
+    private void initLiquorImage() {
+        liquorImage = getResources().getDrawable(R.drawable.tvrdej, null);
+        liquorImage.setBounds(20,700, 300, 900);
     }
 
     /** vyhledá uloženého hráče z metody loadPlayers a zadá vykreslení jeho piv
@@ -102,26 +111,44 @@ public class BeerLayout extends View {
         drawBeers(player);
     }
 
+    /**přidá text, který značí čárkování kořalek ("tvrdej")
+     * @param player player hráč, kterého se přidání textu týká
+     */
+    public void drawLiquorText(Player player) {
+        playerIndex = playerList.indexOf(player);
+        playerLinesList.get(playerIndex).setLiquorImage(true);
+        invalidate();
+    }
+
+    /**odebere text, který značí čárkování kořalek ("tvrdej")
+     * @param player player hráč, kterého se odebrání textu týká
+     */
+    public void removeLiquorText(Player player) {
+        playerIndex = playerList.indexOf(player);
+        playerLinesList.get(playerIndex).setLiquorImage(false);
+        invalidate();
+    }
+
     /**
      * vypočítá pozice čáry dalšího přidaného piva
      * @param i kolikáté pivo hráče to je
      */
     private void calculateLinePosition(int i) {
         if (i == 4 || i == 9 || i == 14) {
-            y1 = 250 + random.nextInt(100)-50;
-            y2 = 250 + random.nextInt(100)-50;
+            y1 = 175 + random.nextInt(100)-50;
+            y2 = 175 + random.nextInt(100)-50;
         }
         else if (i == 19 || i == 24 || i == 29) {
-            y1 = 625 + random.nextInt(100)-50;
-            y2 = 625 + random.nextInt(100)-50;
+            y1 = 475 + random.nextInt(100)-50;
+            y2 = 475 + random.nextInt(100)-50;
         }
         else if (i < 15) {
-            y1 = 100 + random.nextInt(80)-40;
-            y2 = 400 + random.nextInt(80)-40;
+            y1 = 50 + random.nextInt(80)-40;
+            y2 = 300 + random.nextInt(80)-40;
         }
         else {
-            y1 = 450 + random.nextInt(40)-20;
-            y2 = 800 + random.nextInt(40)-20;
+            y1 = 350 + random.nextInt(40)-20;
+            y2 = 600 + random.nextInt(40)-20;
         }
         if (i == 4 || i == 19) {
             x1 = 50 + random.nextInt(60)-30;
@@ -186,5 +213,11 @@ public class BeerLayout extends View {
         else {
             onLineFinishedListener.drawFinished(true);
         }
+        //text tvrdýho
+         if (playerLines.isLiquorImage()) {
+            liquorImage.draw(canvas);
+            //onLineFinishedListener.drawFinished(true);
+        }
+
     }
 }

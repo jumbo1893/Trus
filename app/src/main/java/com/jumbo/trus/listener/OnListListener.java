@@ -1,4 +1,4 @@
-package com.jumbo.trus;
+package com.jumbo.trus.listener;
 
 public interface OnListListener {
     void onItemClick(int position);

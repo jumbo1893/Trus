@@ -14,10 +14,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.jumbo.trus.OnPlusButtonListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.fine.Fine;
-import com.jumbo.trus.fine.ReceivedFine;
 
 import java.util.ArrayList;
 import java.util.List;
