@@ -17,17 +17,18 @@ public class StatisticsViewModel extends ViewModel {
     private static final String TAG = "StatisticsViewModel";
 
     /**
-     * nutno zavolat pokud chceme vědět počet piv ze všech zvolených zápasů pro zobrazení v recycleview
-     * @param playerList hráči, které chceme obohatit počtem piv ze zápasů
-     * @param matchList zápasy, kterými obohacujeme počet piv
+     * nutno zavolat pokud chceme vědět počet piv a kořalek ze všech zvolených zápasů pro zobrazení v recycleview
+     * @param playerList hráči, které chceme obohatit počtem piv a tvrdýho ze zápasů
+     * @param matchList zápasy, kterými obohacujeme počet piv a tvrdýho
      */
-    public List<Player> enhancePlayersWithBeersFromMatches(List<Player> playerList, List<Match> matchList) {
+    public List<Player> enhancePlayersWithBeersAndLiquorsFromMatches(List<Player> playerList, List<Match> matchList) {
         List<Player> returnPlayers = new ArrayList<>();
         for (Player player : playerList) {
             returnPlayers.add(player);
         }
         for (Player player : returnPlayers) {
           player.calculateAllBeersNumber(matchList);
+          player.calculateAllLiquorsNumber(matchList);
         }
         return returnPlayers;
     }
@@ -62,6 +63,20 @@ public class StatisticsViewModel extends ViewModel {
         }
         return beerNumber;
     }
+
+    /**
+     * @param playerList hráči u kterých chceme získat počet panáků
+     * @param matchList zápasy, kde hledáme hráče
+     * @return celkový počet panáků který hráči z listu vypili v listu zápasů
+     */
+    public int countNumberOfAllLiquors(List<Player> playerList, List<Match> matchList) {
+        int liquorNumber = 0;
+        for (Player player : playerList) {
+            player.calculateAllLiquorsNumber(matchList);
+            liquorNumber += player.getNumberOfLiquorsInMatches();
+        }
+        return liquorNumber;
+    }
     /**
      * @param playerList hráči u kterých chceme získat počet pokut
      * @param matchList zápasy, kde hledáme hráče
@@ -90,6 +105,17 @@ public class StatisticsViewModel extends ViewModel {
         return beerNumber;
     }
 
+    public int countNumberOfAllLiquors(List<Player> playerList, List<Match> matchList, boolean fan) {
+        int liquorNumber = 0;
+        for (Player player : playerList) {
+            if (player.isFan() == fan) {
+                player.calculateAllLiquorsNumber(matchList);
+                liquorNumber += player.getNumberOfLiquorsInMatches();
+            }
+        }
+        return liquorNumber;
+    }
+
 
     /**
      * @param playerList seznam hráčů u kterých chceme zjistit počet piv
@@ -109,6 +135,26 @@ public class StatisticsViewModel extends ViewModel {
             beerNumber += player.getNumberOfBeersInMatches();
         }
         return beerNumber;
+    }
+
+    /**
+     * @param playerList seznam hráčů u kterých chceme zjistit počet panáků
+     * @param matchList seznam všech dostupných zápasů
+     * @param season sezona ve které se mají zápasy hledat
+     * @return počet panáků u vložených hráčů v sezoně
+     */
+    public int countNumberOfAllLiquorsBySeason(List<Player> playerList, List<Match> matchList, Season season) {
+        int liquorNumber = 0;
+        List<Match> filteredMatches = new ArrayList<>();
+        for (Match match : matchList) {
+            if (match.getSeason().equals(season))
+                filteredMatches.add(match);
+        }
+        for (Player player : playerList) {
+            player.calculateAllLiquorsNumber(filteredMatches);
+            liquorNumber += player.getNumberOfLiquorsInMatches();
+        }
+        return liquorNumber;
     }
 
     /**

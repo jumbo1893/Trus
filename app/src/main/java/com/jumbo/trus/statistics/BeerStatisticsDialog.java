@@ -136,6 +136,7 @@ public class BeerStatisticsDialog extends Dialog implements AdapterView.OnItemSe
         List<Match> matchesWithPlayer = statisticsViewModel.findAllMatchesWithPlayerParticipant(selectedMatches, (Player) model);
         String text = "";
         int allBeers = 0;
+        int allLiquors = 0;
         for (Match match : matchesWithPlayer) {
             if (match.isHomeMatch()) {
                 text += "Domácí ";
@@ -143,34 +144,49 @@ public class BeerStatisticsDialog extends Dialog implements AdapterView.OnItemSe
             else {
                 text += "Venkovní ";
             }
-            text += "zápas proti " + match.getOpponent() + ", počet piv: " + match.returnPlayerListOnlyWithParticipants().get(match.returnPlayerListOnlyWithParticipants().indexOf(model)).getNumberOfBeers() + "\n\n";
+            int beerNumber = match.returnPlayerListOnlyWithParticipants().get(match.returnPlayerListOnlyWithParticipants().indexOf(model)).getNumberOfBeers();
+            int liquorNumber = match.returnPlayerListOnlyWithParticipants().get(match.returnPlayerListOnlyWithParticipants().indexOf(model)).getNumberOfLiquors();
+            text += "zápas proti " + match.getOpponent() + ", počet piv: " + beerNumber + ", počet panáků " + liquorNumber + ", dohromady: " + (beerNumber+liquorNumber) + "\n\n";
             allBeers += match.returnPlayerListOnlyWithParticipants().get(match.returnPlayerListOnlyWithParticipants().indexOf(model)).getNumberOfBeers();
+            allLiquors += match.returnPlayerListOnlyWithParticipants().get(match.returnPlayerListOnlyWithParticipants().indexOf(model)).getNumberOfLiquors();
         }
-        tv_list.setText("Celkový počet piv: " + allBeers + "\n\n" + text);
+        tv_list.setText("Celkový počet piv: " + allBeers + ", panáků: " + allLiquors + ", dohromady: " + (allBeers+allLiquors) + "\n\n" + text);
     }
 
     private void addMatchText() {
         String text = "";
         int allBeers = 0;
+        int allLiquors = 0;
         for (Player player : ((Match)model).returnPlayerListOnlyWithParticipants()) {
+            int beerNumber;
+            int liquorNumber;
             if (spinnerPosition == 0) {
-                text += player.getName() + " v zápase vypil " + player.getNumberOfBeers() + "\n\n";
+                beerNumber = player.getNumberOfBeers();
+                liquorNumber = player.getNumberOfLiquors();
+                text += player.getName() + " v zápase vypil " + beerNumber + "piv, " + liquorNumber + " panáků, tedy " + (beerNumber+liquorNumber) + " jednotek chlastu" + "\n\n";
                 allBeers += player.getNumberOfBeers();
+                allLiquors += player.getNumberOfLiquors();
             }
             else if (spinnerPosition == 1) {
                 if (!player.isFan()) {
-                    text += player.getName() + " v zápase vypil " + player.getNumberOfBeers() + "\n\n";
+                    beerNumber = player.getNumberOfBeers();
+                    liquorNumber = player.getNumberOfLiquors();
+                    text += player.getName() + " v zápase vypil " + beerNumber + "piv, " + liquorNumber + " panáků, tedy " + (beerNumber+liquorNumber) + " jednotek chlastu" + "\n\n";
                     allBeers += player.getNumberOfBeers();
+                    allLiquors += player.getNumberOfLiquors();
                 }
             }
             else {
                 if (player.isFan()) {
-                    text += player.getName() + " v zápase vypil " + player.getNumberOfBeers() + "\n\n";
+                    beerNumber = player.getNumberOfBeers();
+                    liquorNumber = player.getNumberOfLiquors();
+                    text += player.getName() + " v zápase vypil " + beerNumber + "piv, " + liquorNumber + " panáků, tedy " + (beerNumber+liquorNumber) + " jednotek chlastu" + "\n\n";
                     allBeers += player.getNumberOfBeers();
+                    allLiquors += player.getNumberOfLiquors();
                 }
             }
         }
-        tv_list.setText("Celkový počet piv: " + allBeers + "\n\n" + text);
+        tv_list.setText("Celkový počet piv: " + allBeers + ", panáků: " + allLiquors + ", dohromady: " + (allBeers+allLiquors) + "\n\n" + text);
     }
 
     private void decideTextsToShow() {

@@ -27,7 +27,7 @@ import com.jumbo.trus.listener.OnListListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.SimpleDividerItemDecoration;
 import com.jumbo.trus.adapters.BeerStatisticsRecycleViewAdapter;
-import com.jumbo.trus.comparator.OrderByBeerNumber;
+import com.jumbo.trus.comparator.OrderByBeerAndLiquorNumber;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.match.MatchViewModel;
 import com.jumbo.trus.player.Player;
@@ -61,7 +61,6 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
     private List<Player> selectedPlayers;
     private List<Match> selectedMatches;
     private List<String> seasonsNames = new ArrayList<>();
-    private List<String> playerSpinnerOptions = new ArrayList<>();
 
     private boolean checkedPlayers = false;
     private boolean orderByDesc = true;
@@ -183,7 +182,7 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
     }
 
     private void enhancePlayersFromStatisticViewModel() {
-        selectedPlayers = statisticsViewModel.enhancePlayersWithBeersFromMatches(playerViewModel.getPlayers().getValue(), selectedMatches);
+        selectedPlayers = statisticsViewModel.enhancePlayersWithBeersAndLiquorsFromMatches(playerViewModel.getPlayers().getValue(), selectedMatches);
     }
 
 
@@ -221,11 +220,17 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
 
     private void displayOverallMatchDialog() {
         Log.d(TAG, "displayOverallMatchDialog zobrazen");
-        String text = "Celkový počet piv v zobrazených zápasech: " + statisticsViewModel.countNumberOfAllBeers(playerViewModel.getPlayers().getValue(), selectedMatches) + "\n" +
-                "Počet piv fanoušků: " + statisticsViewModel.countNumberOfAllBeers(playerViewModel.getPlayers().getValue(), selectedMatches, true) + "\n" +
-                "Počet piv hráčů: " + statisticsViewModel.countNumberOfAllBeers(playerViewModel.getPlayers().getValue(), selectedMatches, false);
+        int overallBeers = statisticsViewModel.countNumberOfAllBeers(playerViewModel.getPlayers().getValue(), selectedMatches);
+        int overallLiquors = statisticsViewModel.countNumberOfAllLiquors(playerViewModel.getPlayers().getValue(), selectedMatches);
+        int fanBeers = statisticsViewModel.countNumberOfAllBeers(playerViewModel.getPlayers().getValue(), selectedMatches, true);
+        int fanLiquors = statisticsViewModel.countNumberOfAllLiquors(playerViewModel.getPlayers().getValue(), selectedMatches, true);
+        int playerBeers = statisticsViewModel.countNumberOfAllBeers(playerViewModel.getPlayers().getValue(), selectedMatches, false);
+        int playerLiquors = statisticsViewModel.countNumberOfAllLiquors(playerViewModel.getPlayers().getValue(), selectedMatches, false);
+        String text = "Celkový počet piv v zobrazených zápasech: " + overallBeers + ", počet panáků: " + overallLiquors + ", dohromady: " + (overallBeers+overallLiquors) + "\n" +
+                "Počet piv fanoušků: " + fanBeers + ", počet panáků" + fanLiquors + ", dohromady: " + (fanBeers+fanLiquors) + "\n" +
+                "Počet piv hráčů: " + playerBeers + ", počet panáků " + playerLiquors + ", dohromady: " + (playerBeers+playerLiquors);
         final AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-        alert.setTitle("celková píva");
+        alert.setTitle("celkovej chlast");
         alert.setMessage(text);
 
         alert.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
@@ -238,14 +243,17 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
 
     private void displayOverallPlayerDialog() {
         Log.d(TAG, "displayOverallPlayerDialog zobrazen");
-        String text = "Celkový počet piv u zobrazených hráčů: " + statisticsViewModel.countNumberOfAllBeers(selectedPlayers,
-                matchViewModel.getMatches().getValue());
+        int overallBeers = statisticsViewModel.countNumberOfAllBeers(selectedPlayers, matchViewModel.getMatches().getValue());
+        int overallLiquors = statisticsViewModel.countNumberOfAllLiquors(selectedPlayers, matchViewModel.getMatches().getValue());
+        String text = "Celkový počet piv u zobrazených hráčů: " + overallBeers + ", počet panáků: " + overallLiquors + ", dohromady: " + (overallBeers+overallLiquors);
         for (Season season : seasonsViewModel.getSeasons().getValue()) {
-            text += "\n\nPro sezonu " + season.getName() + " vypili vybraní hráči: " + statisticsViewModel.countNumberOfAllBeersBySeason(selectedPlayers,
-                    matchViewModel.getMatches().getValue(), season) + " piv";
+            int seasonBeers = statisticsViewModel.countNumberOfAllBeersBySeason(selectedPlayers, matchViewModel.getMatches().getValue(), season);
+            int seasonLiquors = statisticsViewModel.countNumberOfAllLiquorsBySeason(selectedPlayers, matchViewModel.getMatches().getValue(), season);
+            text += "\n\nPro sezonu " + season.getName() + " vypili vybraní hráči: " + seasonBeers + " piv a " + seasonLiquors + " panáků, tedy " +
+                    (seasonBeers+seasonLiquors) + " jednotek chlastu";
         }
         final AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-        alert.setTitle("celková píva");
+        alert.setTitle("celkovej chlast");
         alert.setMessage(text);
 
         alert.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
@@ -325,10 +333,10 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
         switch (v.getId()) {
             case R.id.btn_order_rc: {
                 if (checkedPlayers) {
-                    selectedPlayers.sort(new OrderByBeerNumber(orderByDesc));
+                    selectedPlayers.sort(new OrderByBeerAndLiquorNumber(orderByDesc));
                 }
                 else {
-                    selectedMatches.sort(new OrderByBeerNumber(orderByDesc));
+                    selectedMatches.sort(new OrderByBeerAndLiquorNumber(orderByDesc));
                 }
                 setAdapter();
                 orderByDesc = !orderByDesc;

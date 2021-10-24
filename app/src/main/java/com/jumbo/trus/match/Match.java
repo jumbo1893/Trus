@@ -93,27 +93,6 @@ public class Match extends Model {
         return newPlayerList;
     }
 
-
-    /*public List<Player> getPlayerListOnlyWithParticipantsAndWithoutFans() {
-        List<Player> newPlayerList = new ArrayList<>();
-        for (Player player : playerList) {
-            if (player.isMatchParticipant() && !player.isFan()) {
-                newPlayerList.add(player);
-            }
-        }
-        return newPlayerList;
-    }
-
-    public List<Player> getPlayerListOnlyWithoutParticipantsAndWithoutFans() {
-        List<Player> newPlayerList = new ArrayList<>();
-        for (Player player : playerList) {
-            if (!player.isMatchParticipant() && !player.isFan()) {
-                newPlayerList.add(player);
-            }
-        }
-        return newPlayerList;
-    }*/
-
     public List<Player> returnPlayerListWithoutFans() {
         List<Player> newPlayerList = new ArrayList<>();
         for (Player player : playerList) {
@@ -184,6 +163,17 @@ public class Match extends Model {
         }
         return beerNumber;
     }
+
+    /**
+     * @return počet tvrdýho, která se vypila v zápase
+     */
+    public int returnNumberOfLiquorsInMatch() {
+        int liquorNumber = 0;
+        for (Player player : returnPlayerListOnlyWithParticipants()) {
+            liquorNumber += player.getNumberOfLiquors();
+        }
+        return liquorNumber;
+    }
     /**
      * @return počet účastníků zápasu
      */
@@ -221,6 +211,19 @@ public class Match extends Model {
             }
         }
         return beerNumber;
+    }
+
+    /**
+     * @return počet piv, kteří v zápase vypili hráči
+     */
+    public int returnNumberOfLiquorsInMatchForPlayers() {
+        int liquorNumber = 0;
+        for (Player player : returnPlayerListOnlyWithParticipants()) {
+            if (!player.isFan()) {
+                liquorNumber += player.getNumberOfLiquors();
+            }
+        }
+        return liquorNumber;
     }
 
 
