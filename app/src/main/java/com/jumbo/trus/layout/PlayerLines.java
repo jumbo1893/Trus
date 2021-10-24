@@ -51,11 +51,11 @@ public class PlayerLines {
     }
 
     public void removeLastLiquorPosition() {
-        if (x1.size() > 0) {
-            x1.remove(liquor_x1.size() - 1);
-            x2.remove(liquor_x2.size() - 1);
-            y1.remove(liquor_y1.size() - 1);
-            y2.remove(liquor_y2.size() - 1);
+        if (liquor_x1.size() > 0) {
+            liquor_x1.remove(liquor_x1.size() - 1);
+            liquor_x2.remove(liquor_x2.size() - 1);
+            liquor_y1.remove(liquor_y1.size() - 1);
+            liquor_y2.remove(liquor_y2.size() - 1);
         }
     }
 

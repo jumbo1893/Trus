@@ -26,6 +26,7 @@ public class BeerLayout extends View {
     public static final int LIQUOR_LIMIT = 20;
 
     private Paint paint;
+    private Paint backroundPaint;
     private int x1;
     private int x2;
     private int y1;
@@ -53,6 +54,14 @@ public class BeerLayout extends View {
         random = new Random();
         initLiquorImage();
         liquerDraw = false;
+        initBorders();
+    }
+
+    private void initBorders() {
+        backroundPaint = new Paint();
+        backroundPaint.setColor( Color.BLACK );
+        backroundPaint.setStrokeWidth( 5.5f );
+        backroundPaint.setStyle( Paint.Style.STROKE );
     }
 
     /** nutno tuto metodu zavolat před jakoukoliv další akcí.
@@ -85,7 +94,7 @@ public class BeerLayout extends View {
 
     private void initLiquorImage() {
         liquorImage = getResources().getDrawable(R.drawable.tvrdej, null);
-        liquorImage.setBounds(0,700, 270, 900);
+        liquorImage.setBounds(5,700, 270, 895);
     }
 
     /** vyhledá uloženého hráče z metody loadPlayers a zadá vykreslení jeho piv
@@ -255,9 +264,8 @@ public class BeerLayout extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Log.d(TAG, "onDraw: inte>:" + inte + animated);
-
         super.onDraw(canvas);
+        canvas.drawRect(0, 0, getWidth(), getHeight(), backroundPaint);
         PlayerLines playerLines = playerLinesList.get(playerIndex);
         for (int i = 0; i < playerLines.getX1().size(); i++) {
             canvas.drawLine(playerLines.getX1().get(i), playerLines.getY1().get(i), playerLines.getX2().get(i), playerLines.getY2().get(i), paint);
@@ -293,6 +301,5 @@ public class BeerLayout extends View {
             liquorImage.draw(canvas);
             //onLineFinishedListener.drawFinished(true);
         }
-
     }
 }
