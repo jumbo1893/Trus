@@ -12,8 +12,6 @@ import java.util.List;
 
 class RandomFact {
 
-    private static final String TAG = "RandomFact";
-
     private List<Player> players;
     private List<Match> matches;
     private List<Season> seasons;
@@ -1127,6 +1125,367 @@ class RandomFact {
         }
     }
 
+    String getPlayerWithMostLiquors() {
+        List<Player> returnPlayers = new ArrayList<>();
+        int maximumLiquors = 0;
+        for (Player player : players) {
+            player.calculateAllLiquorsNumber(matches);
+            if (player.getNumberOfLiquorsInMatches() > maximumLiquors) {
+                returnPlayers.clear();
+                returnPlayers.add(player);
+                maximumLiquors = player.getNumberOfLiquorsInMatches();
+            }
+            else if (player.getNumberOfLiquorsInMatches() == maximumLiquors) {
+                returnPlayers.add(player);
+            }
+        }
+        if (maximumLiquors == 0) {
+            return "Zatím se hledá člověk, co by si dal alespoň jednoho panáka na zápase Trusu. Výherce čeká věčná sláva zvěčněná přímo v této zajímavosti do té doby, než si někdo dá panáky 2 ";
+        }
+        else if (returnPlayers.size() == 1) {
+            return "Nejvíce panáků za historii si dal " + returnPlayers.get(0).getName() + " který vypil " + maximumLiquors + " frťanů. Na výkonu to vůbec není poznat, gratulujeme!";
+
+        }
+        else {
+            String result = "Byť to zní jako scifi, tak těmto hráčům pravděpodobně chutná tvrdý více než pivo. Dělí se totiž o pozici největšího píče co se týče panáčků. Jedná se o ";
+            for (int i = 0; i < returnPlayers.size(); i++) {
+                result += returnPlayers.get(i).getName();
+                if (i == returnPlayers.size()-1) {
+                    result += " kteří všichni do jednoho vypili " + maximumLiquors + " frťanů. Boj, boj, boj!";
+                }
+                else if (i == returnPlayers.size()-2) {
+                    result += " a ";
+                }
+                else {
+                    result += ", ";
+                }
+            }
+            return result;
+        }
+    }
+
+    /**
+     * @return vrátí text se zápasem nebo seznamem zápasů, ve kterém se za historii (z db) vypilo nejvíce panáků
+     */
+    String getMatchWithMostLiquors() {
+        List<Match> returnMatches = new ArrayList<>();
+        int maximumLiquors = 0;
+        for (Match match : matches) {
+            if (match.returnNumberOfLiquorsInMatch() > maximumLiquors) {
+                returnMatches.clear();
+                returnMatches.add(match);
+                maximumLiquors = match.returnNumberOfLiquorsInMatch();
+            }
+            else if (match.returnNumberOfLiquorsInMatch() == maximumLiquors) {
+                returnMatches.add(match);
+            }
+        }
+        if (maximumLiquors == 0) {
+            return "Nelze najít zápas s nejvíce panáky, protože si zatím nikdo žádný nedal! Jedna Šťopička nikdy nikoho nezabila, tak se neostýchejte pánové!";
+        }
+        else if (returnMatches.size() == 1) {
+            return "Nejvíce panáků za historii padlo v zápase se soupeřem " + returnMatches.get(0).getOpponent() + ", který se hrál " +
+                    returnMatches.get(0).getDateOfMatchInStringFormat() + " a padlo v něm " + maximumLiquors + " frťanů";
+
+        }
+        else {
+            String result = "O pozici zápasu ve kterém padlo nejvíce panáků se dělí zápas se soupeřem ";
+            for (int i = 0; i < returnMatches.size(); i++) {
+                result += returnMatches.get(i).getOpponent() + ", který se hrál " + returnMatches.get(i).getDateOfMatchInStringFormat();
+                if (i == returnMatches.size()-1) {
+                    result += " ve kterých padlo " + maximumLiquors + " frťanů.";
+                }
+                else if (i == returnMatches.size()-2) {
+                    result += " a ";
+                }
+                else {
+                    result += ", ";
+                }
+            }
+            return result;
+        }
+    }
+
+    /**
+     * @return vrátí počet panáků v aktuální sezoně dle data
+     */
+    String getNumberOfLiquorsInCurrentSeason() {
+        int liquorNumber = 0;
+        for (Match match : matches) {
+            if (match.getSeason().equals(compareMatch.getSeason())) {
+                liquorNumber += match.returnNumberOfLiquorsInMatch();
+            }
+        }
+        return "V aktuální sezoně " + compareMatch.getSeason().getName() + " se vypilo " + liquorNumber + " panáků";
+    }
+
+    /**
+     * @return vrátí text se zápasem nebo listem zápasů ve kterých se tuto sezonu vypilo nejvíce panáků
+     */
+    public String getMatchWithMostLiquorsInCurrentSeason() {
+        List<Match> returnMatches = new ArrayList<>();
+        int maximumLiquors = 0;
+        for (Match match : matches) {
+            if (match.getSeason().equals(compareMatch.getSeason())) {
+                if (match.returnNumberOfLiquorsInMatch() > maximumLiquors) {
+                    returnMatches.clear();
+                    returnMatches.add(match);
+                    maximumLiquors = match.returnNumberOfLiquorsInMatch();
+                }
+                else if (match.returnNumberOfLiquorsInMatch() == maximumLiquors) {
+                    returnMatches.add(match);
+                }
+            }
+        }
+        if (maximumLiquors == 0) {
+            return "Nelze najít zápas s nejvíce panáky odehraný v této sezoně " + compareMatch.getSeason().getName() + ", protože si zatím nikdo žádný nedal! Aspoň jeden Liščí Trus denně je prospěšný pro zdraví, to vám potvrdí každý doktor";
+        }
+        else if (returnMatches.size() == 1) {
+            return "Nejvíce panáků v aktuální sezoně " + compareMatch.getSeason().getName() + " padlo v zápase se soupeřem " +
+                    returnMatches.get(0).getOpponent() + ", který se hrál " + returnMatches.get(0).getDateOfMatchInStringFormat() + " a padlo v něm " + maximumLiquors + " kořalek";
+
+        }
+        else {
+            String result = "O pozici zápasu ve kterém padlo nejvíce panáků v aktuální sezoně " + compareMatch.getSeason().getName() + " se dělí zápas se soupeřem ";
+            for (int i = 0; i < returnMatches.size(); i++) {
+                result += returnMatches.get(i).getOpponent() + ", který se hrál " + returnMatches.get(i).getDateOfMatchInStringFormat();
+                if (i == returnMatches.size()-1) {
+                    result += " ve kterých padlo " + maximumLiquors + " panáků tvrdýho.";
+                }
+                else if (i == returnMatches.size()-2) {
+                    result += " a ";
+                }
+                else {
+                    result += ", ";
+                }
+            }
+            result += "ve kterých padlo " + maximumLiquors + " panáků tvrdýho.";
+            return result;
+        }
+    }
+
+    /**
+     * @return vrátí text sezonu/sezony ve kterých padlo v historii nejvíce panáků, společně s počtem a počtem zápasů
+     */
+    String getSeasonWithMostLiquors() {
+        List<Season> returnSeasons = new ArrayList<>();
+        List<Integer> numberOfMatches = new ArrayList<>();
+        int maximumLiquors = 0;
+        for (Season season : seasons) {
+            int seasonLiquors = 0;
+            int matchesNumber = 0;
+            for (Match match : matches) {
+                if (match.getSeason().equals(season)) {
+                    matchesNumber++;
+                    seasonLiquors += match.returnNumberOfLiquorsInMatch();
+                }
+            }
+            if (seasonLiquors > maximumLiquors) {
+                maximumLiquors = seasonLiquors;
+                numberOfMatches.clear();
+                numberOfMatches.add(matchesNumber);
+                returnSeasons.clear();
+                returnSeasons.add(season);
+            }
+            else if (seasonLiquors == maximumLiquors) {
+                numberOfMatches.add(matchesNumber);
+                returnSeasons.add(season);
+            }
+        }
+        if (maximumLiquors == 0) {
+            return "Sezona s nejvíce panáky je... žádná! Zatím si nikdo nedal ani jeden Liščí Trus!!";
+        }
+        else if (returnSeasons.size() == 1) {
+            return "Nejvíce panáků se vypilo v sezoně " + returnSeasons.get(0).getName() + ",kdy se v " + numberOfMatches.get(0) + ". zápasech vypilo " + maximumLiquors + " tvrdýho.";
+
+        }
+        else {
+            String result = "Nejvíce panáky se můžou chlubit sezony ";
+            for (int i = 0; i < returnSeasons.size(); i++) {
+                result += returnSeasons.get(i).getName() + " s " + numberOfMatches.get(i) + ". zápasy";
+                if (i == returnSeasons.size()-1) {
+                    result += ", ve kterých padlo " + maximumLiquors + " panáků tvrdýho.";
+                }
+                else if (i == returnSeasons.size()-2) {
+                    result += " a ";
+                }
+                else {
+                    result += ", ";
+                }
+
+            }
+
+            return result;
+        }
+
+    }
+
+    /**
+     * @return vrátí průměrný počet panáků na všechny účastníky včetně fans
+     */
+    String getAverageNumberOfLiquorsInMatchForPlayersAndFans() {
+        float liquorNumber = 0;
+        int playerNumber = 0;
+        for (Match match : matches) {
+            liquorNumber += match.returnNumberOfLiquorsInMatch();
+            playerNumber += match.returnNumberOfPlayersAndFansInMatch();
+        }
+        float average = liquorNumber/playerNumber;
+
+        return "Za celou historii průměrně každý hráč a fanoušek Trusu vypil " + average + " panáků za zápas";
+    }
+    /**
+     * @return vrátí průměrný počet panáků na hráče
+     */
+    String getAverageNumberOfLiquorsInMatchForPlayers() {
+        float liquorNumber = 0;
+        int playerNumber = 0;
+        for (Match match : matches) {
+            liquorNumber += match.returnNumberOfLiquorsInMatchForPlayers();
+            playerNumber += match.returnNumberOfPlayersInMatch();
+        }
+        float average = liquorNumber/playerNumber;
+
+        return "Za celou historii průměrně každý hráč Trusu vypil " + average + " panáků za zápas";
+    }
+    /**
+     * @return vrátí průměrný počet panáků na fanouška
+     */
+    String getAverageNumberOfLiquorsInMatchForFans() {
+        float liquorNumber = 0;
+        int fanNumber = 0;
+        for (Match match : matches) {
+            liquorNumber += (match.returnNumberOfLiquorsInMatch() - match.returnNumberOfLiquorsInMatchForPlayers());
+            fanNumber += (match.returnNumberOfPlayersAndFansInMatch() - match.returnNumberOfPlayersInMatch());
+        }
+        float average = liquorNumber/fanNumber;
+
+        return "Za celou historii průměrně každý fanoušek Trusu vypil " + average + " panáků za zápas";
+    }
+
+    /**
+     * @return vrátí průměrný počet panáků na zápas
+     */
+    public String getAverageNumberOfLiquorsInMatch() {
+        float liquorNumber = 0;
+        for (Match match : matches) {
+            liquorNumber += match.returnNumberOfLiquorsInMatch();
+        }
+        float average = liquorNumber/matches.size();
+        return "V naprosto průměrném zápasu Trusu se vypije " + average + " panáků";
+    }
+
+    /**
+     * @return Vrací dosud nejvyšší průměrný počet vypitých panáků v jednom zápase
+     */
+    String getMatchWithHighestAverageLiquors() {
+        List<Match> returnMatches = new ArrayList<>();
+        float average = 0;
+        for (Match match : matches) {
+            if (match.returnNumberOfLiquorsInMatch() / (float) match.returnNumberOfPlayersAndFansInMatch() > average) {
+                average = match.returnNumberOfLiquorsInMatch() / (float) match.returnNumberOfPlayersAndFansInMatch();
+                returnMatches.clear();
+                returnMatches.add(match);
+            } else if (match.returnNumberOfLiquorsInMatch() / (float) match.returnNumberOfPlayersAndFansInMatch() == average) {
+                returnMatches.add(match);
+            }
+        }
+        if (average == 0) {
+            return "Nejvyšší průměr vypitých panáků na zápase Trusu je 0!! Nechce někdo vyměnit pivko za lahodný Liščí Trus?!?";
+        } else if (returnMatches.size() == 1) {
+            return "Nejvyšší průměr počtu vypitých panáků v zápase proběhl na zápase se soupeřem " + returnMatches.get(0).getOpponent() +
+                    " hraném v sezoně " + returnMatches.get(0).getSeason().getName() + " konkrétně " + returnMatches.get(0).getDateOfMatchInStringFormat() +
+                    ". Vypilo se " + returnMatches.get(0).returnNumberOfLiquorsInMatch() + " tvrdýho v " + returnMatches.get(0).returnNumberOfPlayersAndFansInMatch() +
+                    " lidech, což dělá průměr " + average + " na hráče. Copak se asi tehdy slavilo?";
+
+        } else {
+            String result = "Nejvyšší průměr počtu vypitých panáků v zápase proběhl na zápasech se ";
+            for (int i = 0; i < returnMatches.size(); i++) {
+                result += "soupeřem " + returnMatches.get(i).getOpponent() + " hraném " + returnMatches.get(i).getDateOfMatchInStringFormat() +
+                        " s celkovým počtem " + returnMatches.get(i).returnNumberOfLiquorsInMatch() + ". panáků v " + returnMatches.get(i).returnNumberOfPlayersAndFansInMatch() +
+                        " lidech";
+                if (i == returnMatches.size() - 1) {
+                    result += ".\n Celkový průměr pro tyto zápasy je " + average + " tvrdýho.";
+                } else if (i == returnMatches.size() - 2) {
+                    result += " a ";
+                } else {
+                    result += "; ";
+                }
+            }
+            return result;
+        }
+    }
+
+    /**
+     * @return Vrací dosud nejnižší průměrný počet vypitých panáků v jednom zápase
+     */
+    String getMatchWithLowestAverageLiquors() {
+        List<Match> returnMatches = new ArrayList<>();
+        float average = 1000;
+        for (Match match : matches) {
+            if ((match.returnNumberOfLiquorsInMatch() / (float) match.returnNumberOfPlayersAndFansInMatch() < average) && match.returnNumberOfLiquorsInMatch() != 0) {
+                average = match.returnNumberOfLiquorsInMatch() / (float) match.returnNumberOfPlayersAndFansInMatch();
+                returnMatches.clear();
+                returnMatches.add(match);
+            } else if ((match.returnNumberOfLiquorsInMatch() / (float) match.returnNumberOfPlayersAndFansInMatch()) == average && match.returnNumberOfLiquorsInMatch() != 0) {
+                returnMatches.add(match);
+            }
+        }
+        if (average == 1000) {
+            return "Zatím v žádném zápase Trusu nepadl jediný panák. To nikdo neslyšel o blahodárném drinku jménem Liščí Trus?";
+        } else if (returnMatches.size() == 1) {
+            return "Můžete sami posoudit, jaká ostuda se stala v zápase se soupeřem " + returnMatches.get(0).getOpponent() +
+                    " hraném v sezoně " + returnMatches.get(0).getSeason().getName() + " konkrétně " + returnMatches.get(0).getDateOfMatchInStringFormat() +
+                    ". Kdy se historicky vypil nejmenší průměr panáků. Vypilo se " + returnMatches.get(0).returnNumberOfLiquorsInMatch() + " kořalek v " + returnMatches.get(0).returnNumberOfPlayersAndFansInMatch() +
+                    " lidech, což dělá průměr " + average + " na hráče. Možná to může zachránit počet piv v zápase, který byl " +  returnMatches.get(0).returnNumberOfBeersInMatch() +
+                    " Vzpomeňte si na to, až si budete objednávat další rundu, ideálně slavný Liščí Trus!";
+
+        } else {
+            String result = "Bohužel je znát, že Trus je tým zaměřený spíše na piva. Jinak by ani nebylo možné, aby existovalo více zápasů s nejnižším průměrem vypitých panáků. " +
+                    "Stalo se tak se ";
+            for (int i = 0; i < returnMatches.size(); i++) {
+                result += "soupeřem " + returnMatches.get(i).getOpponent() + " hraném " + returnMatches.get(i).getDateOfMatchInStringFormat() +
+                        " s celkovým počtem " + returnMatches.get(i).returnNumberOfLiquorsInMatch() + ". panáků v " + returnMatches.get(i).returnNumberOfPlayersAndFansInMatch() +
+                        " lidech";
+                if (i == returnMatches.size() - 1) {
+                    result += ".\n Celkový průměr pro tyto zápasy je " + average + " tvrdýho.";
+                } else if (i == returnMatches.size() - 2) {
+                    result += " a ";
+                } else {
+                    result += "; ";
+                }
+            }
+            return result;
+        }
+    }
+
+    /*---------------------tvrdej alkohol-------------------*/
+    /**
+     * @return vrátí průměrný tvrdejch v domácím a venkovním zápase
+     */
+    public String getAverageNumberOfLiquorsInHomeAndAwayMatch() {
+        float homeLiquorNumber = 0;
+        float awayLiquorNumber = 0;
+        int homeMatches = 0;
+        for (Match match : matches) {
+            if (match.isHomeMatch()) {
+                homeLiquorNumber += match.returnNumberOfLiquorsInMatch();
+                homeMatches++;
+            }
+            else {
+                awayLiquorNumber += match.returnNumberOfLiquorsInMatch();
+            }
+
+        }
+        float homeAverage = homeLiquorNumber/homeMatches;
+        float awayAverage = awayLiquorNumber/(matches.size()-homeMatches);
+        String response = "Průměrně se na domácím zápase vypije " + homeAverage + " panáků, oproti venkovním zápasům, kde je průměr " + awayAverage + " panáků na zápas. ";
+        if (homeAverage > awayAverage) {
+            return response + "Zdá se, že při domácím zápase se chlastá daleko líp než venku!";
+        }
+        return response + "Ve školce snad nalejvá kuchař i panáky?";
+    }
+
     String getMatchWithBirthday() {
         Date date = new Date();
         List<Match> matchesWithBirthday = new ArrayList<>();
@@ -1175,7 +1534,8 @@ class RandomFact {
             else if (returnMatches.size() == 1) {
                 return  "Zatím jediný zápas, kdy někdo z Trusu zapíjel narozky byl " + returnMatches.get(0).getDateOfMatchInStringFormat() +
                         " se soupeřem " + returnMatches.get(0).getOpponent() + " kdy slavil " + returnPlayers.get(0).getName() + ", který vypil " +
-                        returnPlayers.get(0).getNumberOfBeers() + " piv. Celkově se tento zápas vypilo " + returnMatches.get(0).returnNumberOfBeersInMatch() + " piv";
+                        returnPlayers.get(0).getNumberOfBeers() + " piv a " + returnPlayers.get(0).getNumberOfLiquors() + " panáků. Celkově se tento zápas vypilo "
+                        + returnMatches.get(0).returnNumberOfBeersInMatch() + " piv a " +  returnMatches.get(0).returnNumberOfLiquorsInMatch() + " panáků";
             }
             //pokud jich bylo víc
             else {
@@ -1183,7 +1543,8 @@ class RandomFact {
                 for (int i = 0; i < returnMatches.size(); i++) {
                     result += returnMatches.get(i).getOpponent() + ", hraném " + returnMatches.get(i).getDateOfMatchInStringFormat() + ", kdy slavil narozky "
                             + returnPlayers.get(i).getName() + ", který vypil " + returnPlayers.get(i).getNumberOfBeers() +
-                            " piv. Celkově se tento zápas vypilo " + returnMatches.get(i).returnNumberOfBeersInMatch() + " piv";
+                            " piv a " + returnPlayers.get(i).getNumberOfLiquors() + " panáků. Celkově se tento zápas vypilo "
+                            + returnMatches.get(i).returnNumberOfBeersInMatch() + " piv a " + returnMatches.get(i).returnNumberOfLiquorsInMatch() + " panáků.";
                     if (i == returnMatches.size() - 1) {
                         result += ".";
                     } else if (i == returnMatches.size() - 2) {

@@ -103,6 +103,19 @@ public class HomeViewModel extends ViewModel implements ChangeListener {
         randomFacts.add(fact.getLowestAttendanceInMatch()); //vrátí zápas s nejnižší účastí
         randomFacts.add(fact.getMatchWithBirthday()); //vrátí zápas na kterém někdo slavil narozky
 
+        randomFacts.add(fact.getPlayerWithMostLiquors()); //vrátí hráče (1 či víc) co za celou historii vypil nejvíce piv
+        randomFacts.add(fact.getMatchWithMostLiquors()); // vrátí zápas(y), ve kterých padlo nejvíce piv
+        randomFacts.add(fact.getNumberOfLiquorsInCurrentSeason()); //vrátí počet piv v aktuální sezoně dle data
+        randomFacts.add(fact.getMatchWithMostLiquorsInCurrentSeason()); //vrátí zápas aktuální sezony kde se nejvíc pilo
+        randomFacts.add(fact.getSeasonWithMostLiquors()); //vrátí sezonu s nejvíce pivy
+        randomFacts.add(fact.getAverageNumberOfLiquorsInMatchForPlayersAndFans()); //vrátí průměrný počet piv na hráče a fanouška
+        randomFacts.add(fact.getAverageNumberOfLiquorsInMatchForPlayers()); //vrátí průměrný počet vypitejch piv na hráče
+        randomFacts.add(fact.getAverageNumberOfLiquorsInMatchForFans()); //vrátí průměrný počet vypitejch piv na fanouška
+        randomFacts.add(fact.getAverageNumberOfLiquorsInMatch()); //vrátí průměrný počet vypitejch piv v jednom zápase
+        randomFacts.add(fact.getMatchWithHighestAverageLiquors()); //vrátí zápas s nejvyšším průměrem piv
+        randomFacts.add(fact.getMatchWithLowestAverageLiquors()); //vrátí zápas s nejnižším průměrem piv
+        randomFacts.add(fact.getAverageNumberOfLiquorsInHomeAndAwayMatch()); // vrátí průměrný piv v domácím a venkovním zápase
+
         randomFacts.add(fact.getPlayerWithMostFines()); //vrátí hráče s největším počtem pokut
         randomFacts.add(fact.getMatchWithMostFines()); //vrátí zápas s největším počtem pokut
         randomFacts.add(fact.getPlayerWithMostFinesAmount()); //vrátí hráče co zaplatil nejvíc na pokutách
