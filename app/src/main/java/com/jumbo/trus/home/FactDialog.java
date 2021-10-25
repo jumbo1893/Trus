@@ -62,6 +62,9 @@ public class FactDialog extends DialogFragment implements View.OnClickListener, 
         }
         rc_list.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
+    public void addRandomFact(String fact) {
+        factList.add(fact);
+    }
 
 
     @Override

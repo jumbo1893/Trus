@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         super.onCreate(savedInstanceState);
         user = (User) getIntent().getSerializableExtra("user");
         Log.d(TAG, "onCreate: přihlásil se user " + user);
+        int versionCode = BuildConfig.VERSION_CODE;
         pref = getSharedPreferences("Notification", MODE_PRIVATE);
         setContentView(R.layout.activity_main);
         MainActivityViewModel model = new ViewModelProvider(this).get(MainActivityViewModel.class);

@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.jumbo.trus.BuildConfig;
 import com.jumbo.trus.R;
 import com.jumbo.trus.user.LoginActivity;
 
@@ -77,6 +78,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 homeViewModel.setRandomFacts();
                 Log.d(TAG, "onClick: " + homeViewModel.getRandomFacts().size());
                 FactDialog factDialog = new FactDialog(homeViewModel.getRandomFacts());
+                factDialog.addRandomFact("Verze aplikace je " + BuildConfig.VERSION_NAME + ", code: " + BuildConfig.VERSION_CODE);
                 factDialog.show(getParentFragmentManager(), "dialog");
         }
     }
