@@ -39,7 +39,7 @@ import java.util.List;
 /**
  *
  */
-public class BeerDialog extends Dialog implements OnPlusButtonListener, OnLineFinishedListener, GestureDetector.OnGestureListener {
+public class BeerDialog extends Dialog implements OnPlusButtonListener, OnLineFinishedListener {
 
     private static final String TAG = "BeerDialog";
 
@@ -90,8 +90,8 @@ public class BeerDialog extends Dialog implements OnPlusButtonListener, OnLineFi
         btn_back.setOnClickListener(this);
         btn_forward.setOnClickListener(this);
         setPlayerTitle();
-        beer_layout.loadPlayers(selectedPlayers);
         beer_layout.attachListener(this);
+        beer_layout.loadPlayers(selectedPlayers);
         beer_layout.drawBeers(player);
         initBeerAndLiquorCompensation();
         view.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
@@ -301,35 +301,5 @@ public class BeerDialog extends Dialog implements OnPlusButtonListener, OnLineFi
             btn_back.setVisibility(View.VISIBLE);
             btn_forward.setVisibility(View.VISIBLE);
         }
-    }
-
-    @Override
-    public boolean onDown(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-        return false;
     }
 }
