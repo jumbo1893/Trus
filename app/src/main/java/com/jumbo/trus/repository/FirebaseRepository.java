@@ -34,11 +34,11 @@ public class FirebaseRepository {
 
     private static final String TAG = "FirebaseRepository";
     public static final String SEASON_TABLE = "season";
-    public static final String PLAYER_TABLE = "player_test";
+    public static final String PLAYER_TABLE = "player";
     public static final String FINE_TABLE = "fine";
-    public static final String MATCH_TABLE = "match_test";
+    public static final String MATCH_TABLE = "match";
     public static final String USER_TABLE = "user";
-    public static final String NOTIFICATION_TABLE = "notification_test";
+    public static final String NOTIFICATION_TABLE = "notification";
 
     private FirebaseFirestore db;
     private CollectionReference collectionReference;

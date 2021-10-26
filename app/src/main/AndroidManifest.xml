@@ -3,7 +3,7 @@
     package="com.jumbo.trus">
 
     <application
-        android:name="com.jumbo.trus.update.ForceUpdateApp"
+
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
