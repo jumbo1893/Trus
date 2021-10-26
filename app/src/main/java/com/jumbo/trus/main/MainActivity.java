@@ -1,4 +1,4 @@
-package com.jumbo.trus;
+package com.jumbo.trus.main;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,6 +18,9 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.jumbo.trus.BuildConfig;
+import com.jumbo.trus.Flag;
+import com.jumbo.trus.R;
 import com.jumbo.trus.fine.FineFragment;
 import com.jumbo.trus.home.HomeFragment;
 import com.jumbo.trus.match.MatchFragment;
@@ -30,6 +33,7 @@ import com.jumbo.trus.repayment.RepaymentFragment;
 import com.jumbo.trus.season.SeasonsFragment;
 import com.jumbo.trus.statistics.BeerStatisticsFragment;
 import com.jumbo.trus.statistics.FineStatisticsFragment;
+import com.jumbo.trus.update.ForceUpgradeManager;
 import com.jumbo.trus.user.User;
 import com.jumbo.trus.user.UserInteractionFragment;
 
@@ -40,7 +44,6 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
     private static final String TAG = "MainActivity";
-
     private ViewPager viewPager;
     private BottomNavigationView navigation;
     private NotificationViewModel notificationViewModel;
@@ -94,7 +97,6 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         super.onCreate(savedInstanceState);
         user = (User) getIntent().getSerializableExtra("user");
         Log.d(TAG, "onCreate: přihlásil se user " + user);
-        int versionCode = BuildConfig.VERSION_CODE;
         pref = getSharedPreferences("Notification", MODE_PRIVATE);
         setContentView(R.layout.activity_main);
         MainActivityViewModel model = new ViewModelProvider(this).get(MainActivityViewModel.class);

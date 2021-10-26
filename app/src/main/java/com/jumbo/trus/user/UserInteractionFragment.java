@@ -19,7 +19,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.jumbo.trus.CustomUserFragment;
-import com.jumbo.trus.MainActivityViewModel;
+import com.jumbo.trus.main.MainActivityViewModel;
 import com.jumbo.trus.R;
 
 import java.util.List;

@@ -19,7 +19,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.jumbo.trus.MainActivity;
+import com.jumbo.trus.main.MainActivity;
 import com.jumbo.trus.R;
 
 import java.util.List;
@@ -39,6 +39,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private LoginViewModel loginViewModel;
 
     private SharedPreferences pref;
+
 
 
     @Override

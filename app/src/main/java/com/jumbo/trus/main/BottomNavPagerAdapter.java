@@ -1,4 +1,4 @@
-package com.jumbo.trus;
+package com.jumbo.trus.main;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
