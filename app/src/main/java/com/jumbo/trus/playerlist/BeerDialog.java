@@ -185,7 +185,7 @@ public class BeerDialog extends Dialog implements OnPlusButtonListener, OnLineFi
                 if (iChangePlayerListListener.editMatch(selectedPlayers, (Match) model)) {
                     commit = true;
                     getDialog().dismiss();
-                    iNotificationSender.sendNotificationToRepository(new Notification((Match) model, selectedPlayers, beerCompensation));
+                    iNotificationSender.sendNotificationToRepository(new Notification((Match) model, selectedPlayers, beerCompensation, liquorCompensation));
                 }
                 break;
             case R.id.btn_cancel:

@@ -38,13 +38,16 @@ public class Notification extends Model {
     public Notification() {
     }
 
-    public Notification (Match match, List<Player> playerList, List<Integer> oldBeers) {
+    public Notification (Match match, List<Player> playerList, List<Integer> oldBeers, List<Integer> oldLiquors) {
         timestamp = System.currentTimeMillis();
-        this.title = "Změna piv v zápase proti " + match.getName();
+        this.title = "Změna pitiva v zápase proti " + match.getName();
         text = "";
         for (int i = 0; i < playerList.size(); i++) {
             if (playerList.get(i).getNumberOfBeers() != oldBeers.get(i)) {
-                text += playerList.get(i).getName() + ": " + oldBeers.get(i) + " ==> " + playerList.get(i).getNumberOfBeers() + "\n";
+                text += playerList.get(i).getName() + ": " + oldBeers.get(i) + " piv ==> " + playerList.get(i).getNumberOfBeers() + " piv\n";
+            }
+            if (playerList.get(i).getNumberOfLiquors() != oldLiquors.get(i)) {
+                text += playerList.get(i).getName() + ": " + oldLiquors.get(i) + " panáků ==> " + playerList.get(i).getNumberOfLiquors() + " panáků\n";
             }
         }
     }
