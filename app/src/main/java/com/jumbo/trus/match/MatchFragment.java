@@ -35,7 +35,7 @@ import com.jumbo.trus.season.SeasonsViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MatchFragment extends CustomUserFragment implements OnListListener, IMatchFragment, AdapterView.OnItemSelectedListener {
+public class MatchFragment extends CustomUserFragment implements IMatchFragment, AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "MatchFragment";
 
@@ -67,7 +67,7 @@ public class MatchFragment extends CustomUserFragment implements OnListListener,
         progress_bar = view.findViewById(R.id.progress_bar);
         sp_seasons = view.findViewById(R.id.sp_seasons);
         sp_seasons.setOnItemSelectedListener(this);
-        initMainActivityViewModel();
+        //initMainActivityViewModel();
         matchViewModel = new ViewModelProvider(requireActivity()).get(MatchViewModel.class);
         matchViewModel.init();
         seasonsViewModel = new ViewModelProvider(requireActivity()).get(SeasonsViewModel.class);
@@ -185,18 +185,12 @@ public class MatchFragment extends CustomUserFragment implements OnListListener,
     }
 
     @Override
-    public void onItemClick(int position) {
+    protected void itemClick(int position) {
         Log.d(TAG, "onHracClick: kliknuto na pozici " + position + ", object: " + matchViewModel.getMatches().getValue());
         MatchDialog matchDialog = new MatchDialog(Flag.MATCH_EDIT, matchViewModel.getMatches().getValue().get(position), seasonsViewModel.getSeasons().getValue(), players);
         matchDialog.setTargetFragment(MatchFragment.this, 1);
         matchDialog.show(getParentFragmentManager(), "dialogplus");
     }
-
-    @Override
-    public void onItemLongClick(int position) {
-
-    }
-
 
     @Override
     public boolean createNewMatch(String opponent, String date, boolean homeMatch, Season season, List<Player> playerList) {

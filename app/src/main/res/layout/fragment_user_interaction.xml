@@ -16,7 +16,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="24dp"
         android:hint="aktuální heslo"
         android:inputType="textPassword"
@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:text="změň heslo"
         app:layout_constraintEnd_toStartOf="@+id/sw_change_preferences"
         app:layout_constraintStart_toStartOf="parent"
@@ -69,12 +69,48 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:textSize="12dp"
         android:text="náhodná změna barvičky u notifikací"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_password_change"/>
+
+    <Button
+        android:id="@+id/btn_approve_new_users"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginTop="20dp"
+        android:textSize="12dp"
+        android:text="Schválení nově registrovaných"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_notification_color_change"/>
+
+    <Button
+        android:id="@+id/btn_approve_forgotten_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginTop="20dp"
+        android:textSize="12dp"
+        android:text="Schválení resetování hesla zapomnětlivců"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_approve_new_users"/>
+
+    <Button
+        android:id="@+id/btn_admin_interaction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginTop="20dp"
+        android:textSize="12dp"
+        android:text="Změny statusu uživatele(admin)"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_approve_forgotten_password"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

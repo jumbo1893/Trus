@@ -1,4 +1,4 @@
-package com.jumbo.trus.main;
+package com.jumbo.trus;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -22,9 +22,6 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-import com.jumbo.trus.BuildConfig;
-import com.jumbo.trus.Flag;
-import com.jumbo.trus.R;
 import com.jumbo.trus.fine.FineFragment;
 import com.jumbo.trus.home.HomeFragment;
 import com.jumbo.trus.match.MatchFragment;
@@ -39,6 +36,7 @@ import com.jumbo.trus.statistics.BeerStatisticsFragment;
 import com.jumbo.trus.statistics.FineStatisticsFragment;
 import com.jumbo.trus.update.ForceUpdateChecker;
 
+import com.jumbo.trus.user.LoginViewModel;
 import com.jumbo.trus.user.User;
 import com.jumbo.trus.user.UserInteractionFragment;
 
@@ -46,7 +44,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener, ForceUpdateChecker.OnUpdateNeededListener {
+public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
     private static final String TAG = "MainActivity";
     private ViewPager viewPager;
@@ -104,8 +102,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         Log.d(TAG, "onCreate: přihlásil se user " + user);
         pref = getSharedPreferences("Notification", MODE_PRIVATE);
         setContentView(R.layout.activity_main);
-        ForceUpdateChecker.with(this).onUpdateNeeded(this).check();
-        MainActivityViewModel model = new ViewModelProvider(this).get(MainActivityViewModel.class);
+        LoginViewModel model = new ViewModelProvider(this).get(LoginViewModel.class);
         model.init();
         model.setUser(user);
         viewPager = findViewById(R.id.viewpager);
@@ -323,32 +320,5 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             default:
                 return false;
         }
-    }
-
-    @Override
-    public void onUpdateNeeded(final String updateUrl) {
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("New version available")
-                .setMessage("Please, update app to new version to continue reposting.")
-                .setPositiveButton("Update",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                redirectStore(updateUrl);
-                            }
-                        }).setNegativeButton("No, thanks",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        }).create();
-        dialog.show();
-    }
-
-    private void redirectStore(String updateUrl) {
-        final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(updateUrl));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
     }
 }

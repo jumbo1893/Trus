@@ -29,7 +29,7 @@ import com.jumbo.trus.notification.Notification;
 
 import java.util.List;
 
-public class SeasonsFragment extends CustomUserFragment implements OnListListener, ISeasonFragment {
+public class SeasonsFragment extends CustomUserFragment implements ISeasonFragment {
 
     private static final String TAG = "SeasonsFragment";
 
@@ -51,7 +51,7 @@ public class SeasonsFragment extends CustomUserFragment implements OnListListene
         rc_seasons.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         progress_bar = view.findViewById(R.id.progress_bar);
         fab_plus = view.findViewById(R.id.fab_plus);
-        initMainActivityViewModel();
+        //initMainActivityViewModel();
         matchViewModel = new ViewModelProvider(requireActivity()).get(MatchViewModel.class);
         matchViewModel.init();
         seasonsViewModel = new ViewModelProvider(getActivity()).get(SeasonsViewModel.class);
@@ -120,17 +120,11 @@ public class SeasonsFragment extends CustomUserFragment implements OnListListene
         rc_seasons.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
-
     @Override
-    public void onItemClick(int position) {
+    protected void itemClick(int position) {
         SeasonDialog dialog = new SeasonDialog(Flag.SEASON_EDIT, seasonsViewModel.getSeasons().getValue().get(position));
         dialog.setTargetFragment(SeasonsFragment.this, 1);
         dialog.show(getParentFragmentManager(), "dialogplus");
-    }
-
-    @Override
-    public void onItemLongClick(int position) {
-
     }
 
     @Override

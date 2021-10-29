@@ -26,7 +26,7 @@ public class ForceUpdateChecker {
     private Context context;
 
     public interface OnUpdateNeededListener {
-        void onUpdateNeeded(String updateUrl);
+        void onUpdateNeeded(String updateUrl, String version, boolean bool);
     }
 
     public static Builder with(@NonNull Context context) {
@@ -64,8 +64,12 @@ public class ForceUpdateChecker {
                             String appVersion = getAppVersion(context);
                             if (!TextUtils.equals(currentVersion, appVersion)
                                     && onUpdateNeededListener != null) {
-                                onUpdateNeededListener.onUpdateNeeded(updateUrl);
+                                onUpdateNeededListener.onUpdateNeeded(updateUrl, currentVersion, true);
+                                return;
                             }
+                        }
+                        if (onUpdateNeededListener != null) {
+                            onUpdateNeededListener.onUpdateNeeded("", "", false);
                         }
                     }
                 });

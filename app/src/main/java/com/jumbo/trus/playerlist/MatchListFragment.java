@@ -37,7 +37,7 @@ import com.jumbo.trus.season.SeasonsViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MatchListFragment extends CustomUserFragment implements OnListListener, IChangeFineListListener,
+public class MatchListFragment extends CustomUserFragment implements IChangeFineListListener,
         IChangePlayerListListener, AdapterView.OnItemSelectedListener, INotificationSender {
 
     private static final String TAG = "MatchListFragment";
@@ -70,7 +70,7 @@ public class MatchListFragment extends CustomUserFragment implements OnListListe
         progress_bar = view.findViewById(R.id.progress_bar);
         sp_seasons = view.findViewById(R.id.sp_seasons);
         sp_seasons.setOnItemSelectedListener(this);
-        initMainActivityViewModel();
+        //initMainActivityViewModel();
         matchViewModel = new ViewModelProvider(requireActivity()).get(MatchViewModel.class);
         matchViewModel.init();
         seasonsViewModel = new ViewModelProvider(requireActivity()).get(SeasonsViewModel.class);
@@ -170,9 +170,8 @@ public class MatchListFragment extends CustomUserFragment implements OnListListe
         }
     }
 
-
     @Override
-    public void onItemClick(int position) {
+    protected void itemClick(int position) {
         Log.d(TAG, "onHracClick: kliknuto na pozici " + position + ", object: " + matchViewModel.getMatches().getValue() + flag);
         if (flag == Flag.BEER) {
             BeerDialog beerDialog = new BeerDialog(Flag.MATCH_EDIT, matchViewModel.getMatches().getValue().get(position));

@@ -56,6 +56,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/btn_login"/>
 
+    <TextView
+        android:id="@+id/tv_permissions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="3"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:textAlignment="center"
+        android:text="Do schválení registrace nastaveny read-only práva"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/cervena"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/et_username"/>
+
     <Button
         android:id="@+id/btn_login"
         android:layout_width="wrap_content"
@@ -95,14 +110,31 @@
         android:layout_marginStart="48dp"
         android:layout_marginTop="0dp"
         android:layout_marginEnd="48dp"
-        android:layout_marginBottom="64dp"
         android:enabled="true"
-        android:textColor="@color/zluta"
+        android:textColor="@color/cervena"
         style="?android:attr/borderlessButtonStyle"
         android:text="Založ registraturu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_login"
+        app:layout_constraintVertical_bias="0.2" />
+
+    <Button
+        android:id="@+id/btn_password_forgotten"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginBottom="64dp"
+        android:enabled="true"
+        android:textColor="@color/cervena"
+        style="?android:attr/borderlessButtonStyle"
+        android:text="Zapomenuté heslo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_register"
         app:layout_constraintVertical_bias="0.2" />
 
     <RelativeLayout

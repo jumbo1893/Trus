@@ -29,7 +29,7 @@ import com.jumbo.trus.player.PlayerViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RepaymentFragment extends CustomUserFragment implements OnListListener, IRepaymentFragment {
+public class RepaymentFragment extends CustomUserFragment implements IRepaymentFragment {
 
     private static final String TAG = "RepaymentFragment";
 
@@ -50,7 +50,7 @@ public class RepaymentFragment extends CustomUserFragment implements OnListListe
         rc_hraci = view.findViewById(R.id.rc_hraci);
         rc_hraci.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         progress_bar = view.findViewById(R.id.progress_bar);
-        initMainActivityViewModel();
+        //initMainActivityViewModel();
         playerViewModel = new ViewModelProvider(requireActivity()).get(PlayerViewModel.class);
         playerViewModel.init();
         matchViewModel = new ViewModelProvider(requireActivity()).get(MatchViewModel.class);
@@ -138,16 +138,11 @@ public class RepaymentFragment extends CustomUserFragment implements OnListListe
     }
 
     @Override
-    public void onItemClick(int position) {
+    protected void itemClick(int position) {
         Log.d(TAG, "onItemClick: kliknuto na pozici " + position + ", object: " + playerViewModel.getPlayers().getValue());
         RepaymentDialog repaymentDialog = new RepaymentDialog(playerViewModel.getPlayers().getValue().get(position));
         repaymentDialog.setTargetFragment(RepaymentFragment.this, 1);
         repaymentDialog.show(getParentFragmentManager(), "dialogplus");
-    }
-
-    @Override
-    public void onItemLongClick(int position) {
-
     }
 
     @Override

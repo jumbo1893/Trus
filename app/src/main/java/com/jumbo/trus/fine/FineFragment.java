@@ -27,7 +27,7 @@ import com.jumbo.trus.notification.Notification;
 
 import java.util.List;
 
-public class FineFragment extends CustomUserFragment implements OnListListener, IFineFragment {
+public class FineFragment extends CustomUserFragment implements IFineFragment {
 
     private static final String TAG = "FineFragment";
 
@@ -46,7 +46,7 @@ public class FineFragment extends CustomUserFragment implements OnListListener, 
         rc_fines.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         progress_bar = view.findViewById(R.id.progress_bar);
         fab_plus = view.findViewById(R.id.fab_plus);
-        initMainActivityViewModel();
+        initLoginViewModel();
         fineViewModel = new ViewModelProvider(getActivity()).get(FineViewModel.class);
         fineViewModel.init();
         //hideItem(rc_settings);
@@ -119,17 +119,11 @@ public class FineFragment extends CustomUserFragment implements OnListListener, 
     }
 
     @Override
-    public void onItemClick(int position) {
+    protected void itemClick(int position) {
         FineDialog dialog = new FineDialog(Flag.FINE_EDIT, fineViewModel.getFines().getValue().get(position));
         dialog.setTargetFragment(FineFragment.this, 1);
         dialog.show(getParentFragmentManager(), "dialogplus");
     }
-
-    @Override
-    public void onItemLongClick(int position) {
-
-    }
-
 
     @Override
     public boolean createNewFine(String name, int amount, boolean forNonPlayers) {

@@ -26,7 +26,7 @@ import com.jumbo.trus.notification.Notification;
 
 import java.util.List;
 
-public class PlayerFragment extends CustomUserFragment implements OnListListener, IPlayerFragment {
+public class PlayerFragment extends CustomUserFragment implements IPlayerFragment {
 
     private static final String TAG = "HracFragment";
 
@@ -45,7 +45,7 @@ public class PlayerFragment extends CustomUserFragment implements OnListListener
         rc_hraci = view.findViewById(R.id.rc_hraci);
         rc_hraci.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         progress_bar = view.findViewById(R.id.progress_bar);
-        initMainActivityViewModel();
+        //initMainActivityViewModel();
         playerViewModel = new ViewModelProvider(requireActivity()).get(PlayerViewModel.class);
         playerViewModel.init();
         playerViewModel.getPlayers().observe(getViewLifecycleOwner(), new Observer<List<Player>>() {
@@ -64,21 +64,20 @@ public class PlayerFragment extends CustomUserFragment implements OnListListener
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
                     showProgressBar();
-                }
-                else {
+                } else {
                     hideProgressBar();
                 }
             }
         });
         playerViewModel.getAlert().observe(getViewLifecycleOwner(), new Observer<String>() {
-                @Override
-                public void onChanged(String s) {
-                    //podmínka aby se upozornění nezobrazovalo vždy když se mění fragment
-                    if (getViewLifecycleOwner().getLifecycle().getCurrentState() == Lifecycle.State.RESUMED) {
-                        Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
-                    }
+            @Override
+            public void onChanged(String s) {
+                //podmínka aby se upozornění nezobrazovalo vždy když se mění fragment
+                if (getViewLifecycleOwner().getLifecycle().getCurrentState() == Lifecycle.State.RESUMED) {
+                    Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
                 }
-            });
+            }
+        });
 
         fab_plus.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,16 +108,11 @@ public class PlayerFragment extends CustomUserFragment implements OnListListener
     }
 
     @Override
-    public void onItemClick(int position) {
+    protected void itemClick(int position) {
         Log.d(TAG, "onHracClick: kliknuto na pozici " + position + ", object: " + playerViewModel.getPlayers().getValue());
         PlayerDialog playerDialog = new PlayerDialog(Flag.PLAYER_EDIT, playerViewModel.getPlayers().getValue().get(position));
         playerDialog.setTargetFragment(PlayerFragment.this, 1);
         playerDialog.show(getParentFragmentManager(), "dialogplus");
-    }
-
-    @Override
-    public void onItemLongClick(int position) {
-
     }
 
     @Override

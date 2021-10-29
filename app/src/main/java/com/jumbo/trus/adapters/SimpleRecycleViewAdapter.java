@@ -1,5 +1,6 @@
 package com.jumbo.trus.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import com.jumbo.trus.fine.ReceivedFine;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.player.Player;
 import com.jumbo.trus.repayment.Repayment;
+import com.jumbo.trus.user.User;
 
 import java.util.List;
 
@@ -44,6 +46,7 @@ public class SimpleRecycleViewAdapter extends RecyclerView.Adapter<SimpleRecycle
         return viewHolder;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         Log.d(TAG, "onBindViewHolder: called");
@@ -76,6 +79,11 @@ public class SimpleRecycleViewAdapter extends RecyclerView.Adapter<SimpleRecycle
             holder.tv_text.setText("dne: " + ((Repayment) models.get(position)).getDateOfTimestampInStringFormat() + "\n" + ((Repayment) models.get(position)).getNote());
 
         }
+        else if (models.get(position) instanceof User) {
+            //holder.tv_title.setText("Uživatel " + models.get(position).getName());
+            holder.tv_text.setText("Uživatel " + models.get(position).getName() + ", registrován dne " + ((User) models.get(position)).returnRegistrationDateInStringFormat());
+
+        }
         else {
             holder.tv_title.setText(models.get(position).toString());
         }
@@ -103,7 +111,7 @@ public class SimpleRecycleViewAdapter extends RecyclerView.Adapter<SimpleRecycle
 
         @Override
         public void onClick(View v) {
-            onListListener.onItemClick(getAdapterPosition());
+            onListListener.onItemClick(getBindingAdapterPosition());
         }
     }
 

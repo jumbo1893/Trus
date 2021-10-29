@@ -85,7 +85,7 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
         return false;
     }
 
-    public boolean editUserPasswordInRepository(final String password, final String oldPassword, User user) {
+    boolean editUserPasswordInRepository(final String password, final String oldPassword, User user) {
         isUpdating.setValue(true);
         PasswordEncryption encryption = new PasswordEncryption();
         try {
@@ -115,7 +115,7 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
         return true;
     }
 
-    public int changeColorOfUserInRepository(User user) {
+    int changeColorOfUserInRepository(User user) {
         isUpdating.setValue(true);
         user.setRandomCharColor();
         try {
@@ -142,10 +142,26 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
         for (User user : Objects.requireNonNull(getUsers().getValue())) {
             try {
                 if (name.equals(user.getName()) && encryption.compareHashedPassword(user.getPassword(), password)) {
+                    if (user.getStatus() == User.Status.FORGOTTEN_PASSWORD) {
+                        user.setStatus(User.Status.APPROVED);
+                        changeUserInDBSimply(user);
+                        alert.setValue("Vypadá to, že si " + user.getName() + ", vzpomněl na heslo. Tak abys ho po dnešní jízdě nezapomněl");
+                    }
+                    else {
+                        alert.setValue("Vítejte pane " + user.getName() + ", přeji příjemné chlastání");
+                    }
                     this.user.setValue(user);
                     isUpdating.setValue(false);
-                    alert.setValue("Vítejte pane " + user.getName() + ", přeji příjemné chlastání");
                     return false;
+                }
+                else if (name.equals(user.getName()) && !password.equals(user.getPassword()) && user.getStatus() == User.Status.PASSWORD_RESET) {
+                    user.setStatus(User.Status.APPROVED);
+                    user.setPassword(encryption.hashPassword(password));
+                    changeUserInDBSimply(user);
+                    this.user.setValue(user);
+                    isUpdating.setValue(false);
+                    alert.setValue("Vítej " + user.getName() + ". Heslo bylo změněno, dlužíš rundu");
+                    return true;
                 }
                 else if (name.equals(user.getName()) && !password.equals(user.getPassword())) {
                     isUpdating.setValue(false);
@@ -169,14 +185,14 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
         for (User user : Objects.requireNonNull(getUsers().getValue())) {
             if (name.equals(user.getName()) && password.equals(user.getPassword())) {
                 this.user.setValue(user);
-                isUpdating.setValue(false);
                 alert.setValue("Vítejte pane " + user.getName() + ", přeji příjemné chlastání");
-                return false;
+                isUpdating.setValue(false);
+                return true;
             }
             else if (name.equals(user.getName()) && !password.equals(user.getPassword())) {
                 isUpdating.setValue(false);
                 alert.setValue("Zadal si špatný heslo!");
-                return true;
+                return false;
             }
         }
         isUpdating.setValue(false);
@@ -192,7 +208,7 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
         }
         User user;
         try {
-            user = new User(name, encryption.hashPassword(password));
+            user = new User(name, encryption.hashPassword(password), User.Permission.READ_ONLY, User.Status.WAITING_FOR_APPROVE);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             alert.setValue("Chyba při šifrování hesla!");
@@ -211,15 +227,101 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
         return true;
     }
 
+    boolean changeUserStatusToForgottenPassword(final String name) {
+        isUpdating.setValue(true);
+        User user = null;
+        if (!checkIfUsernameAlreadyExists(name)) {
+            alert.setValue("Jestli si zapomněl heslo, musíš zadat svůj login do kolonky \"přihlašovací jméno\"");
+            isUpdating.setValue(false);
+            return false;
+        }
+        for (User dbUser : Objects.requireNonNull(getUsers().getValue())) {
+            if (name.equals(dbUser.getName())) {
+                user = dbUser;
+                break;
+            }
+        }
+        if (user != null) {
+            user.setStatus(User.Status.FORGOTTEN_PASSWORD);
+            try {
+                firebaseRepository.editModel(user);
+            } catch (Exception e) {
+                alert.setValue("Chyba při komunikaci s db, sorry, zkus to jindy");
+                isUpdating.setValue(false);
+                return false;
+            }
+            alert.setValue("Zaslána žádost o reset hesla u uživatele " + name);
+            return true;
+        }
+        alert.setValue("Chyba při vyhledání uživatele " + name + " v db");
+        isUpdating.setValue(false);
+        return false;
+    }
+
+    private void changeUserInDBSimply(User user) {
+        try {
+            firebaseRepository.editModel(user);
+        } catch (Exception e) {
+            alert.setValue("Chyba při komunikaci s db, sorry, zkus to jindy");
+            isUpdating.setValue(false);
+        }
+    }
+
+    boolean changeUserStatus(final User user, User.Status newStatus) {
+        isUpdating.setValue(true);
+        user.setStatus(newStatus);
+        try {
+            firebaseRepository.editModel(user);
+        }
+        catch (Exception e) {
+            alert.setValue("Chyba při komunikaci s db, sorry, zkus to jindy");
+            isUpdating.setValue(false);
+            return false;
+        }
+        alert.setValue("Potvrzuji změnu uživatele na " + newStatus);
+        return true;
+    }
+
+    boolean changeUserPermission(final User user, User.Permission newPermission) {
+        isUpdating.setValue(true);
+        user.setPermission(newPermission);
+        try {
+            firebaseRepository.editModel(user);
+        }
+        catch (Exception e) {
+            alert.setValue("Chyba při komunikaci s db, sorry, zkus to jindy");
+            isUpdating.setValue(false);
+            return false;
+        }
+        alert.setValue("Přiděluji uživatelovi práva: " + newPermission);
+        return true;
+    }
+
+    boolean changeUserPermissionAndStatus(final User user, User.Permission newPermission, User.Status newStatus) {
+        isUpdating.setValue(true);
+        user.setPermission(newPermission);
+        user.setStatus(newStatus);
+        try {
+            firebaseRepository.editModel(user);
+        }
+        catch (Exception e) {
+            alert.setValue("Chyba při komunikaci s db, sorry, zkus to jindy");
+            isUpdating.setValue(false);
+            return false;
+        }
+        alert.setValue("Potvrzuji změnu uživatele na " + newStatus + " a přiděluji mu práva: " + newPermission);
+        return true;
+    }
+
     private void setUserAsAdded(final User user, Flag flag) {
         String action = "";
         switch (flag) {
             case USER_PLUS:
                 action = "Byl zaregistrován uživatel " + user.getName();
-                alert.setValue("Registrace uživatele " + user.getName() + " hotová, můžete se přihlásit");
+                //alert.setValue("Registrace uživatele " + user.getName() + " hotová, můžete se přihlásit");
                 break;
             case USER_EDIT:
-                alert.setValue("Upraveny údaje uživatele");
+                //alert.setValue("Upraveny údaje uživatele");
                 action = "Upraveny údaje uživatele";
                 break;
             case USER_DELETE:
@@ -252,6 +354,17 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
         return user;
     }
 
+    private void checkIfCurrentUserIsChanged(List<User> userList) {
+        for (User user : userList) {
+            if (user.equals(getUser().getValue())) {
+                this.user.setValue(user);
+            }
+        }
+    }
+
+    public void setUser(User user) {
+        this.user.setValue(user);
+    }
 
     @Override
     public void itemAdded(Model model) {
@@ -272,6 +385,7 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
     public void itemListLoaded(List models, Flag flag) {
         Log.d(TAG, "itemListLoaded: " + models);
         users.setValue(models);
+        checkIfCurrentUserIsChanged(models);
     }
 
     @Override
