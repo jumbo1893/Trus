@@ -16,6 +16,8 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -58,6 +60,7 @@ public class UserInteractionFragment extends CustomUserFragment implements View.
         btn_approve_new_users.setOnClickListener(this);
         btn_approve_forgotten_password.setOnClickListener(this);
         btn_admin_interaction.setOnClickListener(this);
+        btn_admin_interaction.setVisibility(View.INVISIBLE);
         loginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
         loginViewModel.init();
         showProgressBar();
@@ -104,11 +107,13 @@ public class UserInteractionFragment extends CustomUserFragment implements View.
                             .putString("password", user.getPassword())
                             .apply();
                 }
-                //mainActivityViewModel.setUser(user);
                 hideButtonsToUserWithoutPermissions(user);
             }
         });
         return view;
+    }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     }
 
     private void initLoginViewModelAndChangeColor() {
@@ -158,8 +163,20 @@ public class UserInteractionFragment extends CustomUserFragment implements View.
         if (user.getPermission() == User.Permission.READ_ONLY) {
             btn_approve_forgotten_password.setVisibility(View.INVISIBLE);
             btn_approve_new_users.setVisibility(View.INVISIBLE);
+            btn_admin_interaction.setVisibility(View.INVISIBLE);
+        }
+        else if (user.getPermission() == User.Permission.ADMIN) {
+            btn_approve_forgotten_password.setVisibility(View.VISIBLE);
+            btn_approve_new_users.setVisibility(View.VISIBLE);
+            btn_admin_interaction.setVisibility(View.VISIBLE);
+        }
+        else {
+            btn_approve_forgotten_password.setVisibility(View.VISIBLE);
+            btn_approve_new_users.setVisibility(View.VISIBLE);
+            btn_admin_interaction.setVisibility(View.INVISIBLE);
         }
     }
+
 
     @Override
     protected void setUser(User user) {

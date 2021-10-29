@@ -26,6 +26,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.jumbo.trus.MainActivity;
 import com.jumbo.trus.R;
 import com.jumbo.trus.update.ForceUpdateChecker;
+import com.jumbo.trus.update.StorageManager;
 
 import java.util.List;
 import java.util.Objects;
@@ -280,9 +281,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private void redirectStore(String updateUrl) {
-        final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(updateUrl));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+    private void redirectStore(String fileName) {
+        StorageManager storageManager = new StorageManager(this, fileName);
+        storageManager.downloadNewApp();
     }
 }

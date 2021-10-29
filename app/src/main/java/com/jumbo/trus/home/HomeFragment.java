@@ -15,7 +15,10 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.jumbo.trus.BuildConfig;
 import com.jumbo.trus.R;
+import com.jumbo.trus.update.StorageManager;
 import com.jumbo.trus.user.LoginActivity;
+
+import java.io.IOException;
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
 
