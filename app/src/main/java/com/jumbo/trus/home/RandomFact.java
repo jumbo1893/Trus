@@ -2,13 +2,17 @@ package com.jumbo.trus.home;
 
 
 import com.jumbo.trus.Date;
+import com.jumbo.trus.Flag;
+import com.jumbo.trus.Model;
 import com.jumbo.trus.fine.Fine;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.player.Player;
 import com.jumbo.trus.season.Season;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 class RandomFact {
 
@@ -87,9 +91,7 @@ class RandomFact {
                     else {
                         text += ", ";
                     }
-
                 }
-
                 return text;
             }
         }
@@ -1380,15 +1382,16 @@ class RandomFact {
      */
     String getMatchWithHighestAverageLiquors() {
         List<Match> returnMatches = new ArrayList<>();
-        float average = 0;
-        for (Match match : matches) {
-            if (match.returnNumberOfLiquorsInMatch() / (float) match.returnNumberOfPlayersAndFansInMatch() > average) {
-                average = match.returnNumberOfLiquorsInMatch() / (float) match.returnNumberOfPlayersAndFansInMatch();
-                returnMatches.clear();
-                returnMatches.add(match);
-            } else if (match.returnNumberOfLiquorsInMatch() / (float) match.returnNumberOfPlayersAndFansInMatch() == average) {
-                returnMatches.add(match);
-            }
+            float average = 0;
+            for (Match match : matches) {
+                float iterationAverage = match.returnNumberOfLiquorPerParticipant();
+                if (iterationAverage > average) {
+                    average = iterationAverage;
+                    returnMatches.clear();
+                    returnMatches.add(match);
+                } else if (iterationAverage == average) {
+                    returnMatches.add(match);
+                }
         }
         if (average == 0) {
             return "Nejvyšší průměr vypitých panáků na zápase Trusu je 0!! Nechce někdo vyměnit pivko za lahodný Liščí Trus?!?";
@@ -1557,4 +1560,61 @@ class RandomFact {
             }
         }
     }
+
+    /*public String responseBuilder(List<Model> models, String beginning, String end) {
+        StringBuilder result = new StringBuilder(beginning);
+        for (int i = 0; i < models.size(); i++) {
+            if (models.get(i) instanceof Match) {
+                result.append("soupeřem " + ((Match) models.get(i)).getOpponent() + " hraném " + ((Match) models.get(i)).getDateOfMatchInStringFormat() +
+                        " s celkovým počtem " + ((Match) models.get(i)).returnNumberOfBeersInMatch() + " piv a " + ((Match) models.get(i)).returnNumberOfLiquorsInMatch() +
+                        ". panáků v " + ((Match) models.get(i)).returnNumberOfPlayersAndFansInMatch() + " lidech");
+                if (i == models.size() - 1) {
+                    result.append(".\n" + end);
+                } else if (i == models.size() - 2) {
+                    result.append(" a ");
+                } else {
+                    result.append("; ");
+                }
+            }
+        }
+        return result.toString();
+    }*/
+
+    /*private HashMap<Flag, Integer> returnAverageNumberInMatch() {
+        Flag flag;
+        HashMap<Flag, AverageNumberInModel> averageNumberInMatchHashMap = new HashMap<>();
+        for (Match match : matches) {
+            flag = Flag.LIQUOR;
+            averageNumberInMatchHashMap.put(flag, new AverageNumberInModel(0, new ArrayList<Model>()));
+            float iterationAverage = match.returnNumberOfLiquorsInMatch() / (float) match.returnNumberOfPlayersAndFansInMatch();
+            if (iterationAverage > Objects.requireNonNull(averageNumberInMatchHashMap.get(flag)).average) {
+                Objects.requireNonNull(averageNumberInMatchHashMap.get(flag)).average = iterationAverage;
+                Objects.requireNonNull(averageNumberInMatchHashMap.get(flag)).clearListAndAddModel(match);
+            } else if (iterationAverage == Objects.requireNonNull(averageNumberInMatchHashMap.get(flag)).average) {
+                Objects.requireNonNull(averageNumberInMatchHashMap.get(flag)).addModelToList(match);
+            }
+        }
+
+    }*/
+
+    private static class AverageNumberInModel {
+        float average;
+        List<Model> models;
+
+        AverageNumberInModel(float average, List<Model> models) {
+            this.average = average;
+            this.models = models;
+        }
+
+        void addModelToList(Model model) {
+            models.add(model);
+        }
+
+        void clearListAndAddModel(Model model) {
+            models.clear();
+            models.add(model);
+        }
+
+    }
+
 }

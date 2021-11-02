@@ -287,6 +287,13 @@ public class Match extends Model {
     }
 
     /**
+     * @return vrátí počet panáků na jednoho účastníka zápasu
+     */
+    public float returnNumberOfLiquorPerParticipant() {
+        return returnNumberOfLiquorsInMatch() / (float) returnNumberOfPlayersAndFansInMatch();
+    }
+
+    /**
      * @param player Hráč, kterým chceme prohledat playerlist
      * @return true pokud daný hráč má alespoň jednu pokutu
      */

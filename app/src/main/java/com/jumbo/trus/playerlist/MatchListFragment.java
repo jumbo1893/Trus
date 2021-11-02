@@ -70,7 +70,6 @@ public class MatchListFragment extends CustomUserFragment implements IChangeFine
         progress_bar = view.findViewById(R.id.progress_bar);
         sp_seasons = view.findViewById(R.id.sp_seasons);
         sp_seasons.setOnItemSelectedListener(this);
-        //initMainActivityViewModel();
         matchViewModel = new ViewModelProvider(requireActivity()).get(MatchViewModel.class);
         matchViewModel.init();
         seasonsViewModel = new ViewModelProvider(requireActivity()).get(SeasonsViewModel.class);
@@ -82,7 +81,7 @@ public class MatchListFragment extends CustomUserFragment implements IChangeFine
                 useSeasonsFilter(matches);
                 initMatchRecycleView();
                 setAdapter();
-                adapter.notifyDataSetChanged(); //TODO notifyItemInserted
+                adapter.notifyDataSetChanged();//TODO notifyItemInserted
             }
         });
 
@@ -174,12 +173,12 @@ public class MatchListFragment extends CustomUserFragment implements IChangeFine
     protected void itemClick(int position) {
         Log.d(TAG, "onHracClick: kliknuto na pozici " + position + ", object: " + matchViewModel.getMatches().getValue() + flag);
         if (flag == Flag.BEER) {
-            BeerDialog beerDialog = new BeerDialog(Flag.MATCH_EDIT, matchViewModel.getMatches().getValue().get(position));
+            BeerDialog beerDialog = new BeerDialog(Flag.MATCH_EDIT, selectedMatches.get(position));
             beerDialog.setTargetFragment(MatchListFragment.this, 1);
             beerDialog.show(getParentFragmentManager(), "dialogplus");
         }
         else if (flag == Flag.FINE) {
-            FinePlayerDialog finePlayerDialog = new FinePlayerDialog(matchViewModel.getMatches().getValue().get(position));
+            FinePlayerDialog finePlayerDialog = new FinePlayerDialog(selectedMatches.get(position));
             finePlayerDialog.setTargetFragment(MatchListFragment.this, 1);
             finePlayerDialog.show(getParentFragmentManager(), "dialogplus");
         }
