@@ -23,8 +23,6 @@ import com.jumbo.trus.Flag;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.R;
 import com.jumbo.trus.SimpleDividerItemDecoration;
-import com.jumbo.trus.adapters.FinesStatsPlayerRecycleViewAdapter;
-import com.jumbo.trus.adapters.SimpleRecycleViewAdapter;
 import com.jumbo.trus.adapters.SimpleStringRecycleViewAdapter;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.match.MatchViewModel;
@@ -293,10 +291,4 @@ public class BeerStatisticsDialog extends Dialog implements AdapterView.OnItemSe
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
-
-    /*@Override
-    public boolean onTouch(View v, MotionEvent event) {
-        userSelect = true;
-        return false;
-    }*/
 }
