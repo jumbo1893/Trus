@@ -19,22 +19,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <Spinner
-        android:id="@+id/sp_select_player_season"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_title"
-        android:layout_marginTop="10dp"/>
-    <TextView
-        android:id="@+id/tv_overall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/sp_select_player_season"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="10dp"/>
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rc_list"
@@ -42,17 +26,16 @@
         android:layout_height="wrap_content"
         app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toTopOf="@+id/btn_commit"
-        app:layout_constraintTop_toBottomOf="@+id/tv_overall"
-        android:textSize="12sp"/>
+        app:layout_constraintTop_toBottomOf="@+id/tv_title"/>
 
     <Button
         android:id="@+id/btn_commit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
         android:textColor="@color/cervena"
         style="?android:attr/borderlessButtonStyle"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:text="ok" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

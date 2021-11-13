@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,6 @@ import com.jumbo.trus.Flag;
 import com.jumbo.trus.R;
 import com.jumbo.trus.SimpleDividerItemDecoration;
 import com.jumbo.trus.adapters.SimpleRecycleViewAdapter;
-import com.jumbo.trus.adapters.StringRecycleViewAdapter;
 import com.jumbo.trus.listener.OnListListener;
 
 import java.util.List;

@@ -240,4 +240,24 @@ public class StatisticsViewModel extends ViewModel {
         }
         return receivedFines;
     }
+
+    public List<String> returnOverallBeerStringList(List<Match> selectedMatches, List<Player> selectedPlayers) {
+        List<String> returnList = new ArrayList<>();
+        int overallBeers = countNumberOfAllBeers(selectedPlayers, selectedMatches);
+        int overallLiquors = countNumberOfAllLiquors(selectedPlayers, selectedMatches);
+        int fanBeers = countNumberOfAllBeers(selectedPlayers, selectedMatches, true);
+        int fanLiquors = countNumberOfAllLiquors(selectedPlayers, selectedMatches, true);
+        int playerBeers = countNumberOfAllBeers(selectedPlayers, selectedMatches, false);
+        int playerLiquors = countNumberOfAllLiquors(selectedPlayers, selectedMatches, false);
+        returnList.add("Celkový počet chlastu v zobrazených zápasech: " + (overallBeers+overallLiquors) +
+                "\nz toho piv: " + overallBeers +
+                "\nz toho panáků: " + overallLiquors);
+        returnList.add("Počet vypitýho chlastu fanoušky: " + (fanBeers+fanLiquors) +
+                "\nz toho piv: " + fanBeers +
+                "\nz toho panáků: " + fanLiquors);
+        returnList.add("Počet vypitýho chlastu hráči: " + (playerBeers+playerLiquors) +
+                "\nz toho piv: " + playerBeers +
+                "\nz toho panáků: " + playerLiquors);
+        return returnList;
+    }
 }

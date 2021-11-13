@@ -16,7 +16,7 @@ import com.jumbo.trus.R;
 
 import java.util.List;
 
-public class StringRecycleViewAdapter extends RecyclerView.Adapter<StringRecycleViewAdapter.ViewHolder> {
+public class CountedStringRecycleViewAdapter extends RecyclerView.Adapter<CountedStringRecycleViewAdapter.ViewHolder> {
 
     private static final String TAG = "StringRecycleViewAdapter";
 
@@ -24,7 +24,7 @@ public class StringRecycleViewAdapter extends RecyclerView.Adapter<StringRecycle
     private Context context;
     private OnListListener onListListener;
 
-    public StringRecycleViewAdapter(List<String> list, Context context, OnListListener onListListener) {
+    public CountedStringRecycleViewAdapter(List<String> list, Context context, OnListListener onListListener) {
         this.list = list;
         this.context = context;
         this.onListListener = onListListener;
@@ -33,7 +33,7 @@ public class StringRecycleViewAdapter extends RecyclerView.Adapter<StringRecycle
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_simple_listitem, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_simple_list_counted, parent, false);
         ViewHolder viewHolder = new ViewHolder(view, onListListener);
         return viewHolder;
     }

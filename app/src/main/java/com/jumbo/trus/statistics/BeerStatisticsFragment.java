@@ -1,7 +1,5 @@
 package com.jumbo.trus.statistics;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -218,50 +216,11 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
         progress_bar.setVisibility(View.GONE);
     }
 
-    private void displayOverallMatchDialog() {
+    private void displayOverallDialog() {
         Log.d(TAG, "displayOverallMatchDialog zobrazen");
-        int overallBeers = statisticsViewModel.countNumberOfAllBeers(playerViewModel.getPlayers().getValue(), selectedMatches);
-        int overallLiquors = statisticsViewModel.countNumberOfAllLiquors(playerViewModel.getPlayers().getValue(), selectedMatches);
-        int fanBeers = statisticsViewModel.countNumberOfAllBeers(playerViewModel.getPlayers().getValue(), selectedMatches, true);
-        int fanLiquors = statisticsViewModel.countNumberOfAllLiquors(playerViewModel.getPlayers().getValue(), selectedMatches, true);
-        int playerBeers = statisticsViewModel.countNumberOfAllBeers(playerViewModel.getPlayers().getValue(), selectedMatches, false);
-        int playerLiquors = statisticsViewModel.countNumberOfAllLiquors(playerViewModel.getPlayers().getValue(), selectedMatches, false);
-        String text = "Celkový počet piv v zobrazených zápasech: " + overallBeers + ", počet panáků: " + overallLiquors + ", dohromady: " + (overallBeers+overallLiquors) + "\n" +
-                "Počet piv fanoušků: " + fanBeers + ", počet panáků" + fanLiquors + ", dohromady: " + (fanBeers+fanLiquors) + "\n" +
-                "Počet piv hráčů: " + playerBeers + ", počet panáků " + playerLiquors + ", dohromady: " + (playerBeers+playerLiquors);
-        final AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-        alert.setTitle("celkovej chlast");
-        alert.setMessage(text);
-
-        alert.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                dialog.dismiss();
-            }
-        });
-        alert.show();
-    }
-
-    private void displayOverallPlayerDialog() {
-        Log.d(TAG, "displayOverallPlayerDialog zobrazen");
-        int overallBeers = statisticsViewModel.countNumberOfAllBeers(selectedPlayers, matchViewModel.getMatches().getValue());
-        int overallLiquors = statisticsViewModel.countNumberOfAllLiquors(selectedPlayers, matchViewModel.getMatches().getValue());
-        String text = "Celkový počet piv u zobrazených hráčů: " + overallBeers + ", počet panáků: " + overallLiquors + ", dohromady: " + (overallBeers+overallLiquors);
-        for (Season season : seasonsViewModel.getSeasons().getValue()) {
-            int seasonBeers = statisticsViewModel.countNumberOfAllBeersBySeason(selectedPlayers, matchViewModel.getMatches().getValue(), season);
-            int seasonLiquors = statisticsViewModel.countNumberOfAllLiquorsBySeason(selectedPlayers, matchViewModel.getMatches().getValue(), season);
-            text += "\n\nPro sezonu " + season.getName() + " vypili vybraní hráči: " + seasonBeers + " piv a " + seasonLiquors + " panáků, tedy " +
-                    (seasonBeers+seasonLiquors) + " jednotek chlastu";
-        }
-        final AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-        alert.setTitle("celkovej chlast");
-        alert.setMessage(text);
-
-        alert.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                dialog.dismiss();
-            }
-        });
-        alert.show();
+        OverallStatisticsDialog overallStatisticsDialog = new OverallStatisticsDialog(Flag.BEER, null, statisticsViewModel.returnOverallBeerStringList(selectedMatches, selectedPlayers));
+        overallStatisticsDialog.setTargetFragment(BeerStatisticsFragment.this, 1);
+        overallStatisticsDialog.show(getFragmentManager(), "dialogplus");
     }
 
     @Override
@@ -343,13 +302,7 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
                 break;
             }
             case R.id.btn_overall: {
-                if (checkedPlayers) {
-                    displayOverallPlayerDialog();
-                }
-                else {
-                    displayOverallMatchDialog();
-                }
-                break;
+                displayOverallDialog();
             }
             case R.id.btn_search: {
                 if (checkedPlayers) {

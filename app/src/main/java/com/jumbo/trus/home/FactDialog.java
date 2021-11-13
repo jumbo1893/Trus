@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.jumbo.trus.listener.OnListListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.SimpleDividerItemDecoration;
-import com.jumbo.trus.adapters.StringRecycleViewAdapter;
+import com.jumbo.trus.adapters.CountedStringRecycleViewAdapter;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class FactDialog extends DialogFragment implements View.OnClickListener, 
 
     private List<String> factList;
 
-    private StringRecycleViewAdapter stringRecycleViewAdapter;
+    private CountedStringRecycleViewAdapter countedStringRecycleViewAdapter;
 
 
     public FactDialog(List<String> factList) {
@@ -53,12 +53,12 @@ public class FactDialog extends DialogFragment implements View.OnClickListener, 
 
     private void initFinesRecycleView() {
         Log.d(TAG, "initFinesRecycleView: " + factList.size());
-        stringRecycleViewAdapter = new StringRecycleViewAdapter(factList, getActivity(), this);
+        countedStringRecycleViewAdapter = new CountedStringRecycleViewAdapter(factList, getActivity(), this);
     }
 
     private void setAdapter() {
-        if (stringRecycleViewAdapter != null) {
-            rc_list.setAdapter(stringRecycleViewAdapter);
+        if (countedStringRecycleViewAdapter != null) {
+            rc_list.setAdapter(countedStringRecycleViewAdapter);
         }
         rc_list.setLayoutManager(new LinearLayoutManager(getActivity()));
     }

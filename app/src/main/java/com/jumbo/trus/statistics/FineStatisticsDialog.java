@@ -85,6 +85,8 @@ public class FineStatisticsDialog extends Dialog implements AdapterView.OnItemSe
         tv_title = view.findViewById(R.id.tv_title);
         sp_select_player_season = view.findViewById(R.id.sp_select_player_season);
         tv_overall = view.findViewById(R.id.tv_overall);
+        tv_overall.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        tv_overall.setTextSize(16);
         btn_commit = view.findViewById(R.id.btn_commit);
         rc_list = view.findViewById(R.id.rc_list);
         rc_list.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));

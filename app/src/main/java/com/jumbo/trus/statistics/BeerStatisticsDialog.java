@@ -1,5 +1,6 @@
 package com.jumbo.trus.statistics;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,11 +15,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.jumbo.trus.Dialog;
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.R;
+import com.jumbo.trus.SimpleDividerItemDecoration;
+import com.jumbo.trus.adapters.FinesStatsPlayerRecycleViewAdapter;
+import com.jumbo.trus.adapters.SimpleRecycleViewAdapter;
+import com.jumbo.trus.adapters.SimpleStringRecycleViewAdapter;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.match.MatchViewModel;
 import com.jumbo.trus.player.Player;
@@ -29,14 +36,15 @@ import com.jumbo.trus.season.SeasonsViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BeerStatisticsDialog extends Dialog implements AdapterView.OnItemSelectedListener/*, View.OnTouchListener*/ {
+public class BeerStatisticsDialog extends Dialog implements AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "BeerStatisticsDialog";
 
     //widgety
-    private TextView tv_title, tv_list;
+    private TextView tv_title, tv_overall;
     private Spinner sp_select_player_season;
     private Button btn_commit;
+    private RecyclerView rc_list;
 
     private PlayerViewModel playerViewModel;
     private MatchViewModel matchViewModel;
@@ -44,8 +52,10 @@ public class BeerStatisticsDialog extends Dialog implements AdapterView.OnItemSe
     private StatisticsViewModel statisticsViewModel;
 
     private ArrayAdapter<String> seasonArrayAdapter;
+    private SimpleStringRecycleViewAdapter adapter;
 
     private List<Match> selectedMatches;
+    private List<String> adapterTexts;
 
     private List<String> seasonsNames = new ArrayList<>();
     private List<String> playerSpinnerOptions = new ArrayList<>();
@@ -67,13 +77,16 @@ public class BeerStatisticsDialog extends Dialog implements AdapterView.OnItemSe
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_beer_statistics, container, false);
+        View view = inflater.inflate(R.layout.dialog_fine_statistics, container, false);
         tv_title = view.findViewById(R.id.tv_title);
         sp_select_player_season = view.findViewById(R.id.sp_select_player_season);
-        tv_list = view.findViewById(R.id.tv_list);
+        tv_overall = view.findViewById(R.id.tv_overall);
+        tv_overall.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        tv_overall.setTextSize(16);
+        rc_list = view.findViewById(R.id.rc_list);
+        rc_list.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         btn_commit = view.findViewById(R.id.btn_commit);
         sp_select_player_season.setOnItemSelectedListener(this);
-        //sp_select_player_season.setOnTouchListener(this);
         seasonsViewModel = new ViewModelProvider(requireActivity()).get(SeasonsViewModel.class);
         seasonsViewModel.init();
         matchViewModel = new ViewModelProvider(requireActivity()).get(MatchViewModel.class);
@@ -82,7 +95,6 @@ public class BeerStatisticsDialog extends Dialog implements AdapterView.OnItemSe
         playerViewModel.init();
         statisticsViewModel = new ViewModelProvider(requireActivity()).get(StatisticsViewModel.class);
         decideTextsToShow();
-
         btn_commit.setOnClickListener(this);
 
         return view;
@@ -117,6 +129,16 @@ public class BeerStatisticsDialog extends Dialog implements AdapterView.OnItemSe
         seasonArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     }
 
+    private void initRecycleView() {
+        Log.d(TAG, "initRecycleView: ");
+        adapter = new SimpleStringRecycleViewAdapter(adapterTexts, getActivity());
+    }
+
+    private void setAdapter() {
+        rc_list.setAdapter(adapter);
+        rc_list.setLayoutManager(new LinearLayoutManager(getActivity()));
+    }
+
     private void addPlayerSpinnerOptions() {
         playerSpinnerOptions.clear();
         playerSpinnerOptions.add("Zobraz vše");
@@ -132,61 +154,74 @@ public class BeerStatisticsDialog extends Dialog implements AdapterView.OnItemSe
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private void addPlayerText() {
         List<Match> matchesWithPlayer = statisticsViewModel.findAllMatchesWithPlayerParticipant(selectedMatches, (Player) model);
-        String text = "";
+        adapterTexts = new ArrayList<>();
         int allBeers = 0;
         int allLiquors = 0;
+        int allMatches = 0;
         for (Match match : matchesWithPlayer) {
+            StringBuilder text = new StringBuilder();
             if (match.isHomeMatch()) {
-                text += "Domácí ";
+                text.append("Domácí ");
             }
             else {
-                text += "Venkovní ";
+                text.append("Venkovní ");
             }
             int beerNumber = match.returnPlayerListOnlyWithParticipants().get(match.returnPlayerListOnlyWithParticipants().indexOf(model)).getNumberOfBeers();
             int liquorNumber = match.returnPlayerListOnlyWithParticipants().get(match.returnPlayerListOnlyWithParticipants().indexOf(model)).getNumberOfLiquors();
-            text += "zápas proti " + match.getOpponent() + ", počet piv: " + beerNumber + ", počet panáků " + liquorNumber + ", dohromady: " + (beerNumber+liquorNumber) + "\n\n";
+            text.append("zápas proti " + match.getOpponent() + ", počet piv: " + beerNumber + ", počet panáků " + liquorNumber + ", dohromady: " + (beerNumber+liquorNumber));
+            adapterTexts.add(text.toString());
             allBeers += match.returnPlayerListOnlyWithParticipants().get(match.returnPlayerListOnlyWithParticipants().indexOf(model)).getNumberOfBeers();
             allLiquors += match.returnPlayerListOnlyWithParticipants().get(match.returnPlayerListOnlyWithParticipants().indexOf(model)).getNumberOfLiquors();
+            allMatches++;
         }
-        tv_list.setText("Celkový počet piv: " + allBeers + ", panáků: " + allLiquors + ", dohromady: " + (allBeers+allLiquors) + "\n\n" + text);
+        tv_overall.setText("Celkový počet piv: " + allBeers + ", panáků: " + allLiquors + ", dohromady: " + (allBeers+allLiquors) + "\n" +
+                "Průmerný počet piv: " + ((float)allBeers/allMatches) + ", panáků: " + ((float)allLiquors/allMatches)  + ", dohromady: " + (((float)allBeers+(float)allLiquors)/allMatches) + "\n");
+        initRecycleView();
+        setAdapter();
     }
 
+    @SuppressLint("SetTextI18n")
     private void addMatchText() {
-        String text = "";
         int allBeers = 0;
         int allLiquors = 0;
+        adapterTexts = new ArrayList<>();
         for (Player player : ((Match)model).returnPlayerListOnlyWithParticipants()) {
+            String text = "";
             int beerNumber;
             int liquorNumber;
             if (spinnerPosition == 0) {
                 beerNumber = player.getNumberOfBeers();
                 liquorNumber = player.getNumberOfLiquors();
-                text += player.getName() + " v zápase vypil " + beerNumber + "piv, " + liquorNumber + " panáků, tedy " + (beerNumber+liquorNumber) + " jednotek chlastu" + "\n\n";
+                text += player.getName() + " v zápase vypil " + beerNumber + "piv, " + liquorNumber + " panáků, tedy " + (beerNumber+liquorNumber) + " jednotek chlastu";
                 allBeers += player.getNumberOfBeers();
                 allLiquors += player.getNumberOfLiquors();
+                adapterTexts.add(text);
             }
             else if (spinnerPosition == 1) {
                 if (!player.isFan()) {
                     beerNumber = player.getNumberOfBeers();
                     liquorNumber = player.getNumberOfLiquors();
-                    text += player.getName() + " v zápase vypil " + beerNumber + "piv, " + liquorNumber + " panáků, tedy " + (beerNumber+liquorNumber) + " jednotek chlastu" + "\n\n";
+                    text += player.getName() + " v zápase vypil " + beerNumber + "piv, " + liquorNumber + " panáků, tedy " + (beerNumber+liquorNumber) + " jednotek chlastu";
                     allBeers += player.getNumberOfBeers();
                     allLiquors += player.getNumberOfLiquors();
+                    adapterTexts.add(text);
                 }
             }
             else {
                 if (player.isFan()) {
                     beerNumber = player.getNumberOfBeers();
                     liquorNumber = player.getNumberOfLiquors();
-                    text += player.getName() + " v zápase vypil " + beerNumber + "piv, " + liquorNumber + " panáků, tedy " + (beerNumber+liquorNumber) + " jednotek chlastu" + "\n\n";
+                    text += player.getName() + " v zápase vypil " + beerNumber + "piv, " + liquorNumber + " panáků, tedy " + (beerNumber+liquorNumber) + " jednotek chlastu";
                     allBeers += player.getNumberOfBeers();
                     allLiquors += player.getNumberOfLiquors();
+                    adapterTexts.add(text);
                 }
             }
         }
-        tv_list.setText("Celkový počet piv: " + allBeers + ", panáků: " + allLiquors + ", dohromady: " + (allBeers+allLiquors) + "\n\n" + text);
+        tv_overall.setText("Celkový počet piv: " + allBeers + ", panáků: " + allLiquors + ", dohromady: " + (allBeers+allLiquors));
     }
 
     private void decideTextsToShow() {
@@ -208,6 +243,8 @@ public class BeerStatisticsDialog extends Dialog implements AdapterView.OnItemSe
         initSpinnerSeasons();
         setSpinnerAdapter();
         addPlayerText();
+        initRecycleView();
+        setAdapter();
     }
 
     private void setLayoutToMatches() {
@@ -215,6 +252,9 @@ public class BeerStatisticsDialog extends Dialog implements AdapterView.OnItemSe
         addPlayerSpinnerOptions();
         initSpinnerPlayers();
         setSpinnerAdapter();
+        addMatchText();
+        initRecycleView();
+        setAdapter();
     }
 
 
@@ -245,6 +285,8 @@ public class BeerStatisticsDialog extends Dialog implements AdapterView.OnItemSe
                 addMatchText();
                 break;
         }
+        initRecycleView();
+        setAdapter();
     }
 
     @Override
