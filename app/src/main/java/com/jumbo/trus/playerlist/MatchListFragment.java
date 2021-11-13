@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -45,13 +46,11 @@ public class MatchListFragment extends CustomUserFragment implements IChangeFine
     private RecyclerView rc_matches;
     private SimpleRecycleViewAdapter adapter;
     private ArrayAdapter<String> seasonArrayAdapter;
-    private List<Match> selectedMatches;
     private List<String> seasonsNames = new ArrayList<>();
     private ProgressBar progress_bar;
     private MatchViewModel matchViewModel;
     private SeasonsViewModel seasonsViewModel;
     private Spinner sp_seasons;
-    private int spinnerPosition = 0;
     private Flag flag;
 
     public MatchListFragment(Flag flag) {
@@ -78,7 +77,6 @@ public class MatchListFragment extends CustomUserFragment implements IChangeFine
             @Override
             public void onChanged(List<Match> matches) {
                 Log.d(TAG, "onChanged: nacetli se hraci " + matches);
-                useSeasonsFilter(matches);
                 initMatchRecycleView();
                 setAdapter();
                 adapter.notifyDataSetChanged();//TODO notifyItemInserted
@@ -136,11 +134,10 @@ public class MatchListFragment extends CustomUserFragment implements IChangeFine
     }
 
     private void initMatchRecycleView() {
-        adapter = new SimpleRecycleViewAdapter(selectedMatches, getActivity(), this);
+        adapter = new SimpleRecycleViewAdapter(matchViewModel.getMatches().getValue(), getActivity(), this);
     }
 
     private void setAdapter() {
-        Log.d(TAG, "setAdapter: " + selectedMatches);
         rc_matches.setAdapter(adapter);
         rc_matches.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
@@ -153,19 +150,14 @@ public class MatchListFragment extends CustomUserFragment implements IChangeFine
         progress_bar.setVisibility(View.GONE);
     }
 
-    private void useSeasonsFilter(List<Match> matches) {
-        Log.d(TAG, "useSeasonsFilter: prvni" + matches);
+
+    private void setSeasonsFilter(int spinnerPosition) {
         if (spinnerPosition == 0) {
-            Log.d(TAG, "useSeasonsFilter: v3echno" + matches);
-            selectedMatches = matches;
+            matchViewModel.setSelectedSeason(null);
             return;
         }
-        selectedMatches = new ArrayList<>();
-        Season season = seasonsViewModel.getSeasons().getValue().get(spinnerPosition-1);
-        for (Match match : matches) {
-            if (match.getSeason().equals(season)) {
-                selectedMatches.add(match);
-            }
+        else {
+            matchViewModel.setSelectedSeason(seasonsViewModel.getSeasons().getValue().get(spinnerPosition-1));
         }
     }
 
@@ -173,12 +165,12 @@ public class MatchListFragment extends CustomUserFragment implements IChangeFine
     protected void itemClick(int position) {
         Log.d(TAG, "onHracClick: kliknuto na pozici " + position + ", object: " + matchViewModel.getMatches().getValue() + flag);
         if (flag == Flag.BEER) {
-            BeerDialog beerDialog = new BeerDialog(Flag.MATCH_EDIT, selectedMatches.get(position));
+            BeerDialog beerDialog = new BeerDialog(Flag.MATCH_EDIT, matchViewModel.getMatches().getValue().get(position));
             beerDialog.setTargetFragment(MatchListFragment.this, 1);
             beerDialog.show(getParentFragmentManager(), "dialogplus");
         }
         else if (flag == Flag.FINE) {
-            FinePlayerDialog finePlayerDialog = new FinePlayerDialog(selectedMatches.get(position));
+            FinePlayerDialog finePlayerDialog = new FinePlayerDialog(matchViewModel.getMatches().getValue().get(position));
             finePlayerDialog.setTargetFragment(MatchListFragment.this, 1);
             finePlayerDialog.show(getParentFragmentManager(), "dialogplus");
         }
@@ -193,9 +185,8 @@ public class MatchListFragment extends CustomUserFragment implements IChangeFine
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         Log.d(TAG, "onItemSelected: sezona " + parent.getItemAtPosition(position) + position);
-        spinnerPosition = position;
         if (adapter != null) {
-            useSeasonsFilter(matchViewModel.getMatches().getValue());
+            setSeasonsFilter(position);
             initMatchRecycleView();
             setAdapter();
             adapter.notifyDataSetChanged();
@@ -218,7 +209,6 @@ public class MatchListFragment extends CustomUserFragment implements IChangeFine
     public boolean editPlayer(List<ReceivedFine> fineList, Player player, Match match) {
         Result result = matchViewModel.editMatchPlayerFines(fineList, player, match);
         matchViewModel.alertSent(result.getText());
-        //Toast.makeText(getActivity(), result.getText(), Toast.LENGTH_SHORT).show();
         return result.isTrue();
     }
 

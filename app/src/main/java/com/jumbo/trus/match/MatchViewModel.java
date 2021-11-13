@@ -2,8 +2,10 @@ package com.jumbo.trus.match;
 
 import android.util.Log;
 
+import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.jumbo.trus.listener.ChangeListener;
@@ -31,6 +33,7 @@ public class MatchViewModel extends ViewModel implements ChangeListener, INotifi
     private static final String TAG = "MatchViewModel";
 
     private MutableLiveData<List<Match>> matches;
+    private MutableLiveData<Season> selectedSeason = new MutableLiveData<>();
     private MutableLiveData<Boolean> isUpdating = new MutableLiveData<>();
     private MutableLiveData<String> alert = new MutableLiveData<>();
     private FirebaseRepository firebaseRepository;
@@ -297,12 +300,33 @@ public class MatchViewModel extends ViewModel implements ChangeListener, INotifi
         return matches;
     }
 
+
     public LiveData<Boolean> isUpdating() {
         return isUpdating;
     }
 
     public LiveData<String> getAlert() {
         return alert;
+    }
+
+    public void setSelectedSeason(Season season) {
+        selectedSeason.postValue(season);
+        firebaseRepository.loadMatchesFromRepository();
+    }
+
+    private void useSeasonsFilter(List<Match> models) {
+        Log.d(TAG, "useSeasonsFilter: načítám zápasy s filtren" + selectedSeason.getValue());
+        if (selectedSeason.getValue() == null) {
+            matches.setValue(models);
+            return;
+        }
+        List<Match> selectedMatches = new ArrayList<>();
+        for (Match match : models) {
+            if (match.getSeason().equals(selectedSeason.getValue())) {
+                selectedMatches.add(match);
+            }
+        }
+        matches.setValue(selectedMatches);
     }
 
     @Override
@@ -325,11 +349,11 @@ public class MatchViewModel extends ViewModel implements ChangeListener, INotifi
         Collections.sort(models, new Comparator<Match>() {
             @Override
             public int compare(Match o1, Match o2) {
-                return o1.getDateOfMatch() > o2.getDateOfMatch() ? -1 : (o1.getDateOfMatch() < o2.getDateOfMatch()) ? 1 : 0;
+                return Long.compare(o2.getDateOfMatch(), o1.getDateOfMatch());
             }
         });
         Log.d(TAG, "itemListLoaded: zapasy: " + models);
-        matches.setValue(models);
+        useSeasonsFilter(models);
     }
 
     @Override

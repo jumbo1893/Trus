@@ -19,8 +19,13 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.jumbo.trus.fine.FineViewModel;
+import com.jumbo.trus.home.HomeViewModel;
 import com.jumbo.trus.listener.OnListListener;
+import com.jumbo.trus.match.MatchViewModel;
 import com.jumbo.trus.notification.Notification;
+import com.jumbo.trus.player.PlayerViewModel;
+import com.jumbo.trus.season.SeasonsViewModel;
 import com.jumbo.trus.user.LoginActivity;
 import com.jumbo.trus.user.LoginViewModel;
 import com.jumbo.trus.user.User;
@@ -32,7 +37,10 @@ public class CustomUserFragment extends Fragment implements OnListListener {
     private static final String TAG = "CustomUserFragment";
     protected User user;
     private LoginViewModel loginViewModel;
-
+    /*private PlayerViewModel playerViewModel;
+    private MatchViewModel matchViewModel;
+    private SeasonsViewModel seasonsViewModel;
+    private FineViewModel fineViewModel;*/
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

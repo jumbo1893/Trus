@@ -45,14 +45,12 @@ public class MatchFragment extends CustomUserFragment implements IMatchFragment,
     private SimpleRecycleViewAdapter adapter;
     private ArrayAdapter<String> seasonArrayAdapter;
     private List<Player> players = new ArrayList<>();
-    private List<Match> selectedMatches;
     private List<String> seasonsNames = new ArrayList<>();
     private ProgressBar progress_bar;
     private MatchViewModel matchViewModel;
     private SeasonsViewModel seasonsViewModel;
     private PlayerViewModel playerViewModel;
     private Spinner sp_seasons;
-    private int spinnerPosition = 0;
 
     
 
@@ -67,7 +65,6 @@ public class MatchFragment extends CustomUserFragment implements IMatchFragment,
         progress_bar = view.findViewById(R.id.progress_bar);
         sp_seasons = view.findViewById(R.id.sp_seasons);
         sp_seasons.setOnItemSelectedListener(this);
-        //initMainActivityViewModel();
         matchViewModel = new ViewModelProvider(requireActivity()).get(MatchViewModel.class);
         matchViewModel.init();
         seasonsViewModel = new ViewModelProvider(requireActivity()).get(SeasonsViewModel.class);
@@ -78,7 +75,6 @@ public class MatchFragment extends CustomUserFragment implements IMatchFragment,
             @Override
             public void onChanged(List<Match> matches) {
                 Log.d(TAG, "onChanged: nacetli se hraci " + matches);
-                useSeasonsFilter(matches);
                 initMatchRecycleView();
                 setAdapter();
                 adapter.notifyDataSetChanged(); //TODO notifyItemInserted
@@ -151,11 +147,10 @@ public class MatchFragment extends CustomUserFragment implements IMatchFragment,
     }
 
     private void initMatchRecycleView() {
-        adapter = new SimpleRecycleViewAdapter(selectedMatches, getActivity(), this);
+        adapter = new SimpleRecycleViewAdapter(matchViewModel.getMatches().getValue(), getActivity(), this);
     }
 
     private void setAdapter() {
-        Log.d(TAG, "setAdapter: " + selectedMatches);
         rc_zapas.setAdapter(adapter);
         rc_zapas.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
@@ -168,21 +163,16 @@ public class MatchFragment extends CustomUserFragment implements IMatchFragment,
         progress_bar.setVisibility(View.GONE);
     }
 
-    private void useSeasonsFilter(List<Match> matches) {
-        Log.d(TAG, "useSeasonsFilter: prvni" + matches);
+    private void setSeasonsFilter(int spinnerPosition) {
         if (spinnerPosition == 0) {
-            Log.d(TAG, "useSeasonsFilter: v3echno" + matches);
-            selectedMatches = matches;
+            matchViewModel.setSelectedSeason(null);
             return;
         }
-        selectedMatches = new ArrayList<>();
-        Season season = seasonsViewModel.getSeasons().getValue().get(spinnerPosition-1);
-        for (Match match : matches) {
-            if (match.getSeason().equals(season)) {
-                selectedMatches.add(match);
-            }
+        else {
+            matchViewModel.setSelectedSeason(seasonsViewModel.getSeasons().getValue().get(spinnerPosition-1));
         }
     }
+
 
     @Override
     protected void itemClick(int position) {
@@ -241,9 +231,8 @@ public class MatchFragment extends CustomUserFragment implements IMatchFragment,
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         Log.d(TAG, "onItemSelected: sezona " + parent.getItemAtPosition(position) + position);
-        spinnerPosition = position;
         if (adapter != null) {
-            useSeasonsFilter(matchViewModel.getMatches().getValue());
+            setSeasonsFilter(position);
             initMatchRecycleView();
             setAdapter();
             adapter.notifyDataSetChanged();
