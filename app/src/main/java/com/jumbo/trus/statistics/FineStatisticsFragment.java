@@ -45,7 +45,7 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
 
     private RecyclerView rc_list;
     private ProgressBar progress_bar;
-    private Button btn_overall, btn_order_rc, btn_search;
+    private Button btn_overall, btn_order_rc, btn_search, btn_table;
     private EditText et_search;
     private Switch sw_player_match;
     private Spinner sp_select_player_season;
@@ -79,6 +79,7 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
         sp_select_player_season.setOnItemSelectedListener(this);
         btn_overall = view.findViewById(R.id.btn_overall);
         btn_order_rc = view.findViewById(R.id.btn_order_rc);
+        btn_table = view.findViewById(R.id.btn_table);
         rc_list = view.findViewById(R.id.rc_list);
         rc_list.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         progress_bar = view.findViewById(R.id.progress_bar);
@@ -97,6 +98,7 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
         btn_order_rc.setOnClickListener(this);
         btn_overall.setOnClickListener(this);
         btn_search.setOnClickListener(this);
+        btn_table.setOnClickListener(this);
 
         matchViewModel.getMatches().observe(getViewLifecycleOwner(), new Observer<List<Match>>() {
             @Override
@@ -251,6 +253,12 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
         alert.show();
     }
 
+    private void displayTableDialog() {
+        TableBeerStatisticsDialog dialog = new TableBeerStatisticsDialog(Flag.FINE, null, selectedMatches, selectedPlayers);
+        dialog.setTargetFragment(FineStatisticsFragment.this, 1);
+        dialog.show(getFragmentManager(), "dialogplus");
+    }
+
     private void enhancePlayersFromStatisticViewModel() {
         selectedPlayers = statisticsViewModel.enhancePlayersWithFinesFromMatches(playerViewModel.getPlayers().getValue(), selectedMatches);
     }
@@ -339,6 +347,10 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
                 else {
                     displayOverallMatchDialog();
                 }
+                break;
+            }
+            case R.id.btn_table: {
+                displayTableDialog();
                 break;
             }
             case R.id.btn_search: {

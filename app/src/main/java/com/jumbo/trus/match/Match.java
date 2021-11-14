@@ -273,6 +273,22 @@ public class Match extends Model {
         return count;
     }
 
+
+    /**
+     * @param fine Pokuta, u které chceme znát kolik se za ní v tomto zápase vybralo
+     * @param player Hráč u kterýho zjišťujeme tu výši
+     * @return počet peněz které vynesla tato pokuta u tohoto hráče
+     */
+    public int returnAmountOfReceviedFineInMatch(Fine fine, Player player) {
+        int count = 0;
+        for (Player playerInMatch : playerList) {
+            if (playerInMatch.equals(player)) {
+                return player.returnAmountOfReceviedFine(fine);
+            }
+        }
+        return 0;
+    }
+
     /**
      * metoda vezme existující playerList u tohoto mače a připojí k němu nový playerlist
      * Stejné hráče nahradí z toho novýho listu, pokud neexistují, tak je přidá
@@ -305,6 +321,32 @@ public class Match extends Model {
             return true;
         }
         return false;
+    }
+
+    /**
+     * @param player hráč u kterýho chceme znát počet
+     * @return vrátí počet vypitýho chlastu v zápase
+     */
+    public int returnNumberOfBeersAndLiquorsForPlayer(Player player) {
+        for (Player playerInMatch : playerList) {
+            if (playerInMatch.equals(player)) {
+                return playerInMatch.getNumberOfBeers()+playerInMatch.getNumberOfLiquors();
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * @param player hráč u kterýho chceme znát částku
+     * @return vrátí částku pokuty v zápase
+     */
+    public int returnAmountOfFinesInMatch(Player player) {
+        for (Player playerInMatch : playerList) {
+            if (playerInMatch.equals(player)) {
+                return playerInMatch.returnAmountOfAllReceviedFines();
+            }
+        }
+        return 0;
     }
 
     public String toStringNameWithOpponent() {

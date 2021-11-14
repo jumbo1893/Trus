@@ -349,6 +349,23 @@ public class Player extends Model {
         return returnFines;
     }
 
+    /**
+     * vrátí částku, kterou hráč zaplatil na této konkrétní pokutě v konkrétních zápasech
+     * @param matchList seznam zápasů, ze kterých se to počítá
+     * @param fine pokuta kterou zjišťujem
+     */
+    public int returnFineNumber(List<Match> matchList, Fine fine) {
+        int fineNumber = 0;
+        for (Match match : matchList) {
+            for (Player player : match.returnPlayerListWithoutFans()) {
+                if (player.equals(this)) {
+                    fineNumber += player.returnAmountOfReceviedFine(fine);
+                }
+            }
+        }
+        return fineNumber;
+    }
+
     @Override
     public String toString() {
         return "Hrac{" +

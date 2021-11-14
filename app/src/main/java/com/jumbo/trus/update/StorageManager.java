@@ -51,6 +51,7 @@ public class StorageManager {
 
     private void downloadFiles(Context context, String fileName, String fileExtension, String destinationDirectory, String url) {
         downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+
         Uri uri = Uri.parse(url);
         DownloadManager.Request request = new DownloadManager.Request(uri);
 

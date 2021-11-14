@@ -8,7 +8,7 @@
         android:id="@+id/sw_player_match"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:text="přepni pro zobrazení hráčů"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -16,10 +16,10 @@
 
     <Spinner
         android:id="@+id/sp_select_player_season"
-        android:layout_width="150dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
-        android:layout_marginTop="38dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sw_player_match" />
 
@@ -32,7 +32,7 @@
         android:textSize="9sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/btn_order_rc"
-        app:layout_constraintTop_toBottomOf="@+id/sp_select_player_season" />
+        app:layout_constraintTop_toBottomOf="@+id/et_search" />
 
     <Button
         android:id="@+id/btn_order_rc"
@@ -62,16 +62,27 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/et_search" />
 
+    <Button
+        android:id="@+id/btn_table"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:text="tabulka"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/et_search"
+        app:layout_constraintTop_toTopOf="@+id/et_search" />
+
     <EditText
         android:id="@+id/et_search"
         android:layout_width="100dp"
         android:layout_height="35dp"
+        android:layout_marginTop="12dp"
         android:ems="10"
         android:hint="hledané slovo"
         android:inputType="textPersonName"
         android:textSize="12sp"
         app:layout_constraintEnd_toStartOf="@+id/btn_search"
-        app:layout_constraintTop_toTopOf="@+id/sp_select_player_season" />
+        app:layout_constraintTop_toBottomOf="@+id/sp_select_player_season" />
 
     <RelativeLayout
         android:layout_width="match_parent"

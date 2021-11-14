@@ -23,7 +23,7 @@ import com.jumbo.trus.listener.OnListListener;
 
 import java.util.List;
 
-public class OverallStatisticsDialog extends Dialog {
+public class OverallBeerStatisticsDialog extends Dialog {
 
     private static final String TAG = "FineStatisticsDialog";
 
@@ -38,7 +38,7 @@ public class OverallStatisticsDialog extends Dialog {
 
 
 
-    public OverallStatisticsDialog(Flag flag, Model model, List<String> overallList) {
+    public OverallBeerStatisticsDialog(Flag flag, Model model, List<String> overallList) {
         super(flag, model);
         this.overallList = overallList;
     }

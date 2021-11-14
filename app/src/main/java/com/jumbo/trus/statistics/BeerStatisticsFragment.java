@@ -43,7 +43,7 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
 
     private RecyclerView rc_list;
     private ProgressBar progress_bar;
-    private Button btn_overall, btn_order_rc, btn_search;
+    private Button btn_overall, btn_order_rc, btn_search, btn_table;
     private EditText et_search;
     private Switch sw_player_match;
     private Spinner sp_select_player_season;
@@ -75,6 +75,7 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
         sp_select_player_season.setOnItemSelectedListener(this);
         btn_overall = view.findViewById(R.id.btn_overall);
         btn_order_rc = view.findViewById(R.id.btn_order_rc);
+        btn_table = view.findViewById(R.id.btn_table);
         rc_list = view.findViewById(R.id.rc_list);
         rc_list.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         progress_bar = view.findViewById(R.id.progress_bar);
@@ -93,6 +94,7 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
         btn_order_rc.setOnClickListener(this);
         btn_overall.setOnClickListener(this);
         btn_search.setOnClickListener(this);
+        btn_table.setOnClickListener(this);
 
         matchViewModel.getMatches().observe(getViewLifecycleOwner(), new Observer<List<Match>>() {
             @Override
@@ -217,10 +219,15 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
     }
 
     private void displayOverallDialog() {
-        Log.d(TAG, "displayOverallMatchDialog zobrazen");
-        OverallStatisticsDialog overallStatisticsDialog = new OverallStatisticsDialog(Flag.BEER, null, statisticsViewModel.returnOverallBeerStringList(selectedMatches, selectedPlayers));
-        overallStatisticsDialog.setTargetFragment(BeerStatisticsFragment.this, 1);
-        overallStatisticsDialog.show(getFragmentManager(), "dialogplus");
+        OverallBeerStatisticsDialog overallBeerStatisticsDialog = new OverallBeerStatisticsDialog(Flag.BEER, null, statisticsViewModel.returnOverallBeerStringList(selectedMatches, selectedPlayers));
+        overallBeerStatisticsDialog.setTargetFragment(BeerStatisticsFragment.this, 1);
+        overallBeerStatisticsDialog.show(getFragmentManager(), "dialogplus");
+    }
+
+    private void displayTableDialog() {
+        TableBeerStatisticsDialog dialog = new TableBeerStatisticsDialog(Flag.BEER, null, selectedMatches, selectedPlayers);
+        dialog.setTargetFragment(BeerStatisticsFragment.this, 1);
+        dialog.show(getFragmentManager(), "dialogplus");
     }
 
     @Override
@@ -303,6 +310,11 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
             }
             case R.id.btn_overall: {
                 displayOverallDialog();
+                break;
+            }
+            case R.id.btn_table: {
+                displayTableDialog();
+                break;
             }
             case R.id.btn_search: {
                 if (checkedPlayers) {

@@ -85,5 +85,4 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
     //circle imageview
     implementation 'de.hdodenhof:circleimageview:3.1.0'
-
 }
