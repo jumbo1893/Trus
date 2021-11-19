@@ -2,8 +2,11 @@ package com.jumbo.trus.statistics;
 
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.jumbo.trus.fine.Fine;
 import com.jumbo.trus.fine.ReceivedFine;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.player.Player;
@@ -259,5 +262,122 @@ public class StatisticsViewModel extends ViewModel {
                 "\nz toho piv: " + playerBeers +
                 "\nz toho panáků: " + playerLiquors);
         return returnList;
+    }
+
+    public List<List<String>> makeTextsForBeersTable(List<Match> selectedMatches, List<Player> selectedPlayers) {
+        //první řádek
+        List<List<String>> rowList = new ArrayList<>();
+        List<String> row0 = new ArrayList<>();
+        row0.add(" Hráč ");
+        //hráči v prvním řádku
+        for (Match match : selectedMatches) {
+            row0.add(" " + match.getOpponent() + " ");
+        }
+        //poslední sloupec prvního řádku
+        row0.add(" Celkem ");
+        rowList.add(row0);
+        //další řádky podle hráčů
+        for (int i = 0; i < selectedPlayers.size(); i++) {
+            Player player = selectedPlayers.get(i);
+            List<String> row = new ArrayList<>();
+            row.add(" " + player.getName() + " ");
+            int matchBeers = 0;
+            for (int j = 0; j < selectedMatches.size(); j++) {
+                Match match = selectedMatches.get(j);
+                int beerNumber = match.returnNumberOfBeersAndLiquorsForPlayer(player);
+                matchBeers += beerNumber;
+                row.add(" " + beerNumber + " ");
+            }
+            row.add(" " + matchBeers + " ");
+            rowList.add(row);
+        }
+        //poslední řádek
+        List<String> rowLast = new ArrayList<>();
+        rowLast.add(" Celkem ");
+        for (Match match : selectedMatches) {
+            rowLast.add(" " + (match.returnNumberOfBeersInMatch()+match.returnNumberOfLiquorsInMatch()) + " ");
+        }
+        rowList.add(rowLast);
+        return rowList;
+    }
+
+    public List<List<String>> makeTextsForFineMatches(List<Match> selectedMatches, List<Player> selectedPlayers) {
+        //první řádek
+        List<List<String>> rowList = new ArrayList<>();
+        List<String> row0 = new ArrayList<>();
+        row0.add(" Hráč ");
+        //hráči v prvním řádku
+        for (Match match : selectedMatches) {
+            row0.add(" " + match.getOpponent() + " ");
+        }
+        //poslední sloupec prvního řádku
+        row0.add(" Celkem ");
+        rowList.add(row0);
+        //další řádky podle hráčů
+        for (int i = 0; i < selectedPlayers.size(); i++) {
+            Player player = selectedPlayers.get(i);
+            if (!player.isFan()) {
+                List<String> row = new ArrayList<>();
+                row.add(" " + player.getName() + " ");
+                int matchFines = 0;
+                for (int j = 0; j < selectedMatches.size(); j++) {
+                    Match match = selectedMatches.get(j);
+                    int finesNumber = match.returnAmountOfFinesInMatch(player);
+                    matchFines += finesNumber;
+                    row.add(" " + finesNumber + " Kč ");
+                }
+                row.add(" " + matchFines + " Kč ");
+                rowList.add(row);
+            }
+        }
+        //poslední řádek
+        List<String> rowLast = new ArrayList<>();
+        rowLast.add(" Celkem ");
+        for (Match match : selectedMatches) {
+            rowLast.add(" " + match.returnAmountOfFinesInMatch() + " Kč ");
+        }
+        rowList.add(rowLast);
+        return rowList;
+    }
+
+    public List<List<String>> makeTextsForFineDetail(List<Match> selectedMatches, List<Player> selectedPlayers, List<Fine> fineList) {
+        //první řádek
+        List<List<String>> rowList = new ArrayList<>();
+        List<String> row0 = new ArrayList<>();
+        row0.add(" Hráč ");
+        //hráči v prvním řádku
+        for (Fine fine : fineList) {
+            row0.add(" " + fine.getName() + " ");
+        }
+        //poslední sloupec prvního řádku
+        row0.add(" Celkem ");
+        rowList.add(row0);
+
+        //další řádky podle hráčů
+        for (int i = 0; i < selectedPlayers.size(); i++) {
+            Player player = selectedPlayers.get(i);
+            if (!player.isFan()) {
+                List<String> row = new ArrayList<>();
+                row.add(" " + player.getName() + " ");
+                int matchFines = 0;
+                for (int j = 0; j < fineList.size(); j++) {
+                    Fine fine = fineList.get(j);
+                    int finesNumber = player.returnFineNumber(selectedMatches, fine);
+                    matchFines += finesNumber;
+                    row.add(" " + finesNumber + " Kč ");
+                }
+                row.add(" " + matchFines + " Kč ");
+                rowList.add(row);
+            }
+        }
+        //poslední řádek
+        List<String> rowLast = new ArrayList<>();
+        rowLast.add(" Celkem ");
+        for (Fine fine : fineList) {
+            rowLast.add(" " + fine.returnAmountOfFineInMatches(selectedMatches) + " Kč");
+        }
+        rowList.add(rowLast);
+
+        return rowList;
     }
 }

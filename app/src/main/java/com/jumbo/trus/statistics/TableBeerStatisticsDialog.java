@@ -1,29 +1,33 @@
 package com.jumbo.trus.statistics;
 
-import android.Manifest;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.pm.PackageManager;
+
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+
+import com.jumbo.trus.Date;
 import com.jumbo.trus.Dialog;
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.Model;
@@ -32,24 +36,33 @@ import com.jumbo.trus.fine.Fine;
 import com.jumbo.trus.fine.FineViewModel;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.player.Player;
+import com.jumbo.trus.web.GoogleSheetRequestSender;
+import com.jumbo.trus.web.IRequestListener;
+import com.jumbo.trus.web.JsonParser;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class TableBeerStatisticsDialog extends Dialog {
+public class TableBeerStatisticsDialog extends Dialog implements IRequestListener {
 
     private static final String TAG = "TableBeerStatisticsDialog";
 
     //widgety
     private TableLayout table_main;
-    private Button btn_commit, btn_change;
+    private Button btn_commit, btn_change, btn_export;
+    private ProgressBar progress_bar;
 
     private List<Match> selectedMatches;
     private List<Player> selectedPlayers;
 
     private FineViewModel fineViewModel;
+    private StatisticsViewModel statisticsViewModel;
     private boolean fineMatch;
+    private List<List<String>> rowList;
 
     public TableBeerStatisticsDialog(Flag flag, Model model, List<Match> selectedMatches, List<Player> selectedPlayers) {
         super(flag, model);
@@ -64,15 +77,21 @@ public class TableBeerStatisticsDialog extends Dialog {
         table_main = view.findViewById(R.id.table_main);
         btn_commit = view.findViewById(R.id.btn_commit);
         btn_change = view.findViewById(R.id.btn_change);
+        btn_export = view.findViewById(R.id.btn_export);
+        progress_bar = view.findViewById(R.id.progress_bar);
         enableButton(btn_change, false);
         btn_commit.setOnClickListener(this);
         btn_change.setOnClickListener(this);
+        btn_export.setOnClickListener(this);
+        statisticsViewModel = new ViewModelProvider(getActivity()).get(StatisticsViewModel.class);
         if (flag == Flag.BEER) {
-            initTable(makeTextsForBeersTable());
+            rowList = statisticsViewModel.makeTextsForBeersTable(selectedMatches, selectedPlayers);
+            initTable(rowList);
             btn_change.setVisibility(View.GONE);
         }
         else {
-            initTable(makeTextsForFineMatches());
+            rowList = statisticsViewModel.makeTextsForFineMatches(selectedMatches, selectedPlayers);
+            initTable(rowList);
             fineMatch = true;
             btn_change.setVisibility(View.VISIBLE);
             fineViewModel = new ViewModelProvider(getActivity()).get(FineViewModel.class);
@@ -102,124 +121,6 @@ public class TableBeerStatisticsDialog extends Dialog {
         }
     }
 
-    private List<List<String>> makeTextsForBeersTable() {
-        //první řádek
-        List<List<String>> rowList = new ArrayList<>();
-        List<String> row0 = new ArrayList<>();
-        row0.add(" Hráč ");
-        //hráči v prvním řádku
-        for (Match match : selectedMatches) {
-            row0.add(" " + match.getOpponent() + " ");
-        }
-        //poslední sloupec prvního řádku
-        row0.add(" Celkem ");
-        rowList.add(row0);
-        //další řádky podle hráčů
-        for (int i = 0; i < selectedPlayers.size(); i++) {
-            Player player = selectedPlayers.get(i);
-            List<String> row = new ArrayList<>();
-            row.add(" " + player.getName() + " ");
-            int matchBeers = 0;
-            for (int j = 0; j < selectedMatches.size(); j++) {
-                Match match = selectedMatches.get(j);
-                int beerNumber = match.returnNumberOfBeersAndLiquorsForPlayer(player);
-                matchBeers += beerNumber;
-                row.add(" " + beerNumber + " ");
-            }
-            row.add(" " + matchBeers + " ");
-            rowList.add(row);
-        }
-        //poslední řádek
-        List<String> rowLast = new ArrayList<>();
-        rowLast.add(" Celkem ");
-        for (Match match : selectedMatches) {
-            rowLast.add(" " + (match.returnNumberOfBeersInMatch()+match.returnNumberOfLiquorsInMatch()) + " ");
-        }
-        rowList.add(rowLast);
-        return rowList;
-    }
-
-    private List<List<String>> makeTextsForFineMatches() {
-        //první řádek
-        List<List<String>> rowList = new ArrayList<>();
-        List<String> row0 = new ArrayList<>();
-        row0.add(" Hráč ");
-        //hráči v prvním řádku
-        for (Match match : selectedMatches) {
-            row0.add(" " + match.getOpponent() + " ");
-        }
-        //poslední sloupec prvního řádku
-        row0.add(" Celkem ");
-        rowList.add(row0);
-        //další řádky podle hráčů
-        for (int i = 0; i < selectedPlayers.size(); i++) {
-            Player player = selectedPlayers.get(i);
-            if (!player.isFan()) {
-                List<String> row = new ArrayList<>();
-                row.add(" " + player.getName() + " ");
-                int matchFines = 0;
-                for (int j = 0; j < selectedMatches.size(); j++) {
-                    Match match = selectedMatches.get(j);
-                    int finesNumber = match.returnAmountOfFinesInMatch(player);
-                    matchFines += finesNumber;
-                    row.add(" " + finesNumber + " Kč ");
-                }
-                row.add(" " + matchFines + " Kč ");
-                rowList.add(row);
-            }
-        }
-        //poslední řádek
-        List<String> rowLast = new ArrayList<>();
-        rowLast.add(" Celkem ");
-        for (Match match : selectedMatches) {
-            rowLast.add(" " + match.returnAmountOfFinesInMatch() + " Kč ");
-        }
-        rowList.add(rowLast);
-        return rowList;
-    }
-
-    private List<List<String>> makeTextsForFineDetail() {
-        List<Fine> fineList = fineViewModel.getFines().getValue();
-        //první řádek
-        List<List<String>> rowList = new ArrayList<>();
-        List<String> row0 = new ArrayList<>();
-        row0.add(" Hráč ");
-        //hráči v prvním řádku
-        for (Fine fine : fineList) {
-            row0.add(" " + fine.getName() + " ");
-        }
-        //poslední sloupec prvního řádku
-        row0.add(" Celkem ");
-        rowList.add(row0);
-
-        //další řádky podle hráčů
-        for (int i = 0; i < selectedPlayers.size(); i++) {
-            Player player = selectedPlayers.get(i);
-            if (!player.isFan()) {
-                List<String> row = new ArrayList<>();
-                row.add(" " + player.getName() + " ");
-                int matchFines = 0;
-                for (int j = 0; j < fineList.size(); j++) {
-                    Fine fine = fineList.get(j);
-                    int finesNumber = player.returnFineNumber(selectedMatches, fine);
-                    matchFines += finesNumber;
-                    row.add(" " + finesNumber + " Kč ");
-                }
-                row.add(" " + matchFines + " Kč ");
-                rowList.add(row);
-            }
-        }
-        //poslední řádek
-        List<String> rowLast = new ArrayList<>();
-        rowLast.add(" Celkem ");
-        for (Fine fine : fineList) {
-            rowLast.add(" " + fine.returnAmountOfFineInMatches(selectedMatches) + " Kč");
-        }
-        rowList.add(rowLast);
-
-        return rowList;
-    }
-
     private void initTable(List<List<String>> rowList) {
         table_main.removeAllViews();
         for (int i = 0; i < rowList.size(); i++) {
@@ -241,6 +142,28 @@ public class TableBeerStatisticsDialog extends Dialog {
         return tv;
     }
 
+    private void sendToGoogle(String action, List<List<String>> rowList) throws JSONException {
+        GoogleSheetRequestSender sender = new GoogleSheetRequestSender(this, getActivity());
+        JsonParser jsonParser = new JsonParser();
+        Date date = new Date();
+        String footer = "Exportováno z Trusí appky " + date.convertMillisToStringTimestamp(System.currentTimeMillis());
+        sender.sendRequest(jsonParser.convertStatsToJsonObject(action, rowList, footer));
+    }
+
+    private void saveTextToClipboard(String label, String text) {
+        ClipboardManager clipboard = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText(label, text);
+        clipboard.setPrimaryClip(clip);
+    }
+
+    private void showItem(View button) {
+        button.setVisibility(View.VISIBLE);
+    }
+
+    private void hideItem(View button) {
+        button.setVisibility(View.GONE);
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -250,12 +173,34 @@ public class TableBeerStatisticsDialog extends Dialog {
             }
             case R.id.btn_change: {
                 if (fineMatch) {
-                    initTable(makeTextsForFineDetail());
+                    rowList = statisticsViewModel.makeTextsForFineDetail(selectedMatches, selectedPlayers, fineViewModel.getFines().getValue());
+                    initTable(rowList);
                     fineMatch = false;
                 }
                 else {
-                    initTable(makeTextsForFineMatches());
+                    rowList = statisticsViewModel.makeTextsForFineMatches(selectedMatches, selectedPlayers);
+                    initTable(rowList);
                     fineMatch = true;
+                }
+                break;
+            }
+            case R.id.btn_export: {
+                String action;
+                if (flag == Flag.BEER) {
+                    action = "beer";
+                }
+                else if (fineMatch) {
+                    action = "fine_match";
+                }
+                else {
+                    action = "fine_detail";
+                }
+                try {
+                    sendToGoogle(action, rowList);
+                    showItem(progress_bar);
+                    enableButton(btn_export, false);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
                 break;
             }
@@ -274,5 +219,28 @@ public class TableBeerStatisticsDialog extends Dialog {
                 view.setBackgroundColor(Color.GRAY);
             }
         }
+    }
+
+    @Override
+    public void onResponse(JSONObject response) {
+        Log.d(TAG, "onResponse: " + response);
+        hideItem(progress_bar);
+        enableButton(btn_export, true);
+        try {
+            JsonParser jsonParser = new JsonParser(response);
+            saveTextToClipboard("trus stats", jsonParser.getURL());
+            Toast.makeText(getActivity(), "Do tabulky " + jsonParser.getSheetName() + " přidáno " + jsonParser.getRowsNumber() +
+                    " řádků. Odkaz na tabulku byl uložen do clipboard paměti(ctrl c).", Toast.LENGTH_LONG).show();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onErrorResponse(String error) {
+        Log.d(TAG, "onErrorResponse: " + error);
+        hideItem(progress_bar);
+        enableButton(btn_export, true);
+        Toast.makeText(getActivity(), error + ". Zkus to později", Toast.LENGTH_SHORT).show();
     }
 }
