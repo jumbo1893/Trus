@@ -16,14 +16,19 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.jumbo.trus.Dialog;
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.R;
+import com.jumbo.trus.pkfl.PkflMatch;
+import com.jumbo.trus.pkfl.PkflViewModel;
 import com.jumbo.trus.player.Player;
 import com.jumbo.trus.season.Season;
 
@@ -37,7 +42,7 @@ public class MatchDialog extends Dialog implements AdapterView.OnItemSelectedLis
     //widgety
     private TextView tv_nadpis;
     private EditText et_jmeno, et_datum;
-    private Button btn_kalendar, btn_potvrdit, btn_smazat, btn_players;
+    private Button btn_kalendar, btn_potvrdit, btn_smazat, btn_players, btn_load_pkfl_match;
     private Switch sw_switch;
     private Spinner sp_seasons;
 
@@ -47,7 +52,10 @@ public class MatchDialog extends Dialog implements AdapterView.OnItemSelectedLis
     private List<String> seasonsNames = new ArrayList<>();
     private List<Player> players;
     private List<Player> selectedPlayers;
+    private PkflMatch pkflMatch = null;
     private ArrayAdapter<String> seasonArrayAdapter;
+
+    private PkflViewModel pkflViewModel;
 
     public MatchDialog(Flag flag, List<Season> seasons, List<Player> players) {
         super(flag);
@@ -72,6 +80,7 @@ public class MatchDialog extends Dialog implements AdapterView.OnItemSelectedLis
         btn_potvrdit = view.findViewById(R.id.btn_potvrdit);
         btn_smazat = view.findViewById(R.id.btn_smazat);
         btn_players = view.findViewById(R.id.btn_players);
+        btn_load_pkfl_match = view.findViewById(R.id.btn_load_pkfl_match);
         sp_seasons = view.findViewById(R.id.sp_seasons);
         sw_switch = view.findViewById(R.id.sw_switch);
         sw_switch.setChecked(false);
@@ -83,6 +92,7 @@ public class MatchDialog extends Dialog implements AdapterView.OnItemSelectedLis
         btn_potvrdit.setOnClickListener(this);
         btn_smazat.setOnClickListener(this);
         btn_kalendar.setOnClickListener(this);
+        btn_load_pkfl_match.setOnClickListener(this);
 
         return view;
     }
@@ -91,6 +101,15 @@ public class MatchDialog extends Dialog implements AdapterView.OnItemSelectedLis
         switch (flag) {
             case MATCH_PLUS:
                 setTextsToAddMatch();
+                pkflViewModel = new ViewModelProvider(requireActivity()).get(PkflViewModel.class);
+                pkflViewModel.init();
+                pkflViewModel.loadMatchesFromPkfl();
+                pkflViewModel.getMatch().observe(getViewLifecycleOwner(), new Observer<PkflMatch>() {
+                    @Override
+                    public void onChanged(PkflMatch match) {
+                        pkflMatch = match;
+                    }
+                });
                 break;
             case MATCH_EDIT:
                 setTextsToEditMatch();
@@ -103,8 +122,7 @@ public class MatchDialog extends Dialog implements AdapterView.OnItemSelectedLis
         tv_nadpis.setText("Nový zápas");
         et_jmeno.setText("");
         et_jmeno.setHint("Jméno soupeře");
-        //et_datum.setText("Přidat hráče");
-        //btn_kalendar.setText("Přidat hráče");
+        btn_load_pkfl_match.setVisibility(View.VISIBLE);
         btn_potvrdit.setText("Přidat zápas");
         btn_smazat.setVisibility(View.GONE);
         sw_switch.setText("domácí?");
@@ -114,7 +132,7 @@ public class MatchDialog extends Dialog implements AdapterView.OnItemSelectedLis
         Match match = (Match)model;
         tv_nadpis.setText("Úprava zápasu");
         et_jmeno.setText(match.getOpponent());
-        //et_jmeno.setHint("Jméno hráče");
+        btn_load_pkfl_match.setVisibility(View.GONE);
         et_datum.setText(match.getDateOfMatchInStringFormat());
         btn_potvrdit.setText("Upravit zápas");
         btn_smazat.setVisibility(View.VISIBLE);
@@ -161,6 +179,11 @@ public class MatchDialog extends Dialog implements AdapterView.OnItemSelectedLis
                         displayPlayersDialog(null);
                         break;
                     }
+                    case R.id.btn_load_pkfl_match: {
+                        setMatchTextsFromPkfl();
+                        break;
+                    }
+
                 }
             }
             break;
@@ -194,6 +217,17 @@ public class MatchDialog extends Dialog implements AdapterView.OnItemSelectedLis
             break;
         }
 
+    }
+
+    private void setMatchTextsFromPkfl() {
+        if (pkflMatch == null) {
+            Toast.makeText(getActivity(), "Vydrž, hledám poslední zápas", Toast.LENGTH_LONG).show();
+        }
+        else {
+            et_jmeno.setText(pkflMatch.getOpponent());
+            sw_switch.setChecked(pkflMatch.isHomeMatch());
+            et_datum.setText(pkflMatch.getDateOfMatchInStringFormat());
+        }
     }
 
     private Season selectPickedSeason(int position) {

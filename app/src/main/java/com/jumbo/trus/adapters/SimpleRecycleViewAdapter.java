@@ -18,6 +18,7 @@ import com.jumbo.trus.R;
 import com.jumbo.trus.fine.Fine;
 import com.jumbo.trus.fine.ReceivedFine;
 import com.jumbo.trus.match.Match;
+import com.jumbo.trus.pkfl.PkflMatch;
 import com.jumbo.trus.player.Player;
 import com.jumbo.trus.repayment.Repayment;
 import com.jumbo.trus.user.User;
@@ -72,17 +73,19 @@ public class SimpleRecycleViewAdapter extends RecyclerView.Adapter<SimpleRecycle
         else if (models.get(position) instanceof Fine) {
             holder.tv_title.setText(models.get(position).getName());
             holder.tv_text.setText("Pokuta ve výši: " + ((Fine) models.get(position)).getAmount() + " Kč");
-
         }
         else if (models.get(position) instanceof Repayment) {
             holder.tv_title.setText("Uhrazená částka: " + ((Repayment) models.get(position)).getAmount() + " Kč");
             holder.tv_text.setText("dne: " + ((Repayment) models.get(position)).getDateOfTimestampInStringFormat() + "\n" + ((Repayment) models.get(position)).getNote());
-
         }
         else if (models.get(position) instanceof User) {
             //holder.tv_title.setText("Uživatel " + models.get(position).getName());
             holder.tv_text.setText("Uživatel " + models.get(position).getName() + ", registrován dne " + ((User) models.get(position)).returnRegistrationDateInStringFormat());
-
+        }
+        else if (models.get(position) instanceof PkflMatch) {
+            Log.d(TAG, "onBindViewHolder: " + ((PkflMatch) models.get(position)).getOpponent() + " date" + ((PkflMatch) models.get(position)).getDate());
+            holder.tv_title.setText(((PkflMatch) models.get(position)).toStringNameWithOpponent());
+            holder.tv_text.setText("Datum: " + ((PkflMatch) models.get(position)).getDateAndTimeOfMatchInStringFormat() + ", výsledek: " + ((PkflMatch) models.get(position)).getResult());
         }
         else {
             holder.tv_title.setText(models.get(position).toString());

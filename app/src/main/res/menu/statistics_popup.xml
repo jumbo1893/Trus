@@ -6,4 +6,7 @@
     <item
         android:id="@+id/statistics_fine"
         android:title="Statistika pokut"/>
+    <item
+        android:id="@+id/statistics_pkfl"
+        android:title="Zápasy pkfl"/>
 </menu>

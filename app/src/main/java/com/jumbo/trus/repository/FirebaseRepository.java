@@ -20,6 +20,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.jumbo.trus.listener.ChangeListener;
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.Model;
+import com.jumbo.trus.listener.ItemLoadedListener;
 import com.jumbo.trus.listener.NotificationListener;
 import com.jumbo.trus.fine.Fine;
 import com.jumbo.trus.match.Match;
@@ -39,10 +40,12 @@ public class FirebaseRepository {
     public static final String MATCH_TABLE = "match";
     public static final String USER_TABLE = "user";
     public static final String NOTIFICATION_TABLE = "notification";
+    public static final String PKFL_TABLE = "pkfl";
 
     private FirebaseFirestore db;
     private CollectionReference collectionReference;
     private ChangeListener changeListener;
+    private ItemLoadedListener itemLoadedListener;
     private NotificationListener notificationListener;
     private ArrayList<Model> modelsDataSet = new ArrayList<>();
 
@@ -61,6 +64,11 @@ public class FirebaseRepository {
         db = FirebaseFirestore.getInstance();
         collectionReference = db.collection(keyword);
         this.notificationListener = notificationListener;
+    }
+
+    public FirebaseRepository(ItemLoadedListener itemLoadedListener) {
+        db = FirebaseFirestore.getInstance();
+        this.itemLoadedListener = itemLoadedListener;
     }
 
     public void insertNewModel(final Model model) {
@@ -255,6 +263,26 @@ public class FirebaseRepository {
                 Log.d(TAG, "Automaticky načten seznam notifikaci z db ");
                 notificationListener.notificationListLoaded(modelsDataSet);
 
+            }
+        });
+    }
+
+    public void loadPkflUrlFromRepository() {
+        CollectionReference collectionReference = db.collection(PKFL_TABLE);
+        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.e(TAG, "onGetMatchesEvent: nastala chyba při načítání pkfl věcí z db", error);
+                    return;
+                }
+                for(QueryDocumentSnapshot documentSnapshot : value) {
+                    if (documentSnapshot.getId().equals("url")) {
+                        String url = (String) documentSnapshot.get("URL");
+                        itemLoadedListener.itemLoaded(url);
+                        break;
+                    }
+                }
             }
         });
     }

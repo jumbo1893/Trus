@@ -28,6 +28,7 @@ import com.jumbo.trus.match.MatchFragment;
 import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.notification.NotificationFragment;
 import com.jumbo.trus.notification.NotificationViewModel;
+import com.jumbo.trus.pkfl.LoadedMatchesFragment;
 import com.jumbo.trus.player.PlayerFragment;
 import com.jumbo.trus.playerlist.MatchListFragment;
 import com.jumbo.trus.repayment.RepaymentFragment;
@@ -203,6 +204,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         adapter.addFragment(new FineStatisticsFragment());
         adapter.addFragment(new UserInteractionFragment());
         adapter.addFragment(new RepaymentFragment());
+        adapter.addFragment(new LoadedMatchesFragment());
         viewPager.setAdapter(adapter);
     }
 
@@ -279,7 +281,6 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             case R.id.player:
                 viewPager.setCurrentItem(1);
                 setTitle("Přidat hráče");
-                //item.collapseActionView();
                 return true;
             case R.id.match:
                 setTitle("Přidat zápas");
@@ -316,6 +317,10 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             case R.id.owed:
                 setTitle("Srovnání dluhů hráčů");
                 viewPager.setCurrentItem(11);
+                return true;
+            case R.id.statistics_pkfl:
+                setTitle("Zápasy pkfl");
+                viewPager.setCurrentItem(12);
                 return true;
             default:
                 return false;
