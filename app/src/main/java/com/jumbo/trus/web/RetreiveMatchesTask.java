@@ -35,7 +35,6 @@ public class RetreiveMatchesTask implements Callable<List<PkflMatch>> {
             Document document = Jsoup.connect(url).get();
             Elements table = document.getElementsByClass("dataTable table table-bordered table-striped");
             Elements trs = table.select("tr");
-            Log.d(TAG, "call: " + trs.size());
             for (Element tr : trs) {
                 Elements tds = tr.select("td");
                 if (tds.size() > 8) {

@@ -221,7 +221,8 @@ public class MatchDialog extends Dialog implements AdapterView.OnItemSelectedLis
 
     private void setMatchTextsFromPkfl() {
         if (pkflMatch == null) {
-            Toast.makeText(getActivity(), "Vydrž, hledám poslední zápas", Toast.LENGTH_LONG).show();
+            pkflViewModel.loadMatchesFromPkfl();
+            Toast.makeText(getActivity(), "Z neznámého důvodu se zatím nenačetly zápasy. Zkus to za chvíli", Toast.LENGTH_LONG).show();
         }
         else {
             et_jmeno.setText(pkflMatch.getOpponent());

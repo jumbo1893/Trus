@@ -58,8 +58,13 @@ public class PkflViewModel extends ViewModel implements ItemLoadedListener {
                 @Override
                 public void onComplete(List<PkflMatch> result) {
                     isUpdating.setValue(false);
-                    matches.setValue(orderMatchesByTime(result));
-                    setLastMatch();
+                    if (result == null || result.size() == 0) {
+                        alert.setValue("Nelze načíst zápasy. Je zadaná správná url nebo nemá web pkfl výpadek?");
+                    }
+                    else {
+                        matches.setValue(orderMatchesByTime(result));
+                        setLastMatch();
+                    }
                 }
             });
         }
