@@ -23,11 +23,11 @@ import com.jumbo.trus.Model;
 import com.jumbo.trus.listener.OnListListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.SimpleDividerItemDecoration;
-import com.jumbo.trus.adapters.FinesStatsPlayerRecycleViewAdapter;
-import com.jumbo.trus.adapters.SimpleRecycleViewAdapter;
+import com.jumbo.trus.adapters.recycleview.FinesStatsPlayerRecycleViewAdapter;
+import com.jumbo.trus.adapters.recycleview.SimpleRecycleViewAdapter;
 import com.jumbo.trus.fine.ReceivedFine;
 import com.jumbo.trus.match.Match;
-import com.jumbo.trus.match.MatchViewModel;
+import com.jumbo.trus.match.MatchAllViewModel;
 import com.jumbo.trus.player.Player;
 import com.jumbo.trus.player.PlayerViewModel;
 import com.jumbo.trus.season.Season;
@@ -48,7 +48,7 @@ public class FineStatisticsDialog extends Dialog implements AdapterView.OnItemSe
     private RecyclerView rc_list;
 
     private PlayerViewModel playerViewModel;
-    private MatchViewModel matchViewModel;
+    private MatchAllViewModel matchAllViewModel;
     private SeasonsViewModel seasonsViewModel;
     private StatisticsViewModel statisticsViewModel;
 
@@ -93,8 +93,8 @@ public class FineStatisticsDialog extends Dialog implements AdapterView.OnItemSe
         sp_select_player_season.setOnItemSelectedListener(this);
         seasonsViewModel = new ViewModelProvider(requireActivity()).get(SeasonsViewModel.class);
         seasonsViewModel.init();
-        matchViewModel = new ViewModelProvider(requireActivity()).get(MatchViewModel.class);
-        matchViewModel.init();
+        matchAllViewModel = new ViewModelProvider(requireActivity()).get(MatchAllViewModel.class);
+        matchAllViewModel.init();
         playerViewModel = new ViewModelProvider(requireActivity()).get(PlayerViewModel.class);
         playerViewModel.init();
         statisticsViewModel = new ViewModelProvider(requireActivity()).get(StatisticsViewModel.class);
@@ -203,7 +203,7 @@ public class FineStatisticsDialog extends Dialog implements AdapterView.OnItemSe
         tv_title.setText(model.getName());
         sp_select_player_season.setVisibility(View.VISIBLE);
         addSeasonSpinnerOptions();
-        useSeasonsFilter(returnMatchesWithPlayer(Objects.requireNonNull(matchViewModel.getMatches().getValue())));
+        useSeasonsFilter(returnMatchesWithPlayer(Objects.requireNonNull(matchAllViewModel.getMatches().getValue())));
         initSpinnerSeasons();
         setSpinnerAdapter();
         addPlayerText();
@@ -244,7 +244,7 @@ public class FineStatisticsDialog extends Dialog implements AdapterView.OnItemSe
         else {
             spinnerPosition = position;
         }
-        useSeasonsFilter(returnMatchesWithPlayer(Objects.requireNonNull(matchViewModel.getMatches().getValue())));
+        useSeasonsFilter(returnMatchesWithPlayer(Objects.requireNonNull(matchAllViewModel.getMatches().getValue())));
         addPlayerText();
     }
 

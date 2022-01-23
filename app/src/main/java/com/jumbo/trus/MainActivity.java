@@ -1,16 +1,18 @@
 package com.jumbo.trus;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
-import android.net.Uri;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.PopupMenu;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,80 +21,79 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.material.badge.BadgeDrawable;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
+import com.jumbo.trus.fine.add.FineAddFragment;
 import com.jumbo.trus.fine.FineFragment;
+import com.jumbo.trus.fine.add.FineAddViewModel;
+import com.jumbo.trus.fine.playerlist.FinePlayersFragment;
+import com.jumbo.trus.fine.playerlist.FinePlayersViewModel;
 import com.jumbo.trus.home.HomeFragment;
-import com.jumbo.trus.match.MatchFragment;
+import com.jumbo.trus.main.NotificationBadgeCounter;
+import com.jumbo.trus.match.Match;
+import com.jumbo.trus.match.MatchEditFragment;
+import com.jumbo.trus.match.matchlist.MatchFragment;
+import com.jumbo.trus.match.add.MatchPlusFragment;
+import com.jumbo.trus.match.MatchAllViewModel;
 import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.notification.NotificationFragment;
 import com.jumbo.trus.notification.NotificationViewModel;
 import com.jumbo.trus.pkfl.LoadedMatchesFragment;
+import com.jumbo.trus.player.PlayerEditFragment;
 import com.jumbo.trus.player.PlayerFragment;
-import com.jumbo.trus.playerlist.MatchListFragment;
+import com.jumbo.trus.player.PlayerPlusFragment;
+import com.jumbo.trus.playerlist.beer.BeerFragment;
+
+import com.jumbo.trus.playerlist.beer.BeerViewModel;
 import com.jumbo.trus.repayment.RepaymentFragment;
+import com.jumbo.trus.season.SeasonEditFragment;
+import com.jumbo.trus.season.SeasonPlusFragment;
 import com.jumbo.trus.season.SeasonsFragment;
 import com.jumbo.trus.statistics.BeerStatisticsFragment;
 import com.jumbo.trus.statistics.FineStatisticsFragment;
-import com.jumbo.trus.update.ForceUpdateChecker;
 
 import com.jumbo.trus.user.LoginViewModel;
 import com.jumbo.trus.user.User;
 import com.jumbo.trus.user.UserInteractionFragment;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 
-public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
+public class MainActivity extends AppCompatActivity implements INavigationDrawerCallback {
 
     private static final String TAG = "MainActivity";
-    private ViewPager viewPager;
+    private CustomViewPager viewPager;
     private BottomNavigationView navigation;
+    private FloatingActionButton beerButton;
     private NotificationViewModel notificationViewModel;
-    private BadgeDrawable notificationBadge;
-    private boolean firstInit = true;
-
-    private Notification lastReadNotification;
-    private Notification lastNotification;
-    private int notificationsUnread;
+    private TextView tv_notifications;
+    private ImageView img_nav_notification, img_nav_plus;
+    private List<Integer> previousFragments = new ArrayList<>();
+    private List<String> pageTitles;
 
     private User user;
     private SharedPreferences pref;
+    private Match pickedMatch;
+
+    private NotificationBadgeCounter notificationBadgeCounter;
+
+    private BottomNavPagerAdapter adapter;
+
+    //pro piva
+    private MatchAllViewModel matchAllViewModel;
+    private SharedViewModel sharedViewModel;
 
 
     private NavigationBarView.OnItemSelectedListener onItemSelectedListener = new NavigationBarView.OnItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.nav_home:
-                    viewPager.setCurrentItem(0);
-                    setTitle("Trusí appka");
-                    Log.d(TAG, "Přepnuto na domovskou stránku");
-                    return true;
-                case R.id.nav_plus:
-                    showPlusPopup(navigation);
-                    Log.d(TAG, "Přepnuto na navigaci přidání");
-                    return true;
-                case R.id.nav_settings:
-                    showSettingsPopup(navigation);
-                    Log.d(TAG, "Přepnuto na navigaci nastavení");
-                    return true;
-                case R.id.nav_statistics:
-                    showStatisticsPopup(navigation);
-                    Log.d(TAG, "Přepnuto na navigaci statistiky");
-                    return true;
-                case R.id.nav_notification:
-                    viewPager.setCurrentItem(3);
-                    setTitle("Notifikace");
-                    notificationBadge.clearNumber();
-                    notificationsUnread = 0;
-                    setLastReadNotification(lastNotification);
-                    Log.d(TAG, "Přepnuto na navigaci notifikací");
-                    return true;
-            }
-            return false;
+            Log.d(TAG, "onNavigationItemSelected: " + item);
+            setToolbarIconsColorToWhite();
+            setBottomNavigationButtonsCheckable(true);
+            return onMenuItemClicked(item);
         }
     };
 
@@ -101,53 +102,54 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         super.onCreate(savedInstanceState);
         user = (User) getIntent().getSerializableExtra("user");
         Log.d(TAG, "onCreate: přihlásil se user " + user);
+        setTheme(R.style.AppTheme);
         pref = getSharedPreferences("Notification", MODE_PRIVATE);
+        notificationBadgeCounter = new NotificationBadgeCounter(pref, user);
         setContentView(R.layout.activity_main);
         LoginViewModel model = new ViewModelProvider(this).get(LoginViewModel.class);
         model.init();
         model.setUser(user);
         viewPager = findViewById(R.id.viewpager);
         setupViewPager(viewPager);
+        setupPageTitles();
         navigation = findViewById(R.id.navigation);
+        beerButton = findViewById(R.id.beerButton);
+        beerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (sharedViewModel.getMainMatch().getValue() != null) {
+                    /*adapter.getItem(15).setArguments(prepareMatchBundle());
+                    viewPager.setAdapter(adapter);*/
+                    setBottomNavigationButtonsCheckable(false);
+                    startNewFragmentBranch(15);
+                } else {
+                    Toast.makeText(MainActivity.this, "Vydrž než se načtou zápasy", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         navigation.setOnItemSelectedListener(onItemSelectedListener);
-        notificationBadge = navigation.getOrCreateBadge(navigation.getMenu().getItem(4).getItemId());
-        notificationBadge.setVisible(true);
-        notificationBadge.setMaxCharacterCount(2);
+        navigation.getMenu().getItem(2).setEnabled(false);
         notificationViewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
         notificationViewModel.init();
         notificationViewModel.getNotifications().observe(this, new Observer<List<Notification>>() {
             @Override
             public void onChanged(List<Notification> notifications) {
-                Log.d(TAG, "onChanged: nacetly se notifikace " + notifications);
-                lastNotification = notifications.get(0); //uložíme první načtenou modifikaci
-                if (firstInit) {
-                    if (!findLastLastReadNotificationFromPref()) { //první notifikaci najdeme ze sharedpref
-                        notificationBadge.setNumber(10);
-                    }
-                    else {
-                        findNumberOfLastReadNotification();
-                    }
-                    firstInit = false;
-                }
-                else {
-                    findNumberOfLastReadNotification();
-                }
-                if (notificationsUnread == 0) {
-                    notificationBadge.clearNumber();
-                }
-                else {
-                    Log.d(TAG, "onChanged: tady by se mělo změnit číslo na " + notificationsUnread);
-                    notificationBadge.setNumber(notificationsUnread);
-                    //notificationBadge.
-                }
-                Log.d(TAG, "onChanged: notificationsUnread" + notificationsUnread);
+                setNotificationsBadgeNumber(notificationBadgeCounter.returnNumberOfLastNotification(notifications));
             }
 
         });
-
-        // Hide the activity toolbar
-        //getSupportActionBar().hide();
-        //Initializing viewPager
+        sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
+        matchAllViewModel = new ViewModelProvider(this).get(MatchAllViewModel.class);
+        matchAllViewModel.init();
+        matchAllViewModel.getMatches().observe(this, new Observer<List<Match>>() {
+            @Override
+            public void onChanged(List<Match> matches) {
+                Log.d(TAG, "onChanged: nacetli se hraci " + matches);
+                if (sharedViewModel.getMainMatch().getValue() == null) {
+                    sharedViewModel.findLastMatch(matches);
+                }
+            }
+        });
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -157,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
             @Override
             public void onPageSelected(int position) {
-                switch (position){
+                switch (position) {
                     case 0:
                         navigation.setSelectedItemId(R.id.nav_home);
                         break;
@@ -168,7 +170,6 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                         //navigation.setSelectedItemId(R.id.nav_settings);
                         break;
                     case 3:
-                        //navigation.setSelectedItemId(R.id.nav_notification);
                         break;
                 }
             }
@@ -178,8 +179,135 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
             }
         });
+        showToolbarBackButton(false);
+    }
+
+    private void initViewModels() {
+        FinePlayersViewModel finePlayersViewModel;
+        FineAddViewModel fineAddViewModel;
+        BeerViewModel beerViewModel;
+        fineAddViewModel = new ViewModelProvider(this).get(FineAddViewModel.class);
+        beerViewModel = new ViewModelProvider(this).get(BeerViewModel.class);
+        finePlayersViewModel = new ViewModelProvider(this).get(FinePlayersViewModel.class);
+        beerViewModel.init();
+        fineAddViewModel.init();
+        finePlayersViewModel.init();
+    }
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_navigation, menu);
+        final MenuItem notMenuItem = menu.findItem(R.id.nav_notification);
+        View notActionView = notMenuItem.getActionView();
+        tv_notifications = notActionView.findViewById(R.id.notification_badge);
+        img_nav_notification = notActionView.findViewById(R.id.img_nav_notification);
+        final MenuItem plusMenuItem = menu.findItem(R.id.nav_plus);
+        View plusActionView = plusMenuItem.getActionView();
+        img_nav_plus = plusActionView.findViewById(R.id.img_nav_plus);
+
+        notActionView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onOptionsItemSelected(notMenuItem);
+            }
+        });
+        plusActionView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onOptionsItemSelected(plusMenuItem);
+            }
+        });
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        setBottomNavigationButtonsCheckable(false);
+        setToolbarIconsColorToWhite();
+        switch (item.getItemId()) {
+
+            case R.id.nav_notification: {
+                startMenuItemNavigation(img_nav_notification, item);
+                return true;
+            }
+            case R.id.nav_plus: {
+                startMenuItemNavigation(img_nav_plus, item);
+                return true;
+            }
+            case android.R.id.home: {
+                onBackPressed();
+                return true;
+            }
+        }
+        return true;
+
+    }
+
+    private void showBottomSheetNavigation() {
+        BottomNavigationDrawerFragment bottomNavigationDrawerFragment = new BottomNavigationDrawerFragment();
+        bottomNavigationDrawerFragment.show(getSupportFragmentManager(), bottomNavigationDrawerFragment.getTag());
+    }
+
+    private boolean onMenuItemClicked(MenuItem item) {
+        int fragmentNumber;
+        switch (item.getItemId()) {
+            case R.id.nav_navigation:
+                showBottomSheetNavigation();
+                return false;
+            case R.id.nav_home:
+                Log.d(TAG, "Přepnuto na domovskou stránku");
+                fragmentNumber = 0;
+                showToolbarBackButton(false);
+                break;
+            case R.id.nav_player_all:
+                fragmentNumber = 1;
+                break;
+            case R.id.nav_settings_season:
+                fragmentNumber = 2;
+                break;
+            case R.id.nav_notification:
+                showNotificationFragment(); //3
+                return true;
+            case R.id.nav_match_all:
+                fragmentNumber = 4;
+                break;
+            case R.id.nav_fine_all:
+                fragmentNumber = 7;
+                break;
+            case R.id.nav_fine:
+            case R.id.nav_fine_add:
+                fragmentNumber = 6;
+                break;
+            case R.id.nav_statistics: //+9
+                fragmentNumber = 8;
+                break;
+            case R.id.nav_settings_user:
+                fragmentNumber = 10;
+                break;
+            case R.id.nav_player_repayment:
+                fragmentNumber = 11;
+                break;
+            case R.id.nav_match_pkfl:
+                fragmentNumber = 12;
+                break;
+            case R.id.nav_plus:
+            case R.id.nav_match_plus: {
+                fragmentNumber = 13;
+                break;
+            }
+            case R.id.nav_beer_add:
+                fragmentNumber = 15;
+                break;
+            case R.id.nav_player_plus:
+                fragmentNumber = 17;
+                break;
+            default:
+                return false;
+        }
+        Log.d(TAG, "onMenuItemClicked: " + fragmentNumber);
+        setNewPage(fragmentNumber);
+        return true;
     }
 
     private Bundle prepareUserBundle() {
@@ -188,142 +316,191 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         return bundle;
     }
 
+    public void addNewPreviousFragment() {
+        previousFragments.add(viewPager.getCurrentItem());
+    }
+
+    public void openPreviousFragment() {
+        int size = previousFragments.size();
+        Log.d(TAG, "openPreviousFragment: " + previousFragments.size());
+        if (size > 0) {
+            replaceFragments(previousFragments.get(size - 1));
+            previousFragments.remove(size - 1);
+        } else if (viewPager.getCurrentItem() != 0) {
+            setNewPage(0);
+        }
+    }
+
+    /**
+     * voláme pokud chceme zobrazit fragment, který je zároveň prvním - nelze se z něj vrátit zpět
+     */
+    private void startNewFragmentBranch(int fragmentId) {
+        setNewPage(fragmentId);
+        previousFragments.clear();
+        decideWhetherToShowToolbarBackButton(); // vždy by mělo bejt bez
+    }
+
+    public void replaceFragments(int viewPagerId) {
+        setNewPage(viewPagerId);
+        decideWhetherToShowToolbarBackButton();
+    }
+
+    public void reloadFragment() {
+        viewPager.setCurrentItem(viewPager.getCurrentItem());
+    }
+
+    public void decideWhetherToShowToolbarBackButton() {
+        if (previousFragments.size() == 0) {
+            showToolbarBackButton(false);
+        } else {
+            showToolbarBackButton(true);
+        }
+    }
+
+    private void showToolbarBackButton(boolean show) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(show);
+            getSupportActionBar().setDisplayShowHomeEnabled(show);
+        }
+    }
+
     private void setupViewPager(ViewPager viewPager) {
-        BottomNavPagerAdapter adapter = new BottomNavPagerAdapter(getSupportFragmentManager());
+        adapter = new BottomNavPagerAdapter(getSupportFragmentManager());
         Fragment fragment = new HomeFragment();
         fragment.setArguments(prepareUserBundle());
-        adapter.addFragment(new HomeFragment());
-        adapter.addFragment(new PlayerFragment());
-        adapter.addFragment(new SeasonsFragment());
-        adapter.addFragment(new NotificationFragment());
-        adapter.addFragment(new MatchFragment());
-        adapter.addFragment(new MatchListFragment(Flag.BEER));
-        adapter.addFragment(new MatchListFragment(Flag.FINE));
-        adapter.addFragment(new FineFragment());
-        adapter.addFragment(new BeerStatisticsFragment());
-        adapter.addFragment(new FineStatisticsFragment());
-        adapter.addFragment(new UserInteractionFragment());
-        adapter.addFragment(new RepaymentFragment());
-        adapter.addFragment(new LoadedMatchesFragment());
+        adapter.addFragment(new HomeFragment()); //0
+        adapter.addFragment(new PlayerFragment()); //1
+        adapter.addFragment(new SeasonsFragment()); //2
+        adapter.addFragment(new NotificationFragment()); //3
+        adapter.addFragment(new MatchFragment()); //4
+        adapter.addFragment(new MatchFragment()); //5
+        adapter.addFragment(new FinePlayersFragment()); //6
+        adapter.addFragment(new FineFragment()); //7
+        adapter.addFragment(new BeerStatisticsFragment()); //8
+        adapter.addFragment(new FineStatisticsFragment()); //9
+        adapter.addFragment(new UserInteractionFragment()); //10
+        adapter.addFragment(new RepaymentFragment()); //11
+        adapter.addFragment(new LoadedMatchesFragment()); //12
+        adapter.addFragment(new MatchPlusFragment()); //13
+        adapter.addFragment(new MatchEditFragment()); //14
+        adapter.addFragment(new BeerFragment()); //15
+        adapter.addFragment(new FineAddFragment()); //16
+        adapter.addFragment(new PlayerPlusFragment()); //17
+        adapter.addFragment(new PlayerEditFragment()); //18
+        adapter.addFragment(new SeasonPlusFragment()); //19
+        adapter.addFragment(new SeasonEditFragment()); //20
         viewPager.setAdapter(adapter);
     }
 
-    public void showPlusPopup(View v) {
-        PopupMenu popup = new PopupMenu(this, v);
-        MenuInflater inflater = popup.getMenuInflater();
-        popup.setOnMenuItemClickListener(this);
-        inflater.inflate(R.menu.plus_popup, popup.getMenu());
-        popup.show();
+    private void setupPageTitles() {
+        pageTitles = new ArrayList<>();
+        pageTitles.add("Trusí appka"); //0
+        pageTitles.add("Seznam zápasů"); //1
+        pageTitles.add("Seznam sezon"); //2
+        pageTitles.add("Notifikace"); //3
+        pageTitles.add("Seznam zápasů"); //4
+        pageTitles.add("Přidat pívo"); //5
+        pageTitles.add("Přidat pokutu"); //6
+        pageTitles.add("Nastavení pokut"); //7
+        pageTitles.add("Statistika Piv"); //8
+        pageTitles.add("Statistika pokut"); //9
+        pageTitles.add("Nastavení"); //10
+        pageTitles.add("Splacení pokut"); //11
+        pageTitles.add("Zápasy PKFL"); //12
+        pageTitles.add("Přidat zápas"); //13
+        pageTitles.add("Upravit zápas"); //14
+        pageTitles.add("Přidat piva"); //15
+        pageTitles.add("Přidat pokuty hráči"); //16
+        pageTitles.add("Přidat hráče"); //17
+        pageTitles.add("Upravit hráče"); //18
+        pageTitles.add("Přidat sezonu"); //19
+        pageTitles.add("Upravit sezonu"); //20
     }
 
-    public void showSettingsPopup(View v) {
-        PopupMenu popup = new PopupMenu(this, v);
-        MenuInflater inflater = popup.getMenuInflater();
-        popup.setOnMenuItemClickListener(this);
-        inflater.inflate(R.menu.settings_popup, popup.getMenu());
-        popup.show();
+    private void setNewPage(int fragmentId) {
+        Log.d(TAG, "setNewPage: " + pageTitles.get(fragmentId).getClass().getSimpleName());
+        setTitle(pageTitles.get(fragmentId));
+        viewPager.setCurrentItem(fragmentId);
     }
 
-    public void showStatisticsPopup(View v) {
-        PopupMenu popup = new PopupMenu(this, v);
-        MenuInflater inflater = popup.getMenuInflater();
-        popup.setOnMenuItemClickListener(this);
-        inflater.inflate(R.menu.statistics_popup, popup.getMenu());
-        popup.show();
+    private void startMenuItemNavigation(final ImageView imageView, final MenuItem menuItem) {
+        Animation anim = AnimationUtils.loadAnimation(this, R.anim.rotate);
+        anim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                imageView.getDrawable().setTint(Color.parseColor("#FFB303"));
+                onMenuItemClicked(menuItem);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        imageView.startAnimation(anim);
+
     }
 
-    private void setLastReadNotification(Notification notification) {
-        Log.d(TAG, "setLastReadNotification: " + notification);
-        lastReadNotification = notification;
-        pref.edit().putString("lastReadNotification", notification.getId()).apply();
+    private void showNotificationFragment() {
+        startNewFragmentBranch(3);
+        setTitle("Notifikace");
+        notificationBadgeCounter.setLastReadNotification();
+        setNotificationsBadgeNumber(0);
     }
 
-    private void findNumberOfLastReadNotification() {
-        notificationsUnread = 0;
-        Log.d(TAG, "findNumberOfLastReadNotification: " + notificationViewModel.getNotifications().getValue());
-        for (Notification notification : Objects.requireNonNull(notificationViewModel.getNotifications().getValue())) {
-            if (!notification.equals(lastReadNotification)) {
-                if (!notification.getUser().equals(user)) {
-                    notificationsUnread++;
+    @SuppressLint("SetTextI18n")
+    private void setNotificationsBadgeNumber(int notificationNumber) {
+        if (notificationNumber == 0) {
+            tv_notifications.setVisibility(View.GONE);
+            return;
+        } else if (notificationNumber == NotificationBadgeCounter.MAX_NUMBER) {
+            tv_notifications.setText(notificationNumber + "+");
+        } else {
+            tv_notifications.setText(String.valueOf(notificationNumber));
+        }
+        tv_notifications.setVisibility(View.VISIBLE);
+    }
+
+    private void setToolbarIconsColorToWhite() {
+        img_nav_notification.getDrawable().setTint(Color.parseColor("#FFFFFF"));
+        img_nav_plus.getDrawable().setTint(Color.parseColor("#FFFFFF"));
+    }
+
+    private void setBottomNavigationButtonsCheckable(boolean checkable) {
+        int size = navigation.getMenu().size();
+        for (int i = 0; i < size; i++) {
+            navigation.getMenu().getItem(i).setCheckable(checkable);
+        }
+    }
+
+    public Match findPickedMatchFromList(Match pickedMatch, List<Match> matches) {
+        if (pickedMatch != null && matches != null) {
+            for (Match match : matches) {
+                if (match.equalsByOpponentName(pickedMatch)) {
+                    return match;
                 }
             }
-            else {
-                break;
-            }
         }
+        return findLastMatch(matches);
     }
 
-    private boolean findLastLastReadNotificationFromPref() {
-        Log.d(TAG, "findLastLastReadNotificationFromPref: seznam" + notificationViewModel.getNotifications().getValue());
-        String id = pref.getString("lastReadNotification", "id");
-        Log.d(TAG, "findLastLastReadNotificationFromPref: id" + id);
-        if (id.equals("id")) {
-            setLastReadNotification(lastNotification);
-            return true;
+    public Match findLastMatch(List<Match> matches) {
+        if (matches != null && matches.size() > 0) {
+            return matches.get(0);
         }
-        for (Notification notification : Objects.requireNonNull(notificationViewModel.getNotifications().getValue())) {
-            if (notification.getId().equals(id)) {
-                Log.d(TAG, "findLastLastReadNotificationFromPref: " + notification);
-                lastReadNotification = notification;
-                return true;
-            }
-        }
-        if (id.equals("id")) { //pro první přihlášení nějakého usera co ještě nemá nastavenou notifikaci v shared preferences
-            setLastReadNotification(lastNotification);
-        }
-        Log.d(TAG, "findLastLastReadNotificationFromPref: return false" );
-        return false;
+        Log.d(TAG, "findLastMatch: Nelze najít žádný zápas!!");
+        return null;
     }
+
 
     @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.player:
-                viewPager.setCurrentItem(1);
-                setTitle("Přidat hráče");
-                return true;
-            case R.id.match:
-                setTitle("Přidat zápas");
-                viewPager.setCurrentItem(4);
-                return true;
-            case R.id.beer:
-                setTitle("Přidat piva");
-                viewPager.setCurrentItem(5);
-                return true;
-            case R.id.season:
-                setTitle("Upravit sezony");
-                viewPager.setCurrentItem(2);
-                return true;
-            case R.id.fine:
-                setTitle("Upravit pokuty");
-                viewPager.setCurrentItem(7);
-                return true;
-            case R.id.penalty:
-                setTitle("Přidat pokuty");
-                viewPager.setCurrentItem(6);
-                return true;
-            case R.id.statistics_beer:
-                setTitle("Statistika piv");
-                viewPager.setCurrentItem(8);
-                return true;
-            case R.id.statistics_fine:
-                setTitle("Statistika pokut");
-                viewPager.setCurrentItem(9);
-                return true;
-            case R.id.user:
-                setTitle("Nastavení uživatele");
-                viewPager.setCurrentItem(10);
-                return true;
-            case R.id.owed:
-                setTitle("Srovnání dluhů hráčů");
-                viewPager.setCurrentItem(11);
-                return true;
-            case R.id.statistics_pkfl:
-                setTitle("Zápasy pkfl");
-                viewPager.setCurrentItem(12);
-                return true;
-            default:
-                return false;
-        }
+    public boolean onMenuItemPicked(MenuItem item) {
+        setBottomNavigationButtonsCheckable(false);
+        return onMenuItemClicked(item);
     }
 }

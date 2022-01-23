@@ -5,7 +5,20 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/oranzova</item>
+        <item name="colorControlNormal">@color/oranzova</item>
+        <item name="colorControlHighlight">@color/colorPrimaryRipple</item>
+        <item name="android:colorControlHighlight">@color/colorPrimaryRipple</item>
+    </style>
+
+    <style name="CustomNoActionBar" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorControlHighlight">@color/colorPrimaryRipple</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -16,5 +29,27 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="TextLabel" parent="TextAppearance.Design.Hint">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
+    <style name="BlackTextLabel" parent="TextAppearance.Design.Hint">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/cerna</item>
+    </style>
+
+    <style name="OrangeButton" parent="@android:style/Widget.Holo.Button.Borderless">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/button_color</item>
+    </style>
+
+    <style name="MenuText" parent="TextAppearance.Design.Hint">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="color">@color/cerna</item>
+    </style>
+
 
 </resources>

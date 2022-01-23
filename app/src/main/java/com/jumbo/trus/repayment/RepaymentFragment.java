@@ -16,12 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jumbo.trus.CustomUserFragment;
-import com.jumbo.trus.listener.OnListListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.SimpleDividerItemDecoration;
-import com.jumbo.trus.adapters.PlayerRepaymentRecycleViewAdapter;
+import com.jumbo.trus.adapters.recycleview.PlayerRepaymentRecycleViewAdapter;
 import com.jumbo.trus.match.Match;
-import com.jumbo.trus.match.MatchViewModel;
+import com.jumbo.trus.match.MatchAllViewModel;
 import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.player.Player;
 import com.jumbo.trus.player.PlayerViewModel;
@@ -38,7 +37,7 @@ public class RepaymentFragment extends CustomUserFragment implements IRepaymentF
     private PlayerRepaymentRecycleViewAdapter adapter;
     private ProgressBar progress_bar;
     private PlayerViewModel playerViewModel;
-    private MatchViewModel matchViewModel;
+    private MatchAllViewModel matchAllViewModel;
     private List<Player> selectedPlayers;
 
     @Override
@@ -53,22 +52,22 @@ public class RepaymentFragment extends CustomUserFragment implements IRepaymentF
         //initMainActivityViewModel();
         playerViewModel = new ViewModelProvider(requireActivity()).get(PlayerViewModel.class);
         playerViewModel.init();
-        matchViewModel = new ViewModelProvider(requireActivity()).get(MatchViewModel.class);
-        matchViewModel.init();
+        matchAllViewModel = new ViewModelProvider(requireActivity()).get(MatchAllViewModel.class);
+        matchAllViewModel.init();
         playerViewModel.getPlayers().observe(getViewLifecycleOwner(), new Observer<List<Player>>() {
             @Override
             public void onChanged(List<Player> hraci) {
                 Log.d(TAG, "onChanged: nacetli se hraci " + hraci);
                 filterPlayers(hraci);
                 initHracRecycleView();
-                if (matchViewModel.getMatches().getValue() != null) {
-                    enhancePlayers(matchViewModel.getMatches().getValue());
+                if (matchAllViewModel.getMatches().getValue() != null) {
+                    enhancePlayers(matchAllViewModel.getMatches().getValue());
                 }
                 setAdapter();
                 adapter.notifyDataSetChanged(); //TODO notifyItemInserted
             }
         });
-        matchViewModel.getMatches().observe(getViewLifecycleOwner(), new Observer<List<Match>>() {
+        matchAllViewModel.getMatches().observe(getViewLifecycleOwner(), new Observer<List<Match>>() {
             @Override
             public void onChanged(List<Match> matches) {
                 Log.d(TAG, "onChanged: nacetly se zapasy " + matches);

@@ -51,8 +51,8 @@ public class SeasonsRecycleViewAdapter extends RecyclerView.Adapter<SeasonsRecyc
         Log.d(TAG, "onBindViewHolder: called");
 
         holder.tv_title.setText(seasons.get(position).getName());
-        holder.tv_text.setText("Začátek sezony: " + seasons.get(position).getSeasonStartInStringFormat() + ", konec sezony: " +
-                seasons.get(position).getSeasonEndInStringFormat());
+        holder.tv_text.setText("Začátek sezony: " + seasons.get(position).returnSeasonStartInStringFormat() + ", konec sezony: " +
+                seasons.get(position).returnSeasonEndInStringFormat());
     }
 
     @Override

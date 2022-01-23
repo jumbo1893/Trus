@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item android:id="@+id/nav_home"
+                android:icon="@drawable/ic_home"
+                android:title="@string/nav_home"/>
+    <item android:title="@string/nav_group_matches">
+        <menu>
+            <item android:id="@+id/nav_match_plus"
+                android:icon="@drawable/ic_plus"
+                android:title="@string/nav_match_plus"/>
+            <item android:id="@+id/nav_match_all"
+                android:icon="@drawable/soccer_field"
+                android:title="@string/nav_match_all"/>
+            <item android:id="@+id/nav_match_pkfl"
+                android:icon="@drawable/baseline_sports_soccer_24"
+                android:title="@string/nav_match_pkfl"/>
+        </menu>
+    </item>
+
+    <item android:title="@string/nav_group_players">
+        <menu>
+            <item android:id="@+id/nav_player_plus"
+                android:icon="@drawable/baseline_person_add_24"
+                android:title="@string/nav_player_plus"/>
+            <item android:id="@+id/nav_player_all"
+                android:icon="@drawable/ic_group_black_24dp"
+                android:title="@string/nav_player_all"/>
+            <item android:id="@+id/nav_player_repayment"
+                android:icon="@drawable/baseline_point_of_sale_24"
+                android:title="@string/nav_player_repayment"/>
+        </menu>
+    </item>
+
+    <item android:title="@string/nav_group_fines">
+        <menu>
+            <item android:id="@+id/nav_fine_all"
+                android:icon="@drawable/ic_attach_money_black_24dp"
+                android:title="@string/nav_fine_all"/>
+            <item android:id="@+id/nav_fine_add"
+                android:icon="@drawable/baseline_savings_24"
+                android:title="@string/nav_fine_add"/>
+        </menu>
+    </item>
+
+    <item android:title="@string/nav_group_beer">
+        <menu>
+            <item android:id="@+id/nav_beer_add"
+                android:icon="@drawable/outline_sports_bar_24"
+                android:title="@string/nav_beer_add"/>
+        </menu>
+    </item>
+
+    <item android:title="@string/nav_group_statistics">
+        <menu>
+            <item android:id="@+id/nav_statistics"
+                android:icon="@drawable/ic_equalizer_black_24dp"
+                android:title="@string/nav_statistics"/>
+            <item android:id="@+id/nav_statistics_export"
+                android:icon="@drawable/ic_file_download_black_24dp"
+                android:title="@string/nav_statistics_export"/>
+        </menu>
+    </item>
+
+    <item android:title="@string/nav_group_settings">
+        <menu>
+            <item android:id="@+id/nav_settings_info"
+                android:icon="@drawable/ic_info_outline_black_24dp"
+                android:title="@string/nav_settings_info"/>
+            <item android:id="@+id/nav_settings_user"
+                android:icon="@drawable/baseline_manage_accounts_24"
+                android:title="@string/nav_settings_user"/>
+            <item android:id="@+id/nav_settings_season"
+                android:icon="@drawable/baseline_edit_calendar_24"
+                android:title="@string/nav_settings_season"/>
+        </menu>
+    </item>
+
+</menu>

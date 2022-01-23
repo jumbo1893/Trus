@@ -78,7 +78,17 @@ public class BeerLayout extends View {
         this.playerList = playerList;
     }
 
+    public boolean reloadPlayers(List<Player> playerList) {
+        if (layoutHeight != 0 && layoutWidth != 0) { //podmínka aby se relodovali hráči až po změření
+            this.playerList = playerList;
+            initPlayerLines();
+            return true;
+        }
+        return false;
+    }
+
     private void initPlayerLines() {
+        playerLinesList = new ArrayList<>();
         for (int i = 0; i < playerList.size(); i++) {
             playerLinesList.add(new PlayerLines());
         }
@@ -184,6 +194,7 @@ public class BeerLayout extends View {
      * @param i kolikáté pivo hráče to je
      */
     private void calculateBeerLinePosition(int i) {
+        Log.d(TAG, "calculateBeerLinePosition: " + layoutHeight + " širka " +layoutWidth);
         if (i == 4 || i == 9 || i == 14) {
             y1 = (layoutHeight/6) + random.nextInt(layoutHeight/8)-layoutHeight/16;
             y2 = (layoutHeight/6) + random.nextInt(layoutHeight/8)-layoutHeight/16;
@@ -322,7 +333,6 @@ public class BeerLayout extends View {
         layoutHeight = getMeasuredHeight();
         Log.d(TAG, "onMeasure: w: " + getMeasuredWidth() + " h: " + getMeasuredHeight());
         if (playerLinesList == null) {
-            playerLinesList = new ArrayList<>();
             initPaintParameters();
             initPlayerLines();
         }

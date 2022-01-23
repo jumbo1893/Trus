@@ -26,10 +26,10 @@ import com.jumbo.trus.Flag;
 import com.jumbo.trus.listener.OnListListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.SimpleDividerItemDecoration;
-import com.jumbo.trus.adapters.FineStatisticsRecycleViewAdapter;
+import com.jumbo.trus.adapters.recycleview.FineStatisticsRecycleViewAdapter;
 import com.jumbo.trus.comparator.OrderByFineAmount;
 import com.jumbo.trus.match.Match;
-import com.jumbo.trus.match.MatchViewModel;
+import com.jumbo.trus.match.MatchAllViewModel;
 import com.jumbo.trus.player.Player;
 import com.jumbo.trus.player.PlayerViewModel;
 import com.jumbo.trus.season.Season;
@@ -51,7 +51,7 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
     private Spinner sp_select_player_season;
 
     private PlayerViewModel playerViewModel;
-    private MatchViewModel matchViewModel;
+    private MatchAllViewModel matchAllViewModel;
     private SeasonsViewModel seasonsViewModel;
     private StatisticsViewModel statisticsViewModel;
 
@@ -90,8 +90,8 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
         statisticsViewModel = new ViewModelProvider(requireActivity()).get(StatisticsViewModel.class);
         playerViewModel = new ViewModelProvider(requireActivity()).get(PlayerViewModel.class);
         playerViewModel.init();
-        matchViewModel = new ViewModelProvider(requireActivity()).get(MatchViewModel.class);
-        matchViewModel.init();
+        matchAllViewModel = new ViewModelProvider(requireActivity()).get(MatchAllViewModel.class);
+        matchAllViewModel.init();
         seasonsViewModel = new ViewModelProvider(requireActivity()).get(SeasonsViewModel.class);
         seasonsViewModel.init();
         sw_player_match.setOnCheckedChangeListener(this);
@@ -100,7 +100,7 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
         btn_search.setOnClickListener(this);
         btn_table.setOnClickListener(this);
 
-        matchViewModel.getMatches().observe(getViewLifecycleOwner(), new Observer<List<Match>>() {
+        matchAllViewModel.getMatches().observe(getViewLifecycleOwner(), new Observer<List<Match>>() {
             @Override
             public void onChanged(List<Match> matches) {
                 Log.d(TAG, "onChanged: nacetly se zapasy " + matches);
@@ -112,7 +112,7 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
                 }
             }
         });
-        matchViewModel.isUpdating().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+        matchAllViewModel.isUpdating().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (!checkedPlayers) {
@@ -194,7 +194,7 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
     }
 
     private void initRecycleViewForPlayers() {
-        Log.d(TAG, "initRecycleViewForPlayers: " + matchViewModel.getMatches().getValue());
+        Log.d(TAG, "initRecycleViewForPlayers: " + matchAllViewModel.getMatches().getValue());
         adapter = new FineStatisticsRecycleViewAdapter(selectedPlayers, getActivity(), this);
     }
 
@@ -235,10 +235,10 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
 
         private void displayOverallPlayerDialog() {
         Log.d(TAG, "displayOverallPlayerDialog zobrazen");
-        int[] fineOverall = statisticsViewModel.countNumberOfAllFines(selectedPlayers, matchViewModel.getMatches().getValue());
+        int[] fineOverall = statisticsViewModel.countNumberOfAllFines(selectedPlayers, matchAllViewModel.getMatches().getValue());
         String text = "Celkový počet pokut u zobrazených hráčů: " + fineOverall[0] + " v celkové částce " + fineOverall[1] +  " Kč";
         for (Season season : seasonsViewModel.getSeasons().getValue()) {
-            int[] fineSeason = statisticsViewModel.countNumberOfAllFinesBySeason(selectedPlayers, matchViewModel.getMatches().getValue(), season);
+            int[] fineSeason = statisticsViewModel.countNumberOfAllFinesBySeason(selectedPlayers, matchAllViewModel.getMatches().getValue(), season);
             text += "\n\nPro sezonu " + season.getName() + " dostali vybraní hráči: " + fineSeason[0] + " pokut v celkové částce " + fineSeason[1] + " Kč";
         }
         final AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
@@ -307,7 +307,7 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         Log.d(TAG, "onItemSelected: sezona " + parent.getItemAtPosition(position) + position);
         spinnerPosition = position;
-        useSeasonsFilter(matchViewModel.getMatches().getValue());
+        useSeasonsFilter(matchAllViewModel.getMatches().getValue());
         if (adapter != null && !checkedPlayers) {
             initRecycleViewForMatches();
             setAdapter();
@@ -361,7 +361,7 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
                     setAdapter();
                 }
                 else {
-                    useSeasonsFilter(matchViewModel.getMatches().getValue());
+                    useSeasonsFilter(matchAllViewModel.getMatches().getValue());
                     selectedMatches = statisticsViewModel.filterMatches(selectedMatches, et_search.getText().toString());
                     initRecycleViewForMatches();
                     setAdapter();

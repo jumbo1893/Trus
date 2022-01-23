@@ -35,11 +35,11 @@ public class FirebaseRepository {
 
     private static final String TAG = "FirebaseRepository";
     public static final String SEASON_TABLE = "season";
-    public static final String PLAYER_TABLE = "player";
+    public static final String PLAYER_TABLE = "player_test";
     public static final String FINE_TABLE = "fine";
-    public static final String MATCH_TABLE = "match";
-    public static final String USER_TABLE = "user";
-    public static final String NOTIFICATION_TABLE = "notification";
+    public static final String MATCH_TABLE = "match_test";
+    public static final String USER_TABLE = "user_test";
+    public static final String NOTIFICATION_TABLE = "notification_test";
     public static final String PKFL_TABLE = "pkfl";
 
     private FirebaseFirestore db;
@@ -48,6 +48,9 @@ public class FirebaseRepository {
     private ItemLoadedListener itemLoadedListener;
     private NotificationListener notificationListener;
     private ArrayList<Model> modelsDataSet = new ArrayList<>();
+
+    private boolean allSeasons = false;
+    private boolean otherSeason = false;
 
     public FirebaseRepository(ChangeListener changeListener) {
         this.changeListener = changeListener;
@@ -58,6 +61,14 @@ public class FirebaseRepository {
         db = FirebaseFirestore.getInstance();
         collectionReference = db.collection(keyword);
         this.changeListener = changeListener;
+    }
+
+    public FirebaseRepository(String keyword, ChangeListener changeListener, boolean allSeasons, boolean otherSeason) {
+        db = FirebaseFirestore.getInstance();
+        collectionReference = db.collection(keyword);
+        this.changeListener = changeListener;
+        this.allSeasons = allSeasons;
+        this.otherSeason = otherSeason;
     }
 
     public FirebaseRepository(String keyword, NotificationListener notificationListener) {
@@ -86,6 +97,10 @@ public class FirebaseRepository {
                 }
             }
         });
+    }
+
+    public void setItemLoadedListener(ItemLoadedListener itemLoadedListener) {
+        this.itemLoadedListener = itemLoadedListener;
     }
 
     public void editModel(final Model model) {
@@ -141,7 +156,14 @@ public class FirebaseRepository {
                     modelsDataSet.add(season);
 
                 }
-
+                if (allSeasons) {
+                    Season all =  new Season().allSeason();
+                    modelsDataSet.add(0, all);
+                }
+                if (otherSeason) {
+                    Season other = new Season().otherSeason();
+                    modelsDataSet.add(other);
+                }
                 Log.d(TAG, "Automaticky načten seznam sezon z db ");
                 changeListener.itemListLoaded(modelsDataSet, Flag.SEASON);
             }

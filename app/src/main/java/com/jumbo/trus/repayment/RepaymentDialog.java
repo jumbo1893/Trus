@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jumbo.trus.listener.OnListListener;
 import com.jumbo.trus.R;
-import com.jumbo.trus.adapters.SimpleRecycleViewAdapter;
+import com.jumbo.trus.adapters.recycleview.SimpleRecycleViewAdapter;
 import com.jumbo.trus.player.Player;
 
 public class RepaymentDialog extends DialogFragment implements View.OnClickListener, OnListListener {

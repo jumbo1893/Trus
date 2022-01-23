@@ -2,8 +2,6 @@ package com.jumbo.trus.statistics;
 
 import android.util.Log;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.jumbo.trus.fine.Fine;
@@ -184,7 +182,7 @@ public class StatisticsViewModel extends ViewModel {
     public List<Player> filterPlayers (List<Player> players, String searchText) {
         List<Player> filteredPlayers = new ArrayList<>();
         for (Player player : players) {
-            if (player.getName().toLowerCase().contains(searchText.toLowerCase()) || player.getBirthdayInStringFormat().contains(searchText)) {
+            if (player.getName().toLowerCase().contains(searchText.toLowerCase()) || player.returnBirthdayInStringFormat().contains(searchText)) {
                 filteredPlayers.add(player);
             }
         }
@@ -194,7 +192,7 @@ public class StatisticsViewModel extends ViewModel {
     public List<Match> filterMatches (List<Match> matches, String searchText) {
         List<Match> filteredMatches = new ArrayList<>();
         for (Match match : matches) {
-            if (match.getOpponent().toLowerCase().contains(searchText.toLowerCase()) || match.getDateOfMatchInStringFormat().contains(searchText)) {
+            if (match.getOpponent().toLowerCase().contains(searchText.toLowerCase()) || match.returnDateOfMatchInStringFormat().contains(searchText)) {
                 filteredMatches.add(match);
             }
         }

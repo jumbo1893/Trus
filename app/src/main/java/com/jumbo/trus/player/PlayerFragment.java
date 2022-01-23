@@ -16,9 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jumbo.trus.CustomUserFragment;
-import com.jumbo.trus.Flag;
 import com.jumbo.trus.Model;
-import com.jumbo.trus.listener.OnListListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.Result;
 import com.jumbo.trus.SimpleDividerItemDecoration;
@@ -26,7 +24,7 @@ import com.jumbo.trus.notification.Notification;
 
 import java.util.List;
 
-public class PlayerFragment extends CustomUserFragment implements IPlayerFragment {
+public class PlayerFragment extends CustomUserFragment {
 
     private static final String TAG = "HracFragment";
 
@@ -45,7 +43,6 @@ public class PlayerFragment extends CustomUserFragment implements IPlayerFragmen
         rc_hraci = view.findViewById(R.id.rc_hraci);
         rc_hraci.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         progress_bar = view.findViewById(R.id.progress_bar);
-        //initMainActivityViewModel();
         playerViewModel = new ViewModelProvider(requireActivity()).get(PlayerViewModel.class);
         playerViewModel.init();
         playerViewModel.getPlayers().observe(getViewLifecycleOwner(), new Observer<List<Player>>() {
@@ -82,9 +79,7 @@ public class PlayerFragment extends CustomUserFragment implements IPlayerFragmen
         fab_plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PlayerDialog playerDialog = new PlayerDialog(Flag.PLAYER_PLUS);
-                playerDialog.setTargetFragment(PlayerFragment.this, 1);
-                playerDialog.show(getParentFragmentManager(), "dialogplus");
+                proceedToNextFragment(17);
             }
         });
         return view;
@@ -109,56 +104,7 @@ public class PlayerFragment extends CustomUserFragment implements IPlayerFragmen
 
     @Override
     protected void itemClick(int position) {
-        Log.d(TAG, "onHracClick: kliknuto na pozici " + position + ", object: " + playerViewModel.getPlayers().getValue());
-        PlayerDialog playerDialog = new PlayerDialog(Flag.PLAYER_EDIT, playerViewModel.getPlayers().getValue().get(position));
-        playerDialog.setTargetFragment(PlayerFragment.this, 1);
-        playerDialog.show(getParentFragmentManager(), "dialogplus");
-    }
-
-    @Override
-    public boolean createNewPlayer(String name, String birthday, boolean fan) {
-
-        Result result = playerViewModel.checkNewPlayerValidation(name, birthday);
-        if (!result.isTrue()) {
-            Toast.makeText(getActivity(), result.getText(), Toast.LENGTH_SHORT).show();
-        }
-        else {
-            Result addPlayerToRepositoryResult = playerViewModel.addPlayerToRepository(name, fan, birthday);
-            Toast.makeText(getActivity(), addPlayerToRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
-            if (addPlayerToRepositoryResult.isTrue()) {
-                String text = "narozen " + birthday;
-                createNotification(new Notification("Vytvořen " + (fan ? "fanoušek " : "hráč ") + name, text), playerViewModel);
-            }
-        }
-        return result.isTrue();
-
-    }
-
-    @Override
-    public boolean editPlayer(String name, String birthday, boolean fan, Player player) {
-        Result result = playerViewModel.checkNewPlayerValidation(name, birthday);
-        if (!result.isTrue()) {
-            Toast.makeText(getActivity(), result.getText(), Toast.LENGTH_SHORT).show();
-        }
-        else {
-            Result editPlayerInRepositoryResult = playerViewModel.editPlayerInRepository(name, fan, birthday, player);
-            Toast.makeText(getActivity(), editPlayerInRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
-            if (editPlayerInRepositoryResult.isTrue()) {
-                String text = "narozen " + birthday;
-                createNotification(new Notification("Upraven " + (fan ? "fanoušek " : "hráč ") + name, text), playerViewModel);
-            }
-        }
-        return result.isTrue();
-    }
-
-    @Override
-    public boolean deleteModel(Model model) {
-        Result removePlayerFromRepositoryResult = playerViewModel.removePlayerFromRepository((Player) model);
-        Toast.makeText(getActivity(), removePlayerFromRepositoryResult.getText(), Toast.LENGTH_SHORT).show();
-        if (removePlayerFromRepositoryResult.isTrue()) {
-            String text = " narozen " + ((Player) model).getBirthdayInStringFormat();
-            createNotification(new Notification("Smazán " + (((Player) model).isFan() ? "fanoušek " : "hráč" ) + model.getName(), text), playerViewModel);
-        }
-        return removePlayerFromRepositoryResult.isTrue();
+        playerViewModel.setPickedPlayerForEdit(playerViewModel.getPlayers().getValue().get(position));
+        proceedToNextFragment(18);
     }
 }

@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.R;
 import com.jumbo.trus.SimpleDividerItemDecoration;
-import com.jumbo.trus.adapters.SimpleRecycleViewAdapter;
+import com.jumbo.trus.adapters.recycleview.SimpleRecycleViewAdapter;
 import com.jumbo.trus.listener.OnListListener;
 
 import java.util.List;

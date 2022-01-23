@@ -87,7 +87,7 @@ public class PlayerDialog extends Dialog {
         tv_nadpis.setText("Úprava hráče");
         et_jmeno.setText(model.getName());
         //et_jmeno.setHint("Jméno hráče");
-        et_datum.setText(((Player)model).getBirthdayInStringFormat());
+        et_datum.setText(((Player)model).returnBirthdayInStringFormat());
         btn_potvrdit.setText("Upravit hráče");
         btn_smazat.setVisibility(View.VISIBLE);
         sw_switch.setText("fanoušek?");

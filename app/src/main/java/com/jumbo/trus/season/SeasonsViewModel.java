@@ -12,7 +12,7 @@ import com.jumbo.trus.Flag;
 import com.jumbo.trus.INotificationSender;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.Result;
-import com.jumbo.trus.Validator;
+import com.jumbo.trus.validator.Validator;
 import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.repository.FirebaseRepository;
 
@@ -28,6 +28,7 @@ public class SeasonsViewModel extends ViewModel implements ChangeListener, INoti
     private MutableLiveData<List<Season>> seasons;
     private MutableLiveData<Boolean> isUpdating = new MutableLiveData<>();
     private MutableLiveData<String> alert = new MutableLiveData<>();
+    private MutableLiveData<Season> pickedSeasonForEdit = new MutableLiveData<>();
     private FirebaseRepository firebaseRepository;
 
 
@@ -38,44 +39,6 @@ public class SeasonsViewModel extends ViewModel implements ChangeListener, INoti
             firebaseRepository.loadSeasonsFromRepository();
             Log.d(TAG, "init: nacitam hrace");
         }
-    }
-
-
-    public Result checkNewSeasonValidation(final String name, final String dateStart, final String dateEnd, final Season season) {
-        Validator validator = new Validator();
-        String response = "";
-        boolean result = false;
-        if (!validator.fieldIsNotEmpty(name)) {
-            response = "Není vyplněné jméno";
-        }
-        else if (!validator.checkNameFormat(name)) {
-            response = "Pojmenuj tu sezonu nějak normálně a bez píčovin";
-        }
-        else if (!validator.fieldIsNotEmpty(dateStart)) {
-            response = "Není vyplněné počáteční datum";
-        }
-        else if (!validator.isDateInCorrectFormat(dateStart)) {
-            response = "Datum musí být ve formátu " + Date.DATE_PATTERN;
-        }
-        else if (!validator.fieldIsNotEmpty(dateEnd)) {
-            response = "Není vyplněné počáteční datum";
-        }
-        else if (!validator.isDateInCorrectFormat(dateEnd)) {
-            response = "Datum musí být ve formátu " + Date.DATE_PATTERN;
-        }
-        else if (!validator.checkIfStartIsBeforeEnd(dateStart, dateEnd)) {
-            response = "Počáteční datum nesmí být nižší než konečné datum";
-        }
-        else if (!validator.checkSeasonOverlap(dateStart, dateEnd, getSeasons().getValue(), season)) {
-            response = "Datum se kryje s jinými sezonami";
-        }
-        else if (!validator.checkEqualityOfSeason(name, dateStart, dateEnd, season)) {
-            response = "Sezona nebyla změněna";
-        }
-        else {
-            result = true;
-        }
-        return new Result(result, response);
     }
 
     public Result addSeasonToRepository(final String name, final String dateStart, final String dateEnd) {
@@ -174,6 +137,14 @@ public class SeasonsViewModel extends ViewModel implements ChangeListener, INoti
 
     public LiveData<String> getAlert() {
         return alert;
+    }
+
+    public LiveData<Season> getPickedSeasonForEdit() {
+        return pickedSeasonForEdit;
+    }
+
+    public void setPickedSeasonForEdit(Season season) {
+        pickedSeasonForEdit.setValue(season);
     }
 
 

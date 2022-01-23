@@ -12,7 +12,7 @@ import com.jumbo.trus.Flag;
 import com.jumbo.trus.INotificationSender;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.Result;
-import com.jumbo.trus.Validator;
+import com.jumbo.trus.validator.Validator;
 import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.repayment.Repayment;
 import com.jumbo.trus.repository.FirebaseRepository;
@@ -30,6 +30,7 @@ public class PlayerViewModel extends ViewModel implements ChangeListener, INotif
     private MutableLiveData<Boolean> isUpdating = new MutableLiveData<>();
     private MutableLiveData<String> alert = new MutableLiveData<>();
     private FirebaseRepository firebaseRepository;
+    private MutableLiveData<Player> pickedPlayerForEdit = new MutableLiveData<>();
 
     public void init() {
         firebaseRepository = new FirebaseRepository(FirebaseRepository.PLAYER_TABLE, this);
@@ -204,6 +205,14 @@ public class PlayerViewModel extends ViewModel implements ChangeListener, INotif
     @Override
     public void sendNotificationToRepository(Notification notification) {
         firebaseRepository.addNotification(notification);
+    }
+
+    public LiveData<Player> getPickedPlayerForEdit() {
+        return pickedPlayerForEdit;
+    }
+
+    public void setPickedPlayerForEdit(Player player) {
+        pickedPlayerForEdit.setValue(player);
     }
 
     public LiveData<List<Player>> getPlayers() {

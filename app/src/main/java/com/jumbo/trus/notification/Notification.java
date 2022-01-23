@@ -2,6 +2,7 @@ package com.jumbo.trus.notification;
 
 import com.jumbo.trus.Date;
 import com.jumbo.trus.Model;
+import com.jumbo.trus.fine.Fine;
 import com.jumbo.trus.fine.ReceivedFine;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.player.Player;
@@ -67,9 +68,26 @@ public class Notification extends Model {
         String title = "U následujících zápasů byla změněna sezona: ";
         String text = "";
         for (Match match : matchList) {
-            text += "zápas s " + match.getName() + ", " + match.getDateOfMatchInStringFormat() + ": změna na " + match.getSeason().getName() + "\n";
+            text += "zápas s " + match.getName() + ", " + match.returnDateOfMatchInStringFormat() + ": změna na " + match.getSeason().getName() + "\n";
         }
         return new Notification(title, text);
+    }
+
+    public Notification prepareNotificationAboutChangedFinesInPlayerList(Match match, List<ReceivedFine> fines, List<Integer> finesNumbers, List<Player> players) {
+        StringBuilder notificationText = new StringBuilder();
+        StringBuilder notificationTitle = new StringBuilder("V zápase proti " + match.getOpponent() + " byly změněny pokuty u hráčů: ");
+        //pro notifikaci, ať to neprojíždí přes všechny hráče
+        for (int i = 0; i < fines.size(); i++) {
+            int count =  finesNumbers.get(i);
+            if (count > 0) {
+                notificationText.append(fines.get(i).getName()).append(" navýšeno o ").append(count).append("\n");
+
+            }
+        }
+        for (Player player : players) {
+            notificationTitle.append(player.getName() + ", ");
+        }
+        return new Notification(notificationTitle.toString(), notificationText.toString());
     }
 
     public String getTitle() {

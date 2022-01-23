@@ -85,8 +85,8 @@ public class SeasonDialog extends Dialog {
     private void setTextsToEditSeason() {
         tv_headline.setText("Úprava sezony");
         et_name.setText(model.getName());
-        et_date_beginning.setText(((Season)model).getSeasonStartInStringFormat());
-        et_date_ending.setText(((Season)model).getSeasonEndInStringFormat());
+        et_date_beginning.setText(((Season)model).returnSeasonStartInStringFormat());
+        et_date_ending.setText(((Season)model).returnSeasonEndInStringFormat());
         btn_commit.setText("Upravit sezonu");
         btn_delete.setVisibility(View.VISIBLE);
     }

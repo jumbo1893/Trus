@@ -133,7 +133,7 @@ public class MatchDialog extends Dialog implements AdapterView.OnItemSelectedLis
         tv_nadpis.setText("Úprava zápasu");
         et_jmeno.setText(match.getOpponent());
         btn_load_pkfl_match.setVisibility(View.GONE);
-        et_datum.setText(match.getDateOfMatchInStringFormat());
+        et_datum.setText(match.returnDateOfMatchInStringFormat());
         btn_potvrdit.setText("Upravit zápas");
         btn_smazat.setVisibility(View.VISIBLE);
         sw_switch.setText("domácí?");

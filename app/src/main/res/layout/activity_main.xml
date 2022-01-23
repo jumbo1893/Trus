@@ -14,23 +14,55 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <androidx.viewpager.widget.ViewPager
+        <com.jumbo.trus.CustomViewPager
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        </androidx.viewpager.widget.ViewPager>
+        </com.jumbo.trus.CustomViewPager>
 
     </LinearLayout>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/navigation"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
-        android:background="@color/tmaveSeda"
-        app:itemIconTint="@color/nav_item_colors"
-        app:itemTextColor="@color/bila"
-        app:menu="@menu/bottom_navigation" />
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottomappbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentInsetLeft="0dp"
+            android:contentInsetStart="0dp"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            android:contentInsetRight="0dp"
+            android:contentInsetEnd="0dp"
+            app:contentInsetRight="0dp"
+            app:contentInsetEnd="0dp"
+            android:layout_gravity="bottom">
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@android:color/white"
+            app:elevation="8dp"
+            app:labelVisibilityMode="labeled"
+            app:itemIconTint="@color/nav_item_colors"
+            app:itemRippleColor="@color/oranzova"
+            app:itemTextColor="@color/grey"
+            app:menu="@menu/bottom_navigation" />
+
+        </com.google.android.material.bottomappbar.BottomAppBar>
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/beerButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/outline_sports_bar_24"
+                app:backgroundTint="@color/oranzova"
+                app:layout_anchor="@id/bottomappbar"/>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 
 </LinearLayout>

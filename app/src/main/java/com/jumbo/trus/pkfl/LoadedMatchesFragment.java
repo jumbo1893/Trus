@@ -19,7 +19,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jumbo.trus.CustomUserFragment;
 import com.jumbo.trus.R;
 import com.jumbo.trus.SimpleDividerItemDecoration;
-import com.jumbo.trus.adapters.SimpleRecycleViewAdapter;
+import com.jumbo.trus.adapters.recycleview.SimpleRecycleViewAdapter;
 
 import java.util.List;
 

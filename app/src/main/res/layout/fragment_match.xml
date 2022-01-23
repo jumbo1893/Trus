@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".match.MatchFragment">
+    tools:context=".match.matchlist.MatchFragment">
 
     <Spinner
         android:id="@+id/sp_seasons"

@@ -14,10 +14,11 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.jumbo.trus.BuildConfig;
+import com.jumbo.trus.CustomUserFragment;
 import com.jumbo.trus.R;
 import com.jumbo.trus.user.LoginActivity;
 
-public class HomeFragment extends Fragment implements View.OnClickListener {
+public class HomeFragment extends CustomUserFragment implements View.OnClickListener {
 
     private static final String TAG = "HomeFragment";
 
