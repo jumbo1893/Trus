@@ -48,7 +48,6 @@ public class CustomAddFragment extends CustomUserFragment implements View.OnClic
             public void onClick(DialogInterface dialog, int whichButton) {
                 if (iFragment.deleteModel(model)) {
                     dialog.dismiss();
-                    openPreviousFragment();
                 }
             }
         });

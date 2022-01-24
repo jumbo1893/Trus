@@ -14,11 +14,13 @@ import com.jumbo.trus.Result;
 import com.jumbo.trus.listener.ChangeListener;
 import com.jumbo.trus.listener.ItemLoadedListener;
 import com.jumbo.trus.match.Match;
+import com.jumbo.trus.match.MatchViewModelHelper;
 import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.pkfl.PkflMatch;
 import com.jumbo.trus.player.Player;
 import com.jumbo.trus.repository.FirebaseRepository;
 import com.jumbo.trus.season.Season;
+import com.jumbo.trus.user.User;
 import com.jumbo.trus.web.RetreiveMatchesTask;
 import com.jumbo.trus.web.TaskRunner;
 
@@ -29,21 +31,21 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-public class MatchPlusViewModel extends ViewModel implements ChangeListener, INotificationSender, ItemLoadedListener {
+public class MatchPlusViewModel extends MatchViewModelHelper implements ItemLoadedListener, ChangeListener, INotificationSender {
 
     private static final String TAG = "MatchViewModel";
 
-    private MutableLiveData<PkflMatch> pkflMatch;
     private MutableLiveData<List<Season>> seasons;
     private MutableLiveData<List<Player>> players;
-    private MutableLiveData<Boolean> isUpdating = new MutableLiveData<>();
-    private MutableLiveData<String> alert = new MutableLiveData<>();
+
+    private MutableLiveData<PkflMatch> pkflMatch;
     private FirebaseRepository firebaseRepository;
 
     private Season checkedSeason = new Season().automaticSeason();
 
     public void init() {
         firebaseRepository = new FirebaseRepository(FirebaseRepository.MATCH_TABLE, this, false, true);
+
         if (pkflMatch == null) {
             pkflMatch = new MutableLiveData<>();
             firebaseRepository.setItemLoadedListener(this);
@@ -62,20 +64,18 @@ public class MatchPlusViewModel extends ViewModel implements ChangeListener, INo
         }
     }
 
-    public void addMatchToRepository(final String opponent, final boolean homeMatch, final String datum,
-                                       final List<Player> playerList) {
+    public void addMatchToRepository(final String opponent, final boolean homeMatch, final String datum, User user) {
         isUpdating.setValue(true);
         Date date = new Date();
-        Result result = new Result(false);
         try {
             long millis = date.convertTextDateToMillis(datum);
             Match match;
             if (checkedSeason.equals(new Season().automaticSeason())) {
                 match = new Match(opponent, millis, homeMatch, seasons.getValue());
-                match.createListOfPlayers(playerList, Objects.requireNonNull(players.getValue()));
+                match.createListOfPlayers(checkedPlayers.getValue(), Objects.requireNonNull(players.getValue()));
             } else {
                 match = new Match(opponent, millis, homeMatch, checkedSeason);
-                match.createListOfPlayers(playerList, Objects.requireNonNull(players.getValue()));
+                match.createListOfPlayers(checkedPlayers.getValue(), Objects.requireNonNull(players.getValue()));
             }
             firebaseRepository.insertNewModel(match);
         } catch (DateTimeException e) {
@@ -83,23 +83,16 @@ public class MatchPlusViewModel extends ViewModel implements ChangeListener, INo
             alert.setValue("Datum musí být ve formátu " + Date.DATE_PATTERN);
             isUpdating.setValue(false);
         }
+        String text = "Byl vytvořen " +  (homeMatch ? "domácí zápas" : "venkovní zápas") + " se soupeřem " + opponent + " hraný " + date;
+        sendNotificationToRepository(new Notification("Přidán zápas se soupeřem " + opponent, text, user));
     }
 
     private void setMatchAsAdded(final Match match) {
         Log.d(TAG, "setMatchAsAdded: " + match.getName());
         alert.setValue("Zápas " + match.getName() + " úspěšně přidán");
+        sendNotificationToRepository(new Notification());
         isUpdating.setValue(false);
     }
-
-    public void setCheckedSeason(Season season) {
-        this.checkedSeason = season;
-    }
-
-    @Override
-    public void sendNotificationToRepository(Notification notification) {
-        firebaseRepository.addNotification(notification);
-    }
-
 
     public LiveData<List<Player>> getPlayers() {
         return players;
@@ -109,18 +102,14 @@ public class MatchPlusViewModel extends ViewModel implements ChangeListener, INo
         return seasons;
     }
 
+    @Override
+    public void sendNotificationToRepository(Notification notification) {
+        firebaseRepository.addNotification(notification);
+    }
+
     public LiveData<PkflMatch> getPkflMatch() {
         return pkflMatch;
     }
-
-    public LiveData<Boolean> isUpdating() {
-        return isUpdating;
-    }
-
-    public LiveData<String> getAlert() {
-        return alert;
-    }
-
 
     private void loadMatchesFromPkfl(final String pkflUrl) {
         isUpdating.setValue(true);
@@ -159,6 +148,7 @@ public class MatchPlusViewModel extends ViewModel implements ChangeListener, INo
     @Override
     public void itemAdded(Model model) {
         setMatchAsAdded((Match) model);
+        closeFragment.setValue(true);
     }
 
     @Override

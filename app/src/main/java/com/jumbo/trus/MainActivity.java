@@ -33,7 +33,7 @@ import com.jumbo.trus.fine.playerlist.FinePlayersViewModel;
 import com.jumbo.trus.home.HomeFragment;
 import com.jumbo.trus.main.NotificationBadgeCounter;
 import com.jumbo.trus.match.Match;
-import com.jumbo.trus.match.MatchEditFragment;
+import com.jumbo.trus.match.edit.MatchEditFragment;
 import com.jumbo.trus.match.matchlist.MatchFragment;
 import com.jumbo.trus.match.add.MatchPlusFragment;
 import com.jumbo.trus.match.MatchAllViewModel;

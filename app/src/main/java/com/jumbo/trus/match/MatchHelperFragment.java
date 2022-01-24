@@ -46,9 +46,6 @@ public class MatchHelperFragment extends CustomAddFragment {
     protected AppCompatButton btnCommit, btnDelete;
     protected Switch swHome;
 
-    protected List<Player> selectedPlayers;
-    protected List<Player> players = new ArrayList<>();
-
     protected SeasonArrayAdapter seasonArrayAdapter;
 
     private TextFieldValidator nameValidator;
@@ -104,20 +101,6 @@ public class MatchHelperFragment extends CustomAddFragment {
                 tvSeason.showDropDown();
             }
         });
-        textPlayers.setEndIconOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                displayPlayersDialog(selectedPlayers);
-            }
-        });
-        tvPlayers.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if (b) {
-                    displayPlayersDialog(selectedPlayers);
-                }
-            }
-        });
         return view;
     }
 
@@ -136,37 +119,37 @@ public class MatchHelperFragment extends CustomAddFragment {
     }
 
     protected void setupSeasonDropDownMenu(List<Season> seasonList) {
-
-        seasonArrayAdapter = new SeasonArrayAdapter(getActivity(), seasonList);
-        tvSeason.setText(seasonList.get(0).getName());
-        tvSeason.setAdapter(seasonArrayAdapter);
+        if (seasonList != null) {
+            seasonArrayAdapter = new SeasonArrayAdapter(getActivity(), seasonList);
+            tvSeason.setAdapter(seasonArrayAdapter);
+        }
     }
 
-    private void displayPlayersDialog(List<Player> currentPlayers) {
+    protected void displayPlayersDialog(final List<Player> currentPlayers, final List<Player> allPlayers, final ICheckedPlayers iCheckedPlayers) {
         final List<Player> checkedPlayers;
-        if (currentPlayers == null) {
-            checkedPlayers = new ArrayList<>();
+        if (currentPlayers != null) {
+            checkedPlayers = new ArrayList<>(currentPlayers);
         }
         else {
-            checkedPlayers = currentPlayers;
+            checkedPlayers = new ArrayList<>();
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Vyber účastníky zápasu")
-                .setMultiChoiceItems(getPlayerNames(players), getCheckedPlayers(currentPlayers), new DialogInterface.OnMultiChoiceClickListener() {
+                .setMultiChoiceItems(getPlayerNames(allPlayers), getCheckedPlayers(currentPlayers, allPlayers), new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                         if (isChecked) {
-                            checkedPlayers.add(players.get(which));
+                            checkedPlayers.add(allPlayers.get(which));
                         }
                         else {
-                            checkedPlayers.remove(players.get(which));
+                            checkedPlayers.remove(allPlayers.get(which));
                         }
                     }
                 })
                 .setPositiveButton("Vybrat hráče", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        selectedPlayers = checkedPlayers;
+                        iCheckedPlayers.setCheckedPlayers(checkedPlayers);
                         dialog.dismiss();
                     }
                 })
@@ -179,7 +162,7 @@ public class MatchHelperFragment extends CustomAddFragment {
                 .setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialogInterface) {
-                        setPlayersToTextView(selectedPlayers);
+                        setPlayersToTextView(checkedPlayers);
                     }
                 })
                 .create().show();
@@ -189,7 +172,7 @@ public class MatchHelperFragment extends CustomAddFragment {
         tvPlayers.setText(returnPlayerNamesForTextView(selectedPlayers));
     }
 
-    private String[] getPlayerNames(List<Player> players) {
+    protected String[] getPlayerNames(List<Player> players) {
         if (players == null) {
             return new String[0];
         }
@@ -200,13 +183,13 @@ public class MatchHelperFragment extends CustomAddFragment {
         return playerStringList;
     }
 
-    private boolean[] getCheckedPlayers(List<Player> currentPlayers) {
-        if (currentPlayers == null || players == null) {
+    protected boolean[] getCheckedPlayers(List<Player> currentPlayers, List<Player> allPlayers) {
+        if (currentPlayers == null || allPlayers == null) {
             return null;
         }
-        boolean[] checkedPlayersList = new boolean[players.size()];
-        for (int i = 0; i < players.size(); i++) {
-            if (currentPlayers.contains(players.get(i))) {
+        boolean[] checkedPlayersList = new boolean[allPlayers.size()];
+        for (int i = 0; i < allPlayers.size(); i++) {
+            if (currentPlayers.contains(allPlayers.get(i))) {
                 checkedPlayersList[i] = true;
             }
             else {
@@ -229,25 +212,14 @@ public class MatchHelperFragment extends CustomAddFragment {
         return names.toString();
     }
 
-    private boolean checkFieldsValidation(String name, String date, List<Player> playerList) {
+    protected boolean checkFieldsValidation(String name, String date, List<Player> playerList) {
         boolean nameCheck = nameValidator.checkNameField(name);
         boolean dateCheck = dateValidator.checkDateField(date);
         boolean playerCheck = listValidator.checkListField(playerList);
         return nameCheck && dateCheck && playerCheck;
     }
 
-    protected void onCommitValidationTrue(final String opponent, final boolean homeMatch, final String date,
-                                          final List<Player> playerList) {
+    protected void onCommitValidationTrue(final String opponent, final boolean homeMatch, final String date) {
 
-    }
-
-
-    @Override
-    protected void commitClicked() {
-        String name = textOpponent.getEditText().getText().toString();
-        String date = textCalendar.getEditText().getText().toString();
-        if (checkFieldsValidation(name, date, selectedPlayers)) {
-            onCommitValidationTrue(name, swHome.isChecked(), date, selectedPlayers);
-        }
     }
 }

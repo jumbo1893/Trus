@@ -1,11 +1,14 @@
 package com.jumbo.trus.match.add;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -81,6 +84,7 @@ public class MatchPlusFragment extends MatchHelperFragment {
         matchPlusViewModel.getSeasons().observe(getViewLifecycleOwner(), new Observer<List<Season>>() {
             @Override
             public void onChanged(List<Season> seasonList) {
+                tvSeason.setText(seasonList.get(0).getName());
                 setupSeasonDropDownMenu(seasonList);
             }
         });
@@ -104,23 +108,35 @@ public class MatchPlusFragment extends MatchHelperFragment {
                 }
             }
         });
-        matchPlusViewModel.getPlayers().observe(getViewLifecycleOwner(), new Observer<List<Player>>() {
+        matchPlusViewModel.closeFragment().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
-            public void onChanged(List<Player> playerList) {
-                players = playerList;
+            public void onChanged(Boolean b) {
+                if (b && getViewLifecycleOwner().getLifecycle().getCurrentState()== Lifecycle.State.RESUMED) {
+                    openPreviousFragment();
+                }
             }
         });
-        tvSeason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        tvSeason.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 matchPlusViewModel.setCheckedSeason(seasonArrayAdapter.getItem(i));
             }
-
+        });
+        textPlayers.setEndIconOnClickListener(new View.OnClickListener() {
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
+            public void onClick(View view) {
+                displayPlayersDialog(matchPlusViewModel.getCheckedPlayers().getValue(), matchPlusViewModel.getPlayers().getValue(), matchPlusViewModel);
             }
         });
+        tvPlayers.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b) {
+                    displayPlayersDialog(matchPlusViewModel.getCheckedPlayers().getValue(), matchPlusViewModel.getPlayers().getValue(), matchPlusViewModel);
+                }
+            }
+        });
+
     }
 
     private void showPkflToolbar(boolean show) {
@@ -146,7 +162,16 @@ public class MatchPlusFragment extends MatchHelperFragment {
     }
 
     @Override
-    protected void onCommitValidationTrue(String opponent, boolean homeMatch, String date, List<Player> playerList) {
-        matchPlusViewModel.addMatchToRepository(opponent, homeMatch, date, playerList);
+    protected void onCommitValidationTrue(String opponent, boolean homeMatch, String date) {
+        matchPlusViewModel.addMatchToRepository(opponent, homeMatch, date, user);
+    }
+
+    @Override
+    protected void commitClicked() {
+        String name = textOpponent.getEditText().getText().toString();
+        String date = textCalendar.getEditText().getText().toString();
+        if (checkFieldsValidation(name, date, matchPlusViewModel.getCheckedPlayers().getValue())) {
+            onCommitValidationTrue(name, swHome.isChecked(), date);
+        }
     }
 }

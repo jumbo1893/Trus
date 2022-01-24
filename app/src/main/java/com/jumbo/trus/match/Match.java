@@ -416,6 +416,7 @@ public class Match extends Model {
     }
 
     public void createListOfPlayers(List<Player> playerList, List<Player> allPlayerList) {//nový, původní
+        this.playerList.clear();
         for (Player player : allPlayerList) {
             if (playerList.contains(player)) {
                 player.setMatchParticipant(true);

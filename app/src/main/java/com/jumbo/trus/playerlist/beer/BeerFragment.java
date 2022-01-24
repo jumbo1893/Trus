@@ -197,7 +197,7 @@ public class BeerFragment extends CustomUserFragment implements OnPlusButtonList
         Log.d(TAG, "onStop: ");
         super.onStop();
         if (!commit) {
-            matchCompensation.setOriginalBeerAndLiquorNumber();
+            //matchCompensation.setOriginalBeerAndLiquorNumber();
             //returnOriginalBeerAndLiquorNumber();
         }
     }
