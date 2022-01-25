@@ -40,8 +40,10 @@ public class MatchEditViewModel extends MatchViewModelHelper implements ChangeLi
     private Match pickedMatch;
     private MutableLiveData<Match> match = new MutableLiveData<>();
     private FirebaseRepository firebaseRepository;
+    private boolean init;
 
     public void init() {
+        init = true;
         firebaseRepository = new FirebaseRepository(FirebaseRepository.MATCH_TABLE, this, false, true);
         firebaseRepository.loadMatchesFromRepository();
         Log.d(TAG, "init: nacitam zapasy");
@@ -115,6 +117,12 @@ public class MatchEditViewModel extends MatchViewModelHelper implements ChangeLi
         setMatch(pickedMatch);
         setPlayerList(pickedMatch);
         setCheckedSeason(pickedMatch.getSeason());
+        if (!init) {
+            alert.setValue("Právě někdo jiný upravil zápas. Reloaduji nové údaje...");
+        }
+        else {
+            init = false;
+        }
     }
 
     private void setPlayerList(Match match) {
