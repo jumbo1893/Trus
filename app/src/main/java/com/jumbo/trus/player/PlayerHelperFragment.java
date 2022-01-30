@@ -30,10 +30,6 @@ public class PlayerHelperFragment extends CustomAddFragment {
     protected AppCompatButton btnCommit, btnDelete;
     protected Switch swFan;
 
-    protected PlayerViewModel playerViewModel;
-
-
-
     private TextFieldValidator nameValidator;
     private TextFieldValidator dateValidator;
 
@@ -73,8 +69,7 @@ public class PlayerHelperFragment extends CustomAddFragment {
                 }
             }
         });
-        playerViewModel = new ViewModelProvider(requireActivity()).get(PlayerViewModel.class);
-        playerViewModel.init();
+
         return view;
     }
 
@@ -104,10 +99,8 @@ public class PlayerHelperFragment extends CustomAddFragment {
 
     }
 
-
     @Override
     protected void commitClicked() {
-        showProgressBar();
         String name = textName.getEditText().getText().toString();
         String date = textCalendar.getEditText().getText().toString();
         if (checkFieldsValidation(name, date)) {

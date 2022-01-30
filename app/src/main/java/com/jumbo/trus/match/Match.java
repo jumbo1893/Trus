@@ -425,6 +425,26 @@ public class Match extends Model {
             }
             this.playerList.add(player);
         }
+        Log.d(TAG, "createListOfPlayers: " + this.playerList);
+    }
+
+    public void createListOfPlayersWithOriginalPlayers(List<Player> playerList, List<Player> allPlayerList) {//nový, původní
+
+        for (Player player : allPlayerList) {
+            setPlayerMatchParticipantByList(player, playerList.contains(player));
+        }
+        Log.d(TAG, "createListOfPlayers: " + this.playerList);
+    }
+
+    private void setPlayerMatchParticipantByList(Player player, boolean participant) {
+        for (Player currentPlayer : this.playerList) {
+            if (player.equals(currentPlayer)) {
+                currentPlayer.setMatchParticipant(participant);
+                return;
+            }
+        }
+        player.setMatchParticipant(participant);
+        this.playerList.add(player);
     }
 
     /**
@@ -450,6 +470,7 @@ public class Match extends Model {
      * @return true pokud se počáteční stavy pokut neliší, false pokud se liší
      */
     private boolean equalsFineCompensation(List<List<Integer>> fineCompensation) {
+
         for (int i = 0; i < returnPlayerListWithoutFans().size(); i++) {
             if (!returnPlayerListWithoutFans().get(i).compareNumberOfReceivedFines(fineCompensation.get(i))) {
                 return false;
@@ -479,6 +500,7 @@ public class Match extends Model {
             }
             else {
                 this.playerList.add(player);
+                result = false;
             }
         }
         return result;

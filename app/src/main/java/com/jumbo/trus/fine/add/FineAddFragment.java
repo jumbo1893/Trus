@@ -50,15 +50,11 @@ public class FineAddFragment extends CustomUserFragment implements OnPlusButtonL
     private MultiFinesRecycleViewAdapter multiAdapter;
 
     private FineAddViewModel fineAddViewModel;
-    private SharedViewModel sharedViewModel;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fine_add_to_player, container, false);
-        fineAddViewModel = new ViewModelProvider(requireActivity()).get(FineAddViewModel.class);
-        fineAddViewModel.init();
-        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         rc_fines = view.findViewById(R.id.rc_fines);
         progress_bar = view.findViewById(R.id.progress_bar);
         btn_commit = view.findViewById(R.id.btn_commit);
@@ -66,6 +62,14 @@ public class FineAddFragment extends CustomUserFragment implements OnPlusButtonL
         match_toolbar = view.findViewById(R.id.match_toolbar);
         tvMatch = view.findViewById(R.id.tvMatch);
         btn_commit.setOnClickListener(this);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        fineAddViewModel = new ViewModelProvider(requireActivity()).get(FineAddViewModel.class);
+        fineAddViewModel.init();
         fineAddViewModel.setPickedMatchAndPlayer(sharedViewModel.getPickedMatchForEdit().getValue(), sharedViewModel.getPickedPlayerForEdit().getValue(), sharedViewModel.getPickedPlayersForEdit().getValue(), sharedViewModel.isMultiplayers());
         fineAddViewModel.getFines().observe(getViewLifecycleOwner(), new Observer<List<ReceivedFine>>() {
             @Override
@@ -102,7 +106,6 @@ public class FineAddFragment extends CustomUserFragment implements OnPlusButtonL
                 }
             }
         });
-        return view;
     }
 
     private void setRecycleViews(List<ReceivedFine> fines) {

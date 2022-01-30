@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.jumbo.trus.fine.Fine;
 import com.jumbo.trus.listener.ChangeListener;
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.INotificationSender;

@@ -23,7 +23,9 @@ import androidx.lifecycle.ViewModelProvider;
 import com.jumbo.trus.FadeAnimation;
 import com.jumbo.trus.R;
 import com.jumbo.trus.Result;
+import com.jumbo.trus.SharedViewModel;
 import com.jumbo.trus.adapters.array.SeasonArrayAdapter;
+import com.jumbo.trus.match.Match;
 import com.jumbo.trus.match.MatchHelperFragment;
 import com.jumbo.trus.pkfl.PkflMatch;
 import com.jumbo.trus.pkfl.PkflViewModel;
@@ -113,6 +115,14 @@ public class MatchPlusFragment extends MatchHelperFragment {
             public void onChanged(Boolean b) {
                 if (b && getViewLifecycleOwner().getLifecycle().getCurrentState()== Lifecycle.State.RESUMED) {
                     openPreviousFragment();
+                }
+            }
+        });
+        matchPlusViewModel.getNewMainMatch().observe(getViewLifecycleOwner(), new Observer<Match>() {
+            @Override
+            public void onChanged(Match match) {
+                if (getViewLifecycleOwner().getLifecycle().getCurrentState()== Lifecycle.State.RESUMED) {
+                    sharedViewModel.setMainMatch(match);
                 }
             }
         });

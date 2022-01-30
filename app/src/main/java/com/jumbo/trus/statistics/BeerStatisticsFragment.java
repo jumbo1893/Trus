@@ -29,7 +29,7 @@ import com.jumbo.trus.comparator.OrderByBeerAndLiquorNumber;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.match.MatchAllViewModel;
 import com.jumbo.trus.player.Player;
-import com.jumbo.trus.player.PlayerViewModel;
+import com.jumbo.trus.player.PlayerViewModelTODELETE;
 import com.jumbo.trus.season.Season;
 import com.jumbo.trus.season.SeasonsViewModel;
 
@@ -48,7 +48,7 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
     private Switch sw_player_match;
     private Spinner sp_select_player_season;
 
-    private PlayerViewModel playerViewModel;
+    private PlayerViewModelTODELETE playerViewModelTODELETE;
     private MatchAllViewModel matchAllViewModel;
     private SeasonsViewModel seasonsViewModel;
     private StatisticsViewModel statisticsViewModel;
@@ -84,8 +84,8 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
         initSpinnerSeasons();
         setSpinnerAdapter();
         statisticsViewModel = new ViewModelProvider(requireActivity()).get(StatisticsViewModel.class);
-        playerViewModel = new ViewModelProvider(requireActivity()).get(PlayerViewModel.class);
-        playerViewModel.init();
+        playerViewModelTODELETE = new ViewModelProvider(requireActivity()).get(PlayerViewModelTODELETE.class);
+        playerViewModelTODELETE.init();
         matchAllViewModel = new ViewModelProvider(requireActivity()).get(MatchAllViewModel.class);
         matchAllViewModel.init();
         seasonsViewModel = new ViewModelProvider(requireActivity()).get(SeasonsViewModel.class);
@@ -120,7 +120,7 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
                 }
             }
         });
-        playerViewModel.getPlayers().observe(getViewLifecycleOwner(), new Observer<List<Player>>() {
+        playerViewModelTODELETE.getPlayers().observe(getViewLifecycleOwner(), new Observer<List<Player>>() {
             @Override
             public void onChanged(List<Player> hraci) {
                 Log.d(TAG, "onChanged: nacetli se hraci " + hraci);
@@ -133,7 +133,7 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
                 }
             }
         });
-        playerViewModel.isUpdating().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+        playerViewModelTODELETE.isUpdating().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (checkedPlayers) {
@@ -182,7 +182,7 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
     }
 
     private void enhancePlayersFromStatisticViewModel() {
-        selectedPlayers = statisticsViewModel.enhancePlayersWithBeersAndLiquorsFromMatches(playerViewModel.getPlayers().getValue(), selectedMatches);
+        selectedPlayers = statisticsViewModel.enhancePlayersWithBeersAndLiquorsFromMatches(playerViewModelTODELETE.getPlayers().getValue(), selectedMatches);
     }
 
 
@@ -232,7 +232,7 @@ public class BeerStatisticsFragment extends Fragment implements OnListListener, 
 
     @Override
     public void onItemClick(int position) {
-        Log.d(TAG, "onHracClick: kliknuto na pozici " + position + ", object: " + playerViewModel.getPlayers().getValue());
+        Log.d(TAG, "onHracClick: kliknuto na pozici " + position + ", object: " + playerViewModelTODELETE.getPlayers().getValue());
         BeerStatisticsDialog beerStatisticsDialog;
         if (checkedPlayers) {
             beerStatisticsDialog = new BeerStatisticsDialog(Flag.PLAYER, selectedPlayers.get(position), spinnerPosition);

@@ -30,7 +30,7 @@ import java.util.List;
 public class CustomUserFragment extends Fragment implements OnListListener {
     private static final String TAG = "CustomUserFragment";
     protected User user;
-    private LoginViewModel loginViewModel;
+    protected SharedViewModel sharedViewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,7 +53,7 @@ public class CustomUserFragment extends Fragment implements OnListListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initLoginViewModel();
+        initSharedViewModel();
     }
 
     private boolean hasOpenedDialogs(FragmentActivity activity) {
@@ -70,18 +70,24 @@ public class CustomUserFragment extends Fragment implements OnListListener {
     /**
      * hodí usera do fieldu user a zároveň zavolá metody pro skrytí tlačítek a vyhození denied usera
      */
-    protected void initLoginViewModel() {
-        loginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
-        loginViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<User>() {
+    private void initSharedViewModel() {
+        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        setUser(sharedViewModel.getUser().getValue());
+        setUserPermissions(user);
+        sharedViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<User>() {
             @Override
             public void onChanged(User user) {
                 Log.d(TAG, "onChanged: zmena uzivatele " + user);
                 setUser(user);
-                hideAllButtonsForReadOnlyUsers(getAllViewsFromViewGroup((ViewGroup) getView()));
-                checkIfUserIsNotDenied(user);
+                setUserPermissions(user);
 
             }
         });
+    }
+
+    private void setUserPermissions(User user) {
+        hideAllButtonsForReadOnlyUsers(getAllViewsFromViewGroup((ViewGroup) getView()));
+        checkIfUserIsNotDenied(user);
     }
 
     /** zjistí jestli uživatel neni ve statusu Denied. Pokud ano, tak ho odhlásí a vytvoří hlášku

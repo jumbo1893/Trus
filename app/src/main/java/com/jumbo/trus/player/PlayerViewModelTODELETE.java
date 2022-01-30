@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class PlayerViewModel extends ViewModel implements ChangeListener, INotificationSender {
+public class PlayerViewModelTODELETE extends ViewModel implements ChangeListener, INotificationSender {
 
     private static final String TAG = "PlayerViewModel";
 

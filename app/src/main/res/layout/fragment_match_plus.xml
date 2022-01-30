@@ -48,7 +48,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/cervena"
                         style="?android:attr/borderlessButtonStyle"
-                        android:text="Ne, díky" />
+                        android:text="@string/match_pkfl_refuse" />
                     <Button
                         android:id="@+id/btn_commit"
                         android:layout_width="match_parent"
@@ -56,7 +56,7 @@
                         android:textAlignment="textEnd"
                         android:textColor="@color/cervena"
                         style="?android:attr/borderlessButtonStyle"
-                        android:text="OK" />
+                        android:text="@string/match_pkfl_commit" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -77,13 +77,13 @@
                     android:layout_height="match_parent"
                     android:textSize="16sp"
                     android:textColor="@color/svetleCerna"
-                    android:text="Jméno soupeře"/>
+                    android:text="@string/match_opponent"/>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/textOpponent"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:hint="soupeř"
+                    android:hint="@string/hint_match_opponent"
                     app:errorIconDrawable="@null"
                     app:endIconMode="clear_text"
                     app:boxBackgroundColor="@color/bila">
@@ -108,7 +108,7 @@
                     android:layout_height="match_parent"
                     android:textSize="16sp"
                     android:textColor="@color/svetleCerna"
-                    android:text="Datum zápasu"/>
+                    android:text="@string/match_date"/>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/textCalendar"
@@ -211,7 +211,7 @@
                     android:layout_height="match_parent"
                     android:textSize="16sp"
                     android:textColor="@color/svetleCerna"
-                    android:text="Vyber hráče"/>
+                    android:text="@string/match_players"/>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/textPlayers"
@@ -240,14 +240,14 @@
                 android:id="@+id/btnCommit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Potvrdit"
+                android:text="@string/commit"
                 android:background="@drawable/rounded_button" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnDelete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Smazat zápas"
+                android:text="@string/match_delete"
                 android:background="@drawable/rounded_button" />
         </LinearLayout>
 

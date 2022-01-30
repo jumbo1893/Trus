@@ -65,7 +65,7 @@ public class MultiDateFieldValidator implements ITextFieldValidator {
             }
             return nameResult.isTrue();
         }
-        dateInputLayoutEnd.setError("Chyba při načítání sezon z db, sorry");
+        dateInputLayoutEnd.setError("Chyba při načítání sezon z db, zkus to později");
         return false;
     }
 }

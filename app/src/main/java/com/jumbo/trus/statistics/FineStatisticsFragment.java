@@ -31,7 +31,7 @@ import com.jumbo.trus.comparator.OrderByFineAmount;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.match.MatchAllViewModel;
 import com.jumbo.trus.player.Player;
-import com.jumbo.trus.player.PlayerViewModel;
+import com.jumbo.trus.player.PlayerViewModelTODELETE;
 import com.jumbo.trus.season.Season;
 import com.jumbo.trus.season.SeasonsViewModel;
 
@@ -50,7 +50,7 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
     private Switch sw_player_match;
     private Spinner sp_select_player_season;
 
-    private PlayerViewModel playerViewModel;
+    private PlayerViewModelTODELETE playerViewModelTODELETE;
     private MatchAllViewModel matchAllViewModel;
     private SeasonsViewModel seasonsViewModel;
     private StatisticsViewModel statisticsViewModel;
@@ -88,8 +88,8 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
         initSpinnerSeasons();
         setSpinnerAdapter();
         statisticsViewModel = new ViewModelProvider(requireActivity()).get(StatisticsViewModel.class);
-        playerViewModel = new ViewModelProvider(requireActivity()).get(PlayerViewModel.class);
-        playerViewModel.init();
+        playerViewModelTODELETE = new ViewModelProvider(requireActivity()).get(PlayerViewModelTODELETE.class);
+        playerViewModelTODELETE.init();
         matchAllViewModel = new ViewModelProvider(requireActivity()).get(MatchAllViewModel.class);
         matchAllViewModel.init();
         seasonsViewModel = new ViewModelProvider(requireActivity()).get(SeasonsViewModel.class);
@@ -124,7 +124,7 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
                 }
             }
         });
-        playerViewModel.getPlayers().observe(getViewLifecycleOwner(), new Observer<List<Player>>() {
+        playerViewModelTODELETE.getPlayers().observe(getViewLifecycleOwner(), new Observer<List<Player>>() {
             @Override
             public void onChanged(List<Player> hraci) {
                 Log.d(TAG, "onChanged: nacetli se hraci " + hraci);
@@ -137,7 +137,7 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
                 }
             }
         });
-        playerViewModel.isUpdating().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+        playerViewModelTODELETE.isUpdating().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (checkedPlayers) {
@@ -218,7 +218,7 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
 
     private void displayOverallMatchDialog() {
         Log.d(TAG, "displayOverallMatchDialog zobrazen");
-        int[] fine = statisticsViewModel.countNumberOfAllFines(playerViewModel.getPlayers().getValue(), selectedMatches);
+        int[] fine = statisticsViewModel.countNumberOfAllFines(playerViewModelTODELETE.getPlayers().getValue(), selectedMatches);
 
         String text = "Celkový počet pokut v zobrazených zápasech: " + fine[0] + " v celkové částce " + fine[1] +  " Kč";
         final AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
@@ -260,12 +260,12 @@ public class FineStatisticsFragment extends Fragment implements OnListListener, 
     }
 
     private void enhancePlayersFromStatisticViewModel() {
-        selectedPlayers = statisticsViewModel.enhancePlayersWithFinesFromMatches(playerViewModel.getPlayers().getValue(), selectedMatches);
+        selectedPlayers = statisticsViewModel.enhancePlayersWithFinesFromMatches(playerViewModelTODELETE.getPlayers().getValue(), selectedMatches);
     }
 
     @Override
     public void onItemClick(int position) {
-        Log.d(TAG, "onItemClick: kliknuto na pozici " + position + ", object: " + playerViewModel.getPlayers().getValue() + checkedPlayers);
+        Log.d(TAG, "onItemClick: kliknuto na pozici " + position + ", object: " + playerViewModelTODELETE.getPlayers().getValue() + checkedPlayers);
         FineStatisticsDialog fineStatisticsDialog;
         if (checkedPlayers) {
             fineStatisticsDialog = new FineStatisticsDialog(Flag.PLAYER, selectedPlayers.get(position), spinnerPosition);

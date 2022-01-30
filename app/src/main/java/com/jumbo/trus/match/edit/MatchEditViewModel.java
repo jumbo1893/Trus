@@ -4,25 +4,19 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.jumbo.trus.Date;
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.INotificationSender;
 import com.jumbo.trus.Model;
-import com.jumbo.trus.Result;
 import com.jumbo.trus.listener.ChangeListener;
-import com.jumbo.trus.listener.ItemLoadedListener;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.match.MatchViewModelHelper;
 import com.jumbo.trus.notification.Notification;
-import com.jumbo.trus.pkfl.PkflMatch;
 import com.jumbo.trus.player.Player;
 import com.jumbo.trus.repository.FirebaseRepository;
 import com.jumbo.trus.season.Season;
 import com.jumbo.trus.user.User;
-import com.jumbo.trus.web.RetreiveMatchesTask;
-import com.jumbo.trus.web.TaskRunner;
 
 import java.time.DateTimeException;
 import java.util.ArrayList;
@@ -40,10 +34,10 @@ public class MatchEditViewModel extends MatchViewModelHelper implements ChangeLi
     private Match pickedMatch;
     private MutableLiveData<Match> match = new MutableLiveData<>();
     private FirebaseRepository firebaseRepository;
-    private boolean init;
+    private boolean changeAlertLocked;
 
     public void init() {
-        init = true;
+        changeAlertLocked = true;
         firebaseRepository = new FirebaseRepository(FirebaseRepository.MATCH_TABLE, this, false, true);
         firebaseRepository.loadMatchesFromRepository();
         Log.d(TAG, "init: nacitam zapasy");
@@ -66,7 +60,8 @@ public class MatchEditViewModel extends MatchViewModelHelper implements ChangeLi
         Match match = pickedMatch;
         match.setOpponent(opponent);
         match.setHomeMatch(homeMatch);
-        match.createListOfPlayers(checkedPlayers.getValue(), Objects.requireNonNull(players.getValue()));
+        Log.d(TAG, "editMatchInRepository: " + checkedPlayers.getValue() + "\n" + players.getValue());
+        match.createListOfPlayersWithOriginalPlayers(checkedPlayers.getValue(), Objects.requireNonNull(players.getValue()));
         try {
             long millis = date.convertTextDateToMillis(datum);
             match.setDateOfMatch(millis);
@@ -79,6 +74,7 @@ public class MatchEditViewModel extends MatchViewModelHelper implements ChangeLi
         } catch (DateTimeException e) {
             Log.e(TAG, "editMatchInRepository: toto by nemělo nastat, ošetřeno validací", e);
             alert.setValue("Datum musí být ve formátu " + Date.DATE_PATTERN);
+            return;
         }
         String text = "Zápas byl změněn na " + (homeMatch ? "domácí zápas" : "venkovní zápas") + " se soupeřem " + opponent + " hraný " + datum;
         sendNotificationToRepository(new Notification("Upraven zápas " + opponent, text, user));
@@ -86,12 +82,12 @@ public class MatchEditViewModel extends MatchViewModelHelper implements ChangeLi
 
     public void removeMatchFromRepository(User user) {
         isUpdating.setValue(true);
-
         try {
             firebaseRepository.removeModel(pickedMatch);
         } catch (Exception e) {
             Log.e(TAG, "removeMatchFromRepository: chyba při mazání zápasu", e);
             alert.setValue("Chyba při posílání požadavku do DB");
+            return;
         }
         String text = "hraný " + pickedMatch.returnDateOfMatchInStringFormat();
         sendNotificationToRepository(new Notification("Smazán zápas " + pickedMatch.getOpponent(), text, user));
@@ -117,11 +113,15 @@ public class MatchEditViewModel extends MatchViewModelHelper implements ChangeLi
         setMatch(pickedMatch);
         setPlayerList(pickedMatch);
         setCheckedSeason(pickedMatch.getSeason());
-        if (!init) {
+        sendChangedMatchAlert();
+    }
+
+    private void sendChangedMatchAlert() {
+        if (!changeAlertLocked) {
             alert.setValue("Právě někdo jiný upravil zápas. Reloaduji nové údaje...");
         }
         else {
-            init = false;
+            changeAlertLocked = false;
         }
     }
 
@@ -162,6 +162,7 @@ public class MatchEditViewModel extends MatchViewModelHelper implements ChangeLi
     public void itemChanged(Model model) {
         alert.setValue("Zápas " + ((Match) model).getOpponent() + " úspěšně upraven");
         isUpdating.setValue(false);
+        newMainMatch.setValue((Match) model);
         closeFragment.setValue(true);
     }
 

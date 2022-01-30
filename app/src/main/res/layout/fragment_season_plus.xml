@@ -30,13 +30,13 @@
                     android:layout_height="match_parent"
                     android:textSize="16sp"
                     android:textColor="@color/svetleCerna"
-                    android:text="Název sezony"/>
+                    android:text="@string/season_name"/>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/textName"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:hint="sezona"
+                    android:hint="@string/hint_season_name"
                     app:errorIconDrawable="@null"
                     app:endIconMode="clear_text"
                     app:boxBackgroundColor="@color/bila">
@@ -61,7 +61,7 @@
                     android:layout_height="match_parent"
                     android:textSize="16sp"
                     android:textColor="@color/svetleCerna"
-                    android:text="Začátek sezony"/>
+                    android:text="@string/season_start"/>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/textCalendarBeginning"
@@ -96,7 +96,7 @@
                     android:layout_height="match_parent"
                     android:textSize="16sp"
                     android:textColor="@color/svetleCerna"
-                    android:text="Konec sezony"/>
+                    android:text="@string/season_end"/>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/textCalendarEnding"
@@ -125,14 +125,14 @@
                 android:id="@+id/btnCommit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Potvrdit"
+                android:text="@string/commit"
                 android:background="@drawable/rounded_button" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnDelete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Smazat sezonu"
+                android:text="@string/season_delete"
                 android:background="@drawable/rounded_button" />
         </LinearLayout>
 

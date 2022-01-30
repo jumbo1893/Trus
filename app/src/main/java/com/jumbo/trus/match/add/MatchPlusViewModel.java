@@ -72,25 +72,24 @@ public class MatchPlusViewModel extends MatchViewModelHelper implements ItemLoad
             Match match;
             if (checkedSeason.equals(new Season().automaticSeason())) {
                 match = new Match(opponent, millis, homeMatch, seasons.getValue());
-                match.createListOfPlayers(checkedPlayers.getValue(), Objects.requireNonNull(players.getValue()));
             } else {
                 match = new Match(opponent, millis, homeMatch, checkedSeason);
-                match.createListOfPlayers(checkedPlayers.getValue(), Objects.requireNonNull(players.getValue()));
             }
+            match.createListOfPlayers(checkedPlayers.getValue(), Objects.requireNonNull(players.getValue()));
             firebaseRepository.insertNewModel(match);
         } catch (DateTimeException e) {
             Log.e(TAG, "addMatchToRepository: toto by nemělo nastat, ošetřeno validací", e);
             alert.setValue("Datum musí být ve formátu " + Date.DATE_PATTERN);
             isUpdating.setValue(false);
+            return;
         }
-        String text = "Byl vytvořen " +  (homeMatch ? "domácí zápas" : "venkovní zápas") + " se soupeřem " + opponent + " hraný " + date;
+        String text = "Byl vytvořen " +  (homeMatch ? "domácí zápas" : "venkovní zápas") + " se soupeřem " + opponent + " hraný " + datum;
         sendNotificationToRepository(new Notification("Přidán zápas se soupeřem " + opponent, text, user));
     }
 
     private void setMatchAsAdded(final Match match) {
         Log.d(TAG, "setMatchAsAdded: " + match.getName());
         alert.setValue("Zápas " + match.getName() + " úspěšně přidán");
-        sendNotificationToRepository(new Notification());
         isUpdating.setValue(false);
     }
 
@@ -148,6 +147,7 @@ public class MatchPlusViewModel extends MatchViewModelHelper implements ItemLoad
     @Override
     public void itemAdded(Model model) {
         setMatchAsAdded((Match) model);
+        newMainMatch.setValue((Match) model);
         closeFragment.setValue(true);
     }
 

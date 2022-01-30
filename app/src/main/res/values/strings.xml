@@ -24,6 +24,43 @@
     <string name="nav_settings">Nastavení</string>
     <string name="nav_notification">oznámení</string>
 
+
+    <!-- HINTY -->
+    <string name="hint_mandatory"><font color='#FF0000'>*</font></string>
+    <string name="hint_repayment_amount">v Kč</string>
+    <string name="hint_repayment_note">poznámka</string>
+    <string name="hint_fine_amount">v Kč</string>
+    <string name="hint_fine_name">název</string>
+    <string name="hint_match_opponent">soupeř</string>
+    <string name="hint_player_name">jméno</string>
+    <string name="hint_season_name">název</string>
+
+    <!-- POLOŽKY PLUS FRAGMENTŮ -->
+    <string name="repayment_amount"><font color='#FF0000'>*</font>Výše platby <font color='#FF0000'> *</font></string>
+    <string name="repayment_note">Poznámka</string>
+    <string name="season_end"><font color='#FF0000'>*</font>Konec sezony</string>
+    <string name="season_start"><font color='#FF0000'>*</font>Začátek sezony</string>
+    <string name="season_name"><font color='#FF0000'>*</font>Název sezony</string>
+    <string name="player_name"><font color='#FF0000'>*</font>Jméno hráče</string>
+    <string name="player_birthday"><font color='#FF0000'>*</font>Datum narození</string>
+    <string name="match_opponent"><font color='#FF0000'>*</font>Jméno soupeře</string>
+    <string name="match_date"><font color='#FF0000'>*</font>Datum zápasu</string>
+    <string name="match_players"><font color='#FF0000'>*</font>Vyber hráče</string>
+    <string name="fine_name"><font color='#FF0000'>*</font>Název pokuty</string>
+    <string name="fine_amount"><font color='#FF0000'>*</font>Výše pokuty</string>
+    <string name="fine_allplayers">Pro všechny hráče</string>
+    <string name="fine_nonplayers">Pro nehrající</string>
+
+    <!-- Tlačítka -->
+    <string name="repayment_commit">Přidat platbu</string>
+    <string name="commit">Potvrdit</string>
+    <string name="season_delete">Smazat sezonu</string>
+    <string name="player_delete">Smazat hráče</string>
+    <string name="match_delete">Smazat zápas</string>
+    <string name="fine_delete">Smazat pokutu</string>
+    <string name="match_pkfl_refuse">Ne, díky</string>
+    <string name="match_pkfl_commit">OK</string>
+
     <!-- POLOŽKY NAVIGACE -->
 
     <string name="nav_group_matches">ZÁPASY</string>

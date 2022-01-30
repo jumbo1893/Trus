@@ -1,4 +1,4 @@
-package com.jumbo.trus.season;
+package com.jumbo.trus.season.list;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +19,9 @@ import com.jumbo.trus.CustomUserFragment;
 import com.jumbo.trus.R;
 import com.jumbo.trus.SimpleDividerItemDecoration;
 import com.jumbo.trus.match.MatchAllViewModel;
+import com.jumbo.trus.season.Season;
+import com.jumbo.trus.season.SeasonsRecycleViewAdapter;
+import com.jumbo.trus.season.SeasonsViewModel;
 
 import java.util.List;
 
@@ -30,8 +33,7 @@ public class SeasonsFragment extends CustomUserFragment {
     private ProgressBar progress_bar;
     private FloatingActionButton fab_plus;
 
-    private SeasonsViewModel seasonsViewModel;
-    private MatchAllViewModel matchAllViewModel;
+    private SeasonsListViewModel seasonsListViewModel;
 
     private SeasonsRecycleViewAdapter seasonsAdapter;
 
@@ -44,51 +46,44 @@ public class SeasonsFragment extends CustomUserFragment {
         rc_seasons.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         progress_bar = view.findViewById(R.id.progress_bar);
         fab_plus = view.findViewById(R.id.fab_plus);
-        //initMainActivityViewModel();
-        matchAllViewModel = new ViewModelProvider(requireActivity()).get(MatchAllViewModel.class);
-        matchAllViewModel.init();
-        seasonsViewModel = new ViewModelProvider(getActivity()).get(SeasonsViewModel.class);
-        seasonsViewModel.init();
+        seasonsListViewModel = new ViewModelProvider(requireActivity()).get(SeasonsListViewModel.class);
+        seasonsListViewModel.init();
         Log.d(TAG, "onCreateView: ");
 
-        seasonsViewModel.getSeasons().observe(getViewLifecycleOwner(), new Observer<List<Season>>() {
+        seasonsListViewModel.getSeasons().observe(getViewLifecycleOwner(), new Observer<List<Season>>() {
             @Override
             public void onChanged(List<Season> seasons) {
                 Log.d(TAG, "onChanged: nacetly se sezony " + seasons);
-                initSeasonsRecycleView();
+                initSeasonsRecycleView(seasons);
                 setAdapter();
-                seasonsAdapter.notifyDataSetChanged(); //TODO notifyItemInserted
             }
         });
 
-        seasonsViewModel.isUpdating().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+        seasonsListViewModel.isUpdating().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
                     showItem(progress_bar);
-                }
-                else {
+                } else {
                     hideItem(progress_bar);
                 }
             }
         });
-        seasonsViewModel.getAlert().observe(getViewLifecycleOwner(), new Observer<String>() {
+        seasonsListViewModel.getAlert().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
                 //podmínka aby se upozornění nezobrazovalo vždy když se mění fragment
-                if (getViewLifecycleOwner().getLifecycle().getCurrentState()== Lifecycle.State.RESUMED) {
+                if (getViewLifecycleOwner().getLifecycle().getCurrentState() == Lifecycle.State.RESUMED) {
                     Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
         fab_plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 proceedToNextFragment(19);
             }
         });
-
         return view;
     }
 
@@ -101,9 +96,8 @@ public class SeasonsFragment extends CustomUserFragment {
     }
 
 
-
-    private void initSeasonsRecycleView() {
-        seasonsAdapter = new SeasonsRecycleViewAdapter(seasonsViewModel.getSeasons().getValue(), getActivity(), this);
+    private void initSeasonsRecycleView(List<Season> seasons) {
+        seasonsAdapter = new SeasonsRecycleViewAdapter(seasons, getActivity(), this);
     }
 
     private void setAdapter() {
@@ -113,7 +107,7 @@ public class SeasonsFragment extends CustomUserFragment {
 
     @Override
     protected void itemClick(int position) {
-        seasonsViewModel.setPickedSeasonForEdit(seasonsViewModel.getSeasons().getValue().get(position));
+        sharedViewModel.setPickedSeasonForEdit(seasonsListViewModel.getSeasons().getValue().get(position));
         proceedToNextFragment(20);
     }
 }

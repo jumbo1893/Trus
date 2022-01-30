@@ -1,4 +1,4 @@
-package com.jumbo.trus.match.matchlist;
+package com.jumbo.trus.match.list;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -39,7 +39,6 @@ public class MatchFragment extends CustomUserFragment implements AdapterView.OnI
     private ArrayAdapter<Season> seasonArrayAdapter;
     private ProgressBar progress_bar;
     private MatchListViewModel matchListViewModel;
-    private SharedViewModel sharedViewModel;
     private Spinner sp_seasons;
 
     
@@ -57,7 +56,6 @@ public class MatchFragment extends CustomUserFragment implements AdapterView.OnI
         sp_seasons.setOnItemSelectedListener(this);
         matchListViewModel = new ViewModelProvider(requireActivity()).get(MatchListViewModel.class);
         matchListViewModel.init();
-        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         matchListViewModel.getMatches().observe(getViewLifecycleOwner(), new Observer<List<Match>>() {
             @Override
             public void onChanged(List<Match> matches) {

@@ -29,7 +29,7 @@ import com.jumbo.trus.fine.ReceivedFine;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.match.MatchAllViewModel;
 import com.jumbo.trus.player.Player;
-import com.jumbo.trus.player.PlayerViewModel;
+import com.jumbo.trus.player.PlayerViewModelTODELETE;
 import com.jumbo.trus.season.Season;
 import com.jumbo.trus.season.SeasonsViewModel;
 
@@ -47,7 +47,7 @@ public class FineStatisticsDialog extends Dialog implements AdapterView.OnItemSe
     private Button btn_commit;
     private RecyclerView rc_list;
 
-    private PlayerViewModel playerViewModel;
+    private PlayerViewModelTODELETE playerViewModelTODELETE;
     private MatchAllViewModel matchAllViewModel;
     private SeasonsViewModel seasonsViewModel;
     private StatisticsViewModel statisticsViewModel;
@@ -95,8 +95,8 @@ public class FineStatisticsDialog extends Dialog implements AdapterView.OnItemSe
         seasonsViewModel.init();
         matchAllViewModel = new ViewModelProvider(requireActivity()).get(MatchAllViewModel.class);
         matchAllViewModel.init();
-        playerViewModel = new ViewModelProvider(requireActivity()).get(PlayerViewModel.class);
-        playerViewModel.init();
+        playerViewModelTODELETE = new ViewModelProvider(requireActivity()).get(PlayerViewModelTODELETE.class);
+        playerViewModelTODELETE.init();
         statisticsViewModel = new ViewModelProvider(requireActivity()).get(StatisticsViewModel.class);
         decideTextsToShow();
         tv_overall.setOnClickListener(this);

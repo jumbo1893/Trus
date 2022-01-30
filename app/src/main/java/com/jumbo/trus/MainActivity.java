@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
@@ -26,35 +25,34 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
 import com.jumbo.trus.fine.add.FineAddFragment;
-import com.jumbo.trus.fine.FineFragment;
-import com.jumbo.trus.fine.add.FineAddViewModel;
+import com.jumbo.trus.fine.detail.add.FinePlusFragment;
+import com.jumbo.trus.fine.detail.edit.FineEditFragment;
+import com.jumbo.trus.fine.detail.list.FineFragment;
 import com.jumbo.trus.fine.playerlist.FinePlayersFragment;
-import com.jumbo.trus.fine.playerlist.FinePlayersViewModel;
 import com.jumbo.trus.home.HomeFragment;
 import com.jumbo.trus.main.NotificationBadgeCounter;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.match.edit.MatchEditFragment;
-import com.jumbo.trus.match.matchlist.MatchFragment;
+import com.jumbo.trus.match.list.MatchFragment;
 import com.jumbo.trus.match.add.MatchPlusFragment;
 import com.jumbo.trus.match.MatchAllViewModel;
 import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.notification.NotificationFragment;
 import com.jumbo.trus.notification.NotificationViewModel;
 import com.jumbo.trus.pkfl.LoadedMatchesFragment;
-import com.jumbo.trus.player.PlayerEditFragment;
-import com.jumbo.trus.player.PlayerFragment;
-import com.jumbo.trus.player.PlayerPlusFragment;
+import com.jumbo.trus.player.edit.PlayerEditFragment;
+import com.jumbo.trus.player.list.PlayerFragment;
+import com.jumbo.trus.player.add.PlayerPlusFragment;
 import com.jumbo.trus.playerlist.beer.BeerFragment;
 
-import com.jumbo.trus.playerlist.beer.BeerViewModel;
 import com.jumbo.trus.repayment.RepaymentFragment;
-import com.jumbo.trus.season.SeasonEditFragment;
-import com.jumbo.trus.season.SeasonPlusFragment;
-import com.jumbo.trus.season.SeasonsFragment;
+import com.jumbo.trus.repayment.RepaymentPlusFragment;
+import com.jumbo.trus.season.edit.SeasonEditFragment;
+import com.jumbo.trus.season.add.SeasonPlusFragment;
+import com.jumbo.trus.season.list.SeasonsFragment;
 import com.jumbo.trus.statistics.BeerStatisticsFragment;
 import com.jumbo.trus.statistics.FineStatisticsFragment;
 
-import com.jumbo.trus.user.LoginViewModel;
 import com.jumbo.trus.user.User;
 import com.jumbo.trus.user.UserInteractionFragment;
 
@@ -74,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
     private List<Integer> previousFragments = new ArrayList<>();
     private List<String> pageTitles;
 
-    private User user;
     private SharedPreferences pref;
     private Match pickedMatch;
 
@@ -100,15 +97,12 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        user = (User) getIntent().getSerializableExtra("user");
-        Log.d(TAG, "onCreate: přihlásil se user " + user);
         setTheme(R.style.AppTheme);
         pref = getSharedPreferences("Notification", MODE_PRIVATE);
-        notificationBadgeCounter = new NotificationBadgeCounter(pref, user);
+        sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
+        sharedViewModel.setUser((User) getIntent().getSerializableExtra("user"));
+        notificationBadgeCounter = new NotificationBadgeCounter(pref, sharedViewModel.getUser().getValue());
         setContentView(R.layout.activity_main);
-        LoginViewModel model = new ViewModelProvider(this).get(LoginViewModel.class);
-        model.init();
-        model.setUser(user);
         viewPager = findViewById(R.id.viewpager);
         setupViewPager(viewPager);
         setupPageTitles();
@@ -138,7 +132,6 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
             }
 
         });
-        sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
         matchAllViewModel = new ViewModelProvider(this).get(MatchAllViewModel.class);
         matchAllViewModel.init();
         matchAllViewModel.getMatches().observe(this, new Observer<List<Match>>() {
@@ -181,19 +174,6 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
         });
         showToolbarBackButton(false);
     }
-
-    private void initViewModels() {
-        FinePlayersViewModel finePlayersViewModel;
-        FineAddViewModel fineAddViewModel;
-        BeerViewModel beerViewModel;
-        fineAddViewModel = new ViewModelProvider(this).get(FineAddViewModel.class);
-        beerViewModel = new ViewModelProvider(this).get(BeerViewModel.class);
-        finePlayersViewModel = new ViewModelProvider(this).get(FinePlayersViewModel.class);
-        beerViewModel.init();
-        fineAddViewModel.init();
-        finePlayersViewModel.init();
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -310,12 +290,6 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
         return true;
     }
 
-    private Bundle prepareUserBundle() {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("user", user);
-        return bundle;
-    }
-
     public void addNewPreviousFragment() {
         previousFragments.add(viewPager.getCurrentItem());
     }
@@ -366,8 +340,6 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
 
     private void setupViewPager(ViewPager viewPager) {
         adapter = new BottomNavPagerAdapter(getSupportFragmentManager());
-        Fragment fragment = new HomeFragment();
-        fragment.setArguments(prepareUserBundle());
         adapter.addFragment(new HomeFragment()); //0
         adapter.addFragment(new PlayerFragment()); //1
         adapter.addFragment(new SeasonsFragment()); //2
@@ -389,13 +361,16 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
         adapter.addFragment(new PlayerEditFragment()); //18
         adapter.addFragment(new SeasonPlusFragment()); //19
         adapter.addFragment(new SeasonEditFragment()); //20
+        adapter.addFragment(new FinePlusFragment()); //21
+        adapter.addFragment(new FineEditFragment()); //22
+        adapter.addFragment(new RepaymentPlusFragment()); //23
         viewPager.setAdapter(adapter);
     }
 
     private void setupPageTitles() {
         pageTitles = new ArrayList<>();
         pageTitles.add("Trusí appka"); //0
-        pageTitles.add("Seznam zápasů"); //1
+        pageTitles.add("Seznam hráčů"); //1
         pageTitles.add("Seznam sezon"); //2
         pageTitles.add("Notifikace"); //3
         pageTitles.add("Seznam zápasů"); //4
@@ -415,6 +390,9 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
         pageTitles.add("Upravit hráče"); //18
         pageTitles.add("Přidat sezonu"); //19
         pageTitles.add("Upravit sezonu"); //20
+        pageTitles.add("Přidat pokutu"); //21
+        pageTitles.add("Upravit pokutu"); //22
+        pageTitles.add("Přidat platbu"); //23
     }
 
     private void setNewPage(int fragmentId) {

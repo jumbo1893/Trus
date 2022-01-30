@@ -127,6 +127,35 @@ public class Validator {
         }
     }
 
+    public Result checkFineAmount(String amount) {
+        String response = "";
+        boolean result = false;
+        if (!fieldIsNotEmpty(amount)) {
+            response = "Není vyplněná částka";
+            return new Result(false, response);
+        }
+        String regex = "^[0-9]{0,5}$";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(amount);
+        if (!m.matches()) {
+            response = "Částka je moc vysoká nebo sou v ní nesmysly";
+        }
+        else {
+            result = true;
+        }
+        return new Result(result, response);
+    }
+
+    public Result checkTextFieldFormat(String name, int nameLength) {
+        String regex = "^[a-zA-Z0-9_ áčďéěíňóřšťůúýžÁČĎÉĚÍŇÓŘŠŤŮÚÝŽ-]{0," + nameLength + "}$";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(name);
+        if (m.matches()) {
+            return new Result(true, "");
+        }
+        return new Result(false, "Text je moc dlouhý nebo obsahuje nesmysly");
+    }
+
     public boolean isListEmpty(List<? extends Object> list) {
         return list == null || list.isEmpty();
     }

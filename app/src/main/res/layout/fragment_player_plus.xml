@@ -30,13 +30,13 @@
                     android:layout_height="match_parent"
                     android:textSize="16sp"
                     android:textColor="@color/svetleCerna"
-                    android:text="Jméno hráče"/>
+                    android:text="@string/player_name"/>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/textName"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:hint="jméno"
+                    android:hint="@string/hint_player_name"
                     app:errorIconDrawable="@null"
                     app:endIconMode="clear_text"
                     app:boxBackgroundColor="@color/bila">
@@ -61,7 +61,7 @@
                     android:layout_height="match_parent"
                     android:textSize="16sp"
                     android:textColor="@color/svetleCerna"
-                    android:text="Datum narození"/>
+                    android:text="@string/player_birthday"/>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/textCalendar"
@@ -123,14 +123,14 @@
                 android:id="@+id/btnCommit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Potvrdit"
+                android:text="@string/commit"
                 android:background="@drawable/rounded_button" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnDelete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Smazat hráče"
+                android:text="@string/player_delete"
                 android:background="@drawable/rounded_button" />
         </LinearLayout>
 

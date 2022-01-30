@@ -1,4 +1,4 @@
-package com.jumbo.trus.player;
+package com.jumbo.trus.player.list;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -16,11 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jumbo.trus.CustomUserFragment;
-import com.jumbo.trus.Model;
 import com.jumbo.trus.R;
-import com.jumbo.trus.Result;
+import com.jumbo.trus.SharedViewModel;
 import com.jumbo.trus.SimpleDividerItemDecoration;
-import com.jumbo.trus.notification.Notification;
+import com.jumbo.trus.player.Player;
+import com.jumbo.trus.player.PlayerRecycleViewAdapter;
+import com.jumbo.trus.player.PlayerViewModelTODELETE;
 
 import java.util.List;
 
@@ -29,34 +30,30 @@ public class PlayerFragment extends CustomUserFragment {
     private static final String TAG = "HracFragment";
 
     private FloatingActionButton fab_plus;
-    private RecyclerView rc_hraci;
+    private RecyclerView rc_players;
     private PlayerRecycleViewAdapter adapter;
     private ProgressBar progress_bar;
-    private PlayerViewModel playerViewModel;
-
+    private PlayerListViewModel playerListViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_player, container, false);
         fab_plus = view.findViewById(R.id.fab_plus);
-        rc_hraci = view.findViewById(R.id.rc_hraci);
-        rc_hraci.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
+        rc_players = view.findViewById(R.id.rc_players);
+        rc_players.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         progress_bar = view.findViewById(R.id.progress_bar);
-        playerViewModel = new ViewModelProvider(requireActivity()).get(PlayerViewModel.class);
-        playerViewModel.init();
-        playerViewModel.getPlayers().observe(getViewLifecycleOwner(), new Observer<List<Player>>() {
+        playerListViewModel = new ViewModelProvider(requireActivity()).get(PlayerListViewModel.class);
+        playerListViewModel.init();
+        playerListViewModel.getPlayers().observe(getViewLifecycleOwner(), new Observer<List<Player>>() {
             @Override
-            public void onChanged(List<Player> hraci) {
-                Log.d(TAG, "onChanged: nacetli se hraci " + hraci);
-                if (adapter == null) {
-                    initHracRecycleView();
-                }
+            public void onChanged(List<Player> players) {
+                Log.d(TAG, "onChanged: nacetli se hraci " + players);
+                initHracRecycleView(players);
                 setAdapter();
-                adapter.notifyDataSetChanged(); //TODO notifyItemInserted
             }
         });
-        playerViewModel.isUpdating().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+        playerListViewModel.isUpdating().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
@@ -66,7 +63,7 @@ public class PlayerFragment extends CustomUserFragment {
                 }
             }
         });
-        playerViewModel.getAlert().observe(getViewLifecycleOwner(), new Observer<String>() {
+        playerListViewModel.getAlert().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
                 //podmínka aby se upozornění nezobrazovalo vždy když se mění fragment
@@ -85,13 +82,13 @@ public class PlayerFragment extends CustomUserFragment {
         return view;
     }
 
-    private void initHracRecycleView() {
-        adapter = new PlayerRecycleViewAdapter(playerViewModel.getPlayers().getValue(), getActivity(), this);
+    private void initHracRecycleView(List<Player> playerList) {
+        adapter = new PlayerRecycleViewAdapter(playerList, getActivity(), this);
     }
 
     private void setAdapter() {
-        rc_hraci.setAdapter(adapter);
-        rc_hraci.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rc_players.setAdapter(adapter);
+        rc_players.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     private void showProgressBar() {
@@ -104,7 +101,7 @@ public class PlayerFragment extends CustomUserFragment {
 
     @Override
     protected void itemClick(int position) {
-        playerViewModel.setPickedPlayerForEdit(playerViewModel.getPlayers().getValue().get(position));
+        sharedViewModel.setPickedPlayerForEdit(playerListViewModel.getPlayers().getValue().get(position));
         proceedToNextFragment(18);
     }
 }

@@ -1,4 +1,4 @@
-package com.jumbo.trus.match.matchlist;
+package com.jumbo.trus.match.list;
 
 import android.util.Log;
 
@@ -6,25 +6,20 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.jumbo.trus.Date;
+import com.jumbo.trus.BaseViewModel;
 import com.jumbo.trus.Flag;
-import com.jumbo.trus.INotificationSender;
 import com.jumbo.trus.Model;
-import com.jumbo.trus.Result;
 import com.jumbo.trus.listener.ChangeListener;
 import com.jumbo.trus.match.Match;
-import com.jumbo.trus.notification.Notification;
-import com.jumbo.trus.player.Player;
 import com.jumbo.trus.repository.FirebaseRepository;
 import com.jumbo.trus.season.Season;
 
-import java.time.DateTimeException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class MatchListViewModel extends ViewModel implements ChangeListener {
+public class MatchListViewModel extends BaseViewModel implements ChangeListener {
 
     private static final String TAG = "MatchListViewModel";
 
@@ -32,8 +27,6 @@ public class MatchListViewModel extends ViewModel implements ChangeListener {
     private List<Match> allMatches = new ArrayList<>();
     private MutableLiveData<List<Season>> seasons;
     private Season selectedSeason;
-    private MutableLiveData<Boolean> isUpdating = new MutableLiveData<>();
-    private MutableLiveData<String> alert = new MutableLiveData<>();
     private FirebaseRepository firebaseRepository;
 
     public void init() {
@@ -56,13 +49,6 @@ public class MatchListViewModel extends ViewModel implements ChangeListener {
 
     public LiveData<List<Season>> getSeasons() {
         return seasons;
-    }
-    public LiveData<Boolean> isUpdating() {
-        return isUpdating;
-    }
-
-    public LiveData<String> getAlert() {
-        return alert;
     }
 
     public void setSelectedSeason(Season season) {

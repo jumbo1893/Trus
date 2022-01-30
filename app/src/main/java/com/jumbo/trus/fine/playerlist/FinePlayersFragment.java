@@ -53,7 +53,6 @@ public class FinePlayersFragment extends CustomUserFragment implements View.OnCl
     private RecyclerView rc_players;
 
     private FinePlayersViewModel finePlayersViewModel;
-    private SharedViewModel sharedViewModel;
     private FadeAnimation fadeAnimation;
 
     private MatchArrayAdapter matchArrayAdapter;
@@ -72,9 +71,6 @@ public class FinePlayersFragment extends CustomUserFragment implements View.OnCl
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fine_players, container, false);
-        finePlayersViewModel = new ViewModelProvider(requireActivity()).get(FinePlayersViewModel.class);
-        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
-        finePlayersViewModel.init();
         match_toolbar = view.findViewById(R.id.match_toolbar);
         match_toolbar.setVisibility(View.GONE);
         rc_players = view.findViewById(R.id.rc_players);
@@ -88,8 +84,6 @@ public class FinePlayersFragment extends CustomUserFragment implements View.OnCl
         btn_init_multi_selection.setOnClickListener(this);
         btn_check_non_players.setOnClickListener(this);
         setButtonsTransparency();
-        finePlayersViewModel.setPickedMatch(sharedViewModel.getMainMatch().getValue());
-        Log.e(TAG, "onCreateView: + "+ sharedViewModel.getMainMatch().getValue().toString());
         textMatch.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -105,6 +99,18 @@ public class FinePlayersFragment extends CustomUserFragment implements View.OnCl
                 finePlayersViewModel.setPickedMatch(finePlayersViewModel.getMatches().getValue().get(i));
             }
         });
+        showMultiButtons(false);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        fadeAnimation = new FadeAnimation(match_toolbar);
+        fadeAnimation.fadeInAnimation(100);
+        super.onViewCreated(view, savedInstanceState);
+        finePlayersViewModel = new ViewModelProvider(requireActivity()).get(FinePlayersViewModel.class);
+        finePlayersViewModel.init();
+        finePlayersViewModel.setPickedMatch(sharedViewModel.getMainMatch().getValue());
         finePlayersViewModel.getAlert().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
@@ -148,15 +154,6 @@ public class FinePlayersFragment extends CustomUserFragment implements View.OnCl
                 setupMatchDropDownMenu(finePlayersViewModel.getMatches().getValue());
             }
         });
-        showMultiButtons(false);
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        fadeAnimation = new FadeAnimation(match_toolbar);
-        fadeAnimation.fadeInAnimation(100);
-        super.onViewCreated(view, savedInstanceState);
     }
 
     /**

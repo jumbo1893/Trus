@@ -1,13 +1,11 @@
 package com.jumbo.trus.season;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.ProgressBar;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatButton;
@@ -18,7 +16,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.textfield.TextInputLayout;
 import com.jumbo.trus.CustomAddFragment;
 import com.jumbo.trus.R;
-import com.jumbo.trus.player.PlayerViewModel;
 import com.jumbo.trus.validator.DateTextWatcher;
 import com.jumbo.trus.validator.MultiDateFieldValidator;
 import com.jumbo.trus.validator.NameTextWatcher;
@@ -36,15 +33,11 @@ public class SeasonHelperFragment extends CustomAddFragment {
     private ProgressBar progress_bar;
     protected AppCompatButton btnCommit, btnDelete;
 
-    protected SeasonsViewModel seasonsViewModel;
-
     private TextFieldValidator nameValidator;
     private TextFieldValidator dateValidatorBeg;
     private TextFieldValidator dateValidatorEnd;
     private MultiDateFieldValidator multiDateFieldValidator;
 
-    protected Season season;
-    private List<Season> seasonList;
 
 
 
@@ -100,36 +93,7 @@ public class SeasonHelperFragment extends CustomAddFragment {
                 }
             }
         });
-        seasonsViewModel = new ViewModelProvider(requireActivity()).get(SeasonsViewModel.class);
-        seasonsViewModel.init();
         multiDateFieldValidator = new MultiDateFieldValidator(textCalendarBeginning, textCalendarEnding);
-        seasonsViewModel.getSeasons().observe(getViewLifecycleOwner(), new Observer<List<Season>>() {
-            @Override
-            public void onChanged(List<Season> seasons) {
-                seasonList = seasons;
-            }
-        });
-
-        seasonsViewModel.isUpdating().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean) {
-                    showProgressBar();
-                }
-                else {
-                    hideProgressBar();
-                }
-            }
-        });
-        seasonsViewModel.getAlert().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                //podmínka aby se upozornění nezobrazovalo vždy když se mění fragment
-                if (getViewLifecycleOwner().getLifecycle().getCurrentState()== Lifecycle.State.RESUMED) {
-                    Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         return view;
     }
 
@@ -149,7 +113,7 @@ public class SeasonHelperFragment extends CustomAddFragment {
 
 
 
-    private boolean checkFieldsValidation(String name, String dateBeginning, String dateEnding) {
+    protected boolean checkFieldsValidation(String name, String dateBeginning, String dateEnding, List<Season> seasonList, Season currentEditSeason) {
         boolean nameCheck = nameValidator.checkNameField(name);
         boolean dateCheckBeg = dateValidatorBeg.checkDateField(dateBeginning);
         boolean dateCheckEnd = dateValidatorEnd.checkDateField(dateEnding);
@@ -161,22 +125,7 @@ public class SeasonHelperFragment extends CustomAddFragment {
             return false;
         }
 
-        boolean dateOver = multiDateFieldValidator.checkSeasonOverlap(dateBeginning, dateEnding, seasonList, season);
+        boolean dateOver = multiDateFieldValidator.checkSeasonOverlap(dateBeginning, dateEnding, seasonList, currentEditSeason);
         return nameCheck && dateOver;
-    }
-
-    protected void onCommitValidationTrue(final String name, final String dateBegin, final String dateEnd) {
-
-    }
-
-
-    @Override
-    protected void commitClicked() {
-        String name = textName.getEditText().getText().toString();
-        String dateBeg = textCalendarBeginning.getEditText().getText().toString();
-        String dateEnd = textCalendarEnding.getEditText().getText().toString();
-        if (checkFieldsValidation(name, dateBeg, dateEnd)) {
-            onCommitValidationTrue(name, dateBeg, dateEnd);
-        }
     }
 }

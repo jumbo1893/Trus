@@ -23,63 +23,38 @@ import com.jumbo.trus.match.Match;
 import com.jumbo.trus.match.MatchAllViewModel;
 import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.player.Player;
-import com.jumbo.trus.player.PlayerViewModel;
+import com.jumbo.trus.player.PlayerViewModelTODELETE;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RepaymentFragment extends CustomUserFragment implements IRepaymentFragment {
+public class RepaymentFragment extends CustomUserFragment {
 
     private static final String TAG = "RepaymentFragment";
 
-    private FloatingActionButton fab_plus;
-    private RecyclerView rc_hraci;
+    private RecyclerView rc_players;
     private PlayerRepaymentRecycleViewAdapter adapter;
     private ProgressBar progress_bar;
-    private PlayerViewModel playerViewModel;
-    private MatchAllViewModel matchAllViewModel;
-    private List<Player> selectedPlayers;
+    private RepaymentViewModel repaymentViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_player, container, false);
-        fab_plus = view.findViewById(R.id.fab_plus);
-        fab_plus.setVisibility(View.GONE);
-        rc_hraci = view.findViewById(R.id.rc_hraci);
-        rc_hraci.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
+        View view = inflater.inflate(R.layout.fragment_repayment, container, false);
+        rc_players = view.findViewById(R.id.rc_players);
+        rc_players.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         progress_bar = view.findViewById(R.id.progress_bar);
-        //initMainActivityViewModel();
-        playerViewModel = new ViewModelProvider(requireActivity()).get(PlayerViewModel.class);
-        playerViewModel.init();
-        matchAllViewModel = new ViewModelProvider(requireActivity()).get(MatchAllViewModel.class);
-        matchAllViewModel.init();
-        playerViewModel.getPlayers().observe(getViewLifecycleOwner(), new Observer<List<Player>>() {
+        repaymentViewModel = new ViewModelProvider(requireActivity()).get(RepaymentViewModel.class);
+        repaymentViewModel.init();
+        repaymentViewModel.getPlayers().observe(getViewLifecycleOwner(), new Observer<List<Player>>() {
             @Override
-            public void onChanged(List<Player> hraci) {
-                Log.d(TAG, "onChanged: nacetli se hraci " + hraci);
-                filterPlayers(hraci);
-                initHracRecycleView();
-                if (matchAllViewModel.getMatches().getValue() != null) {
-                    enhancePlayers(matchAllViewModel.getMatches().getValue());
-                }
+            public void onChanged(List<Player> players) {
+                Log.d(TAG, "onChanged: nacetli se hraci " + players);
+                initRecycleView(players);
                 setAdapter();
-                adapter.notifyDataSetChanged(); //TODO notifyItemInserted
             }
         });
-        matchAllViewModel.getMatches().observe(getViewLifecycleOwner(), new Observer<List<Match>>() {
-            @Override
-            public void onChanged(List<Match> matches) {
-                Log.d(TAG, "onChanged: nacetly se zapasy " + matches);
-                if (selectedPlayers != null) {
-                    enhancePlayers(matches);
-                }
-                initHracRecycleView();
-                setAdapter();
-                adapter.notifyDataSetChanged(); //TODO notifyItemInserted
-            }
-        });
-        playerViewModel.isUpdating().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+        repaymentViewModel.isUpdating().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
@@ -90,7 +65,7 @@ public class RepaymentFragment extends CustomUserFragment implements IRepaymentF
                 }
             }
         });
-        playerViewModel.getAlert().observe(getViewLifecycleOwner(), new Observer<String>() {
+        repaymentViewModel.getAlert().observe(getViewLifecycleOwner(), new Observer<String>() {
                 @Override
                 public void onChanged(String s) {
                     //podmínka aby se upozornění nezobrazovalo vždy když se mění fragment
@@ -102,14 +77,14 @@ public class RepaymentFragment extends CustomUserFragment implements IRepaymentF
         return view;
     }
 
-    private void initHracRecycleView() {
-        Log.d(TAG, "initHracRecycleView: ");
-        adapter = new PlayerRepaymentRecycleViewAdapter(selectedPlayers, getActivity(), this);
+    private void initRecycleView(List<Player> players) {
+        Log.d(TAG, "initRecycleView: ");
+        adapter = new PlayerRepaymentRecycleViewAdapter(players, getActivity(), this);
     }
 
     private void setAdapter() {
-        rc_hraci.setAdapter(adapter);
-        rc_hraci.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rc_players.setAdapter(adapter);
+        rc_players.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     private void showProgressBar() {
@@ -120,47 +95,9 @@ public class RepaymentFragment extends CustomUserFragment implements IRepaymentF
         progress_bar.setVisibility(View.GONE);
     }
 
-    private void filterPlayers(List<Player> players) {
-        selectedPlayers = new ArrayList<>();
-        for (Player player : players) {
-            if (!player.isFan()) {
-                selectedPlayers.add(player);
-            }
-        }
-    }
-
-    private void enhancePlayers(List<Match> matches) {
-        Log.d(TAG, "enhancePlayers: ");
-        for (Player player : selectedPlayers) {
-            player.calculateAllFinesNumber(matches);
-        }
-    }
-
     @Override
     protected void itemClick(int position) {
-        Log.d(TAG, "onItemClick: kliknuto na pozici " + position + ", object: " + playerViewModel.getPlayers().getValue());
-        RepaymentDialog repaymentDialog = new RepaymentDialog(playerViewModel.getPlayers().getValue().get(position));
-        repaymentDialog.setTargetFragment(RepaymentFragment.this, 1);
-        repaymentDialog.show(getParentFragmentManager(), "dialogplus");
-    }
-
-    @Override
-    public boolean createNewRepayment(int amount, String note, Player player) {
-        if (playerViewModel.editPlayerRepaymentsInRepository(amount, note, player)) {
-            String text = "Částka: " + amount + " Kč " + (!note.isEmpty() ? ", poznámka: " + note : "");
-            createNotification(new Notification("Přidána platba u hráče " + player.getName(), text), playerViewModel);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean deleteRepayment(Repayment repayment, Player player) {
-        if (playerViewModel.removePlayerRepaymentsInRepository(repayment, player)) {
-            String text = "Částka: " + repayment.getAmount() + " Kč " + (!repayment.getNote().isEmpty() ? ", poznámka: " + repayment.getNote() : "");
-            createNotification(new Notification("Smazána platba u hráče " + player.getName(), text), playerViewModel);
-            return true;
-        }
-        return false;
+        sharedViewModel.setPickedPlayerForEdit(repaymentViewModel.getPlayers().getValue().get(position));
+        proceedToNextFragment(23);
     }
 }

@@ -66,6 +66,29 @@ public class TextFieldValidator implements ITextFieldValidator {
         return fieldResult.isTrue();
     }
 
+    public boolean checkAmount(String amount) {
+        Result amountResult = validator.checkFineAmount(amount);
+        if (!amountResult.isTrue()) {
+            textInputLayout.setError(amountResult.getText());
+        }
+        else {
+            textInputLayout.setError(null);
+        }
+        return amountResult.isTrue();
+    }
+
+    public boolean checkNoteField(String text) {
+        Result nameResult = validator.checkTextFieldFormat(text, 200);
+        if (!nameResult.isTrue()) {
+            textInputLayout.setError(nameResult.getText());
+        }
+        else {
+            textInputLayout.setError(null);
+        }
+        return nameResult.isTrue();
+    }
+
+
     @Override
     public boolean checkIfDateStartIsBeforeEnd(String dateBeg, String dateEnd) {
         return false;

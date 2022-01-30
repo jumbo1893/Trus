@@ -33,7 +33,6 @@ public class MatchEditFragment extends MatchHelperFragment implements IFragment 
 
     private static final String TAG = "MatchEditFragment";
 
-    private SharedViewModel sharedViewModel;
     private MatchEditViewModel matchEditViewModel;
 
     @Override
@@ -43,7 +42,6 @@ public class MatchEditFragment extends MatchHelperFragment implements IFragment 
         btnCommit.setText("Upravit");
         btnDelete.setVisibility(View.VISIBLE);
         Log.d(TAG, "onViewCreated: ");
-        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         matchEditViewModel = new ViewModelProvider(requireActivity()).get(MatchEditViewModel.class);
         matchEditViewModel.init();
         matchEditViewModel.setPickedMatch(sharedViewModel.getPickedMatchForEdit().getValue());
@@ -87,12 +85,6 @@ public class MatchEditFragment extends MatchHelperFragment implements IFragment 
                 setPlayersToTextView(players);
             }
         });
-        matchEditViewModel.getMatch().observe(getViewLifecycleOwner(), new Observer<Match>() {
-            @Override
-            public void onChanged(Match match) {
-                setTextsToEditMatch(match);
-            }
-        });
 
         matchEditViewModel.getMatch().observe(getViewLifecycleOwner(), new Observer<Match>() {
             @Override
@@ -108,7 +100,14 @@ public class MatchEditFragment extends MatchHelperFragment implements IFragment 
                 setupSeasonDropDownMenu(matchEditViewModel.getSeasons().getValue());
             }
         });
-
+        matchEditViewModel.getNewMainMatch().observe(getViewLifecycleOwner(), new Observer<Match>() {
+            @Override
+            public void onChanged(Match match) {
+                if (getViewLifecycleOwner().getLifecycle().getCurrentState()== Lifecycle.State.RESUMED) {
+                    sharedViewModel.setMainMatch(match);
+                }
+            }
+        });
         textPlayers.setEndIconOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
