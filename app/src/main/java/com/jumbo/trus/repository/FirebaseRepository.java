@@ -57,6 +57,12 @@ public class FirebaseRepository {
         db = FirebaseFirestore.getInstance();
     }
 
+    public FirebaseRepository(ChangeListener changeListener, ItemLoadedListener itemLoadedListener) {
+        this.changeListener = changeListener;
+        this.itemLoadedListener = itemLoadedListener;
+        db = FirebaseFirestore.getInstance();
+    }
+
     public FirebaseRepository(String keyword, ChangeListener changeListener) {
         db = FirebaseFirestore.getInstance();
         collectionReference = db.collection(keyword);

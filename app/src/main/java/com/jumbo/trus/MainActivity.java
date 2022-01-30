@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,18 +70,17 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
     private NotificationViewModel notificationViewModel;
     private TextView tv_notifications;
     private ImageView img_nav_notification, img_nav_plus;
+
     private List<Integer> previousFragments = new ArrayList<>();
     private List<String> pageTitles;
 
     private SharedPreferences pref;
-    private Match pickedMatch;
 
     private NotificationBadgeCounter notificationBadgeCounter;
 
     private BottomNavPagerAdapter adapter;
 
     //pro piva
-    private MatchAllViewModel matchAllViewModel;
     private SharedViewModel sharedViewModel;
 
 
@@ -101,6 +101,14 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
         pref = getSharedPreferences("Notification", MODE_PRIVATE);
         sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
         sharedViewModel.setUser((User) getIntent().getSerializableExtra("user"));
+        sharedViewModel.getMainMatch().observe(this, new Observer<Match>() {
+            @Override
+            public void onChanged(Match match) {
+                if (match != null) {
+                    allowNavigationBar(true);
+                }
+            }
+        });
         notificationBadgeCounter = new NotificationBadgeCounter(pref, sharedViewModel.getUser().getValue());
         setContentView(R.layout.activity_main);
         viewPager = findViewById(R.id.viewpager);
@@ -108,6 +116,15 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
         setupPageTitles();
         navigation = findViewById(R.id.navigation);
         beerButton = findViewById(R.id.beerButton);
+        allowNavigationBar(false);
+        sharedViewModel.getMainMatch().observe(this, new Observer<Match>() {
+            @Override
+            public void onChanged(Match match) {
+                if (match != null) {
+                    allowNavigationBar(true);
+                }
+            }
+        });
         beerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -131,17 +148,6 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
                 setNotificationsBadgeNumber(notificationBadgeCounter.returnNumberOfLastNotification(notifications));
             }
 
-        });
-        matchAllViewModel = new ViewModelProvider(this).get(MatchAllViewModel.class);
-        matchAllViewModel.init();
-        matchAllViewModel.getMatches().observe(this, new Observer<List<Match>>() {
-            @Override
-            public void onChanged(List<Match> matches) {
-                Log.d(TAG, "onChanged: nacetli se hraci " + matches);
-                if (sharedViewModel.getMainMatch().getValue() == null) {
-                    sharedViewModel.findLastMatch(matches);
-                }
-            }
         });
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -173,6 +179,24 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
             }
         });
         showToolbarBackButton(false);
+    }
+
+    private void allowNavigationBar(boolean allow) {
+        if (!allow) {
+            navigation.setVisibility(View.GONE);
+            beerButton.setVisibility(View.GONE);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().hide();
+            }
+
+        }
+        else {
+            navigation.setVisibility(View.VISIBLE);
+            beerButton.setVisibility(View.VISIBLE);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().show();
+            }
+        }
     }
 
     @Override

@@ -1436,9 +1436,9 @@ class RandomFact {
         } else if (returnMatches.size() == 1) {
             return "Můžete sami posoudit, jaká ostuda se stala v zápase se soupeřem " + returnMatches.get(0).getOpponent() +
                     " hraném v sezoně " + returnMatches.get(0).getSeason().getName() + " konkrétně " + returnMatches.get(0).returnDateOfMatchInStringFormat() +
-                    ". Kdy se historicky vypil nejmenší průměr panáků. Vypilo se " + returnMatches.get(0).returnNumberOfLiquorsInMatch() + " kořalek v " + returnMatches.get(0).returnNumberOfPlayersAndFansInMatch() +
+                    ", kdy se historicky vypil nejmenší průměr panáků. Vypilo se " + returnMatches.get(0).returnNumberOfLiquorsInMatch() + " kořalek v " + returnMatches.get(0).returnNumberOfPlayersAndFansInMatch() +
                     " lidech, což dělá průměr " + average + " na hráče. Možná to může zachránit počet piv v zápase, který byl " +  returnMatches.get(0).returnNumberOfBeersInMatch() +
-                    " Vzpomeňte si na to, až si budete objednávat další rundu, ideálně slavný Liščí Trus!";
+                    ". Vzpomeňte si na to, až si budete objednávat další rundu, ideálně slavný Liščí Trus!";
 
         } else {
             String result = "Bohužel je znát, že Trus je tým zaměřený spíše na piva. Jinak by ani nebylo možné, aby existovalo více zápasů s nejnižším průměrem vypitých panáků. " +
