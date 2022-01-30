@@ -113,28 +113,33 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/tvRandomFact"
+                <ScrollView
+                    android:id="@+id/scrollView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:inputType="none"
-                    android:text="načítám..."
-                    android:textSize="13sp"
                     app:layout_constrainedWidth="true"
                     app:layout_constraintEnd_toStartOf="@id/btnRandomFact"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent">
 
+                <TextView
+                    android:id="@+id/tvRandomFact"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:inputType="none"
+                    android:text="načítám..."
+                    android:textSize="13sp" />
+                </ScrollView>
                 <ImageView
                     android:id="@+id/btnRandomFact"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_refresh_black_24dp"
                     android:tint="@color/oranzova"
-                    app:layout_constraintBottom_toBottomOf="@id/tvRandomFact"
+                    app:layout_constraintBottom_toBottomOf="@id/scrollView"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/tvRandomFact" />
+                    app:layout_constraintTop_toTopOf="@+id/scrollView" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </LinearLayout>

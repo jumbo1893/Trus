@@ -50,7 +50,7 @@ public class HomeFragment extends CustomUserFragment implements View.OnClickList
         btnRandomFact.setOnClickListener(this);
         tvRandomFact.setOnClickListener(this);
         showProgressBar();
-
+        btnRandomFact.setVisibility(View.GONE);
         initSwipeListener(tvRandomFact);
         return view;
     }
@@ -64,6 +64,7 @@ public class HomeFragment extends CustomUserFragment implements View.OnClickList
             @Override
             public void onChanged(String s) {
                 tvRandomFact.setText(s);
+                btnRandomFact.setVisibility(View.VISIBLE);
             }
         });
         homeViewModel.getPlayerBirthday().observe(getViewLifecycleOwner(), new Observer<String>() {
