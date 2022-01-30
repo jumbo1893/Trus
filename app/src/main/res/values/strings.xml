@@ -85,4 +85,5 @@
     <string name="nav_settings_info">Informace o appce</string>
     <string name="nav_statistics">Statistiky piv/pokut</string>
     <string name="nav_statistics_export">Export statistik</string>
+    <string name="logout">Odhlásit</string>
 </resources>

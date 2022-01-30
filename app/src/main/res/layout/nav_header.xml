@@ -15,17 +15,19 @@
         android:paddingHorizontal="20dp">
 
         <TextView
+            android:id="@+id/tvUserName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Jméno uživatele"
             android:textAppearance="@style/BlackTextLabel" />
 
         <Button
+            android:id="@+id/btnLogout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="end"
-            android:text="Odhlásit"
+            android:text="@string/logout"
             style="@style/OrangeButton"/>
     </LinearLayout>
 

@@ -3,6 +3,7 @@ package com.jumbo.trus;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -15,12 +16,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -31,6 +35,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.jumbo.trus.adapters.recycleview.SimpleRecycleViewAdapter;
 import com.jumbo.trus.adapters.recycleview.SimpleStringRecycleViewAdapter;
 import com.jumbo.trus.listener.OnListListener;
+import com.jumbo.trus.user.LoginActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +49,10 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment im
     private ImageView img_menu;
     private View view;
     private NavigationView nav_view;
+    private Button btnLogout;
+    private TextView tvUserName;
+    private SharedViewModel sharedViewModel;
+
 
     private INavigationDrawerCallback iNavigationDrawerCallback;
 
@@ -56,6 +65,7 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment im
         setSheetBehaviorCallback();
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -64,6 +74,9 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment im
         img_menu = view.findViewById(R.id.img_menu);
         nav_view = view.findViewById(R.id.nav_view);
         nav_view.setNavigationItemSelectedListener(this);
+        View header = nav_view.getHeaderView(0);
+        btnLogout = header.findViewById(R.id.btnLogout);
+        tvUserName = header.findViewById(R.id.tvUserName);
         img_menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,8 +88,22 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment im
                 }
             }
         });
+        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        tvUserName.setText("píč " + sharedViewModel.getUser().getValue().getName());
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                logoutToLoginActivity();
+            }
+        });
 
         return view;
+    }
+
+    private void logoutToLoginActivity() {
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        intent.putExtra("logout", true);
+        startActivity(intent);
     }
 
     private void setSheetBehaviorCallback() {
