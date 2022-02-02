@@ -11,9 +11,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,7 +34,6 @@ import com.jumbo.trus.match.Match;
 import com.jumbo.trus.match.edit.MatchEditFragment;
 import com.jumbo.trus.match.list.MatchFragment;
 import com.jumbo.trus.match.add.MatchPlusFragment;
-import com.jumbo.trus.match.MatchAllViewModel;
 import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.notification.NotificationFragment;
 import com.jumbo.trus.notification.NotificationViewModel;
@@ -44,16 +41,19 @@ import com.jumbo.trus.pkfl.LoadedMatchesFragment;
 import com.jumbo.trus.player.edit.PlayerEditFragment;
 import com.jumbo.trus.player.list.PlayerFragment;
 import com.jumbo.trus.player.add.PlayerPlusFragment;
-import com.jumbo.trus.playerlist.beer.BeerFragment;
+import com.jumbo.trus.beer.BeerFragment;
 
 import com.jumbo.trus.repayment.RepaymentFragment;
 import com.jumbo.trus.repayment.RepaymentPlusFragment;
 import com.jumbo.trus.season.edit.SeasonEditFragment;
 import com.jumbo.trus.season.add.SeasonPlusFragment;
 import com.jumbo.trus.season.list.SeasonsFragment;
-import com.jumbo.trus.statistics.BeerStatisticsFragment;
-import com.jumbo.trus.statistics.FineStatisticsFragment;
 
+import com.jumbo.trus.statistics.MainStatisticsFragment;
+import com.jumbo.trus.statistics.match.beer.detail.BeerMatchStatisticsDetailFragment;
+import com.jumbo.trus.statistics.match.fine.detail.FineMatchStatisticsDetailFragment;
+import com.jumbo.trus.statistics.player.beer.detail.BeerPlayerStatisticsDetailFragment;
+import com.jumbo.trus.statistics.player.fine.detail.FinePlayerStatisticsDetailFragment;
 import com.jumbo.trus.user.User;
 import com.jumbo.trus.user.UserInteractionFragment;
 
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
     private ImageView img_nav_notification, img_nav_plus;
 
     private List<Integer> previousFragments = new ArrayList<>();
-    private List<String> pageTitles;
+    //private List<String> pageTitles;
 
     private SharedPreferences pref;
 
@@ -113,7 +113,6 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
         setContentView(R.layout.activity_main);
         viewPager = findViewById(R.id.viewpager);
         setupViewPager(viewPager);
-        setupPageTitles();
         navigation = findViewById(R.id.navigation);
         beerButton = findViewById(R.id.beerButton);
         allowNavigationBar(false);
@@ -128,14 +127,7 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
         beerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (sharedViewModel.getMainMatch().getValue() != null) {
-                    /*adapter.getItem(15).setArguments(prepareMatchBundle());
-                    viewPager.setAdapter(adapter);*/
-                    setBottomNavigationButtonsCheckable(false);
-                    startNewFragmentBranch(15);
-                } else {
-                    Toast.makeText(MainActivity.this, "Vydrž než se načtou zápasy", Toast.LENGTH_SHORT).show();
-                }
+                startNewFragmentBranch(15);
             }
         });
         navigation.setOnItemSelectedListener(onItemSelectedListener);
@@ -158,18 +150,8 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
 
             @Override
             public void onPageSelected(int position) {
-                switch (position) {
-                    case 0:
-                        navigation.setSelectedItemId(R.id.nav_home);
-                        break;
-                    case 1:
-                        //navigation.setSelectedItemId(R.id.nav_plus);
-                        break;
-                    case 2:
-                        //navigation.setSelectedItemId(R.id.nav_settings);
-                        break;
-                    case 3:
-                        break;
+                if (position == 0) {
+                    navigation.setSelectedItemId(R.id.nav_home);
                 }
             }
 
@@ -185,17 +167,11 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
         if (!allow) {
             navigation.setVisibility(View.GONE);
             beerButton.setVisibility(View.GONE);
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().hide();
-            }
 
         }
         else {
             navigation.setVisibility(View.VISIBLE);
             beerButton.setVisibility(View.VISIBLE);
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().show();
-            }
         }
     }
 
@@ -364,64 +340,39 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
 
     private void setupViewPager(ViewPager viewPager) {
         adapter = new BottomNavPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new HomeFragment()); //0
-        adapter.addFragment(new PlayerFragment()); //1
-        adapter.addFragment(new SeasonsFragment()); //2
-        adapter.addFragment(new NotificationFragment()); //3
-        adapter.addFragment(new MatchFragment()); //4
-        adapter.addFragment(new MatchFragment()); //5
-        adapter.addFragment(new FinePlayersFragment()); //6
-        adapter.addFragment(new FineFragment()); //7
-        adapter.addFragment(new BeerStatisticsFragment()); //8
-        adapter.addFragment(new FineStatisticsFragment()); //9
-        adapter.addFragment(new UserInteractionFragment()); //10
-        adapter.addFragment(new RepaymentFragment()); //11
-        adapter.addFragment(new LoadedMatchesFragment()); //12
-        adapter.addFragment(new MatchPlusFragment()); //13
-        adapter.addFragment(new MatchEditFragment()); //14
-        adapter.addFragment(new BeerFragment()); //15
-        adapter.addFragment(new FineAddFragment()); //16
-        adapter.addFragment(new PlayerPlusFragment()); //17
-        adapter.addFragment(new PlayerEditFragment()); //18
-        adapter.addFragment(new SeasonPlusFragment()); //19
-        adapter.addFragment(new SeasonEditFragment()); //20
-        adapter.addFragment(new FinePlusFragment()); //21
-        adapter.addFragment(new FineEditFragment()); //22
-        adapter.addFragment(new RepaymentPlusFragment()); //23
+        adapter.addFragment(new HomeFragment(), "Trusí appka"); //0
+        adapter.addFragment(new PlayerFragment(), "Seznam hráčů"); //1
+        adapter.addFragment(new SeasonsFragment(), "Seznam sezon"); //2
+        adapter.addFragment(new NotificationFragment(), "Notifikace"); //3
+        adapter.addFragment(new MatchFragment(), "Seznam zápasů"); //4
+        adapter.addFragment(new MatchFragment(), "Přidat pívo"); //5
+        adapter.addFragment(new FinePlayersFragment(), "Přidat pokutu"); //6
+        adapter.addFragment(new FineFragment(), "Nastavení pokut"); //7
+        adapter.addFragment(new MainStatisticsFragment(), "Statistika"); //8
+        adapter.addFragment(new MainStatisticsFragment(), "Statistika pokut"); //9
+        adapter.addFragment(new UserInteractionFragment(), "Nastavení"); //10
+        adapter.addFragment(new RepaymentFragment(), "Splacení pokut"); //11
+        adapter.addFragment(new LoadedMatchesFragment(), "Zápasy PKFL"); //12
+        adapter.addFragment(new MatchPlusFragment(), "Přidat zápas"); //13
+        adapter.addFragment(new MatchEditFragment(), "Upravit zápas"); //14
+        adapter.addFragment(new BeerFragment(), "Přidat piva"); //15
+        adapter.addFragment(new FineAddFragment(), "Přidat pokuty hráči"); //16
+        adapter.addFragment(new PlayerPlusFragment(), "Přidat hráče"); //17
+        adapter.addFragment(new PlayerEditFragment(), "Upravit hráče"); //18
+        adapter.addFragment(new SeasonPlusFragment(), "Přidat sezonu"); //19
+        adapter.addFragment(new SeasonEditFragment(), "Upravit sezonu"); //20
+        adapter.addFragment(new FinePlusFragment(), "Přidat pokutu"); //21
+        adapter.addFragment(new FineEditFragment(), "Upravit pokutu"); //22
+        adapter.addFragment(new RepaymentPlusFragment(), "Přidat platbu"); //23
+        adapter.addFragment(new BeerPlayerStatisticsDetailFragment(), "Stats piv hráče"); //24
+        adapter.addFragment(new FinePlayerStatisticsDetailFragment(), "Stats pokut hráče"); //25
+        adapter.addFragment(new BeerMatchStatisticsDetailFragment(), "Stats piv v zápase"); //26
+        adapter.addFragment(new FineMatchStatisticsDetailFragment(), "Stats pokut v zápase"); //27
         viewPager.setAdapter(adapter);
     }
 
-    private void setupPageTitles() {
-        pageTitles = new ArrayList<>();
-        pageTitles.add("Trusí appka"); //0
-        pageTitles.add("Seznam hráčů"); //1
-        pageTitles.add("Seznam sezon"); //2
-        pageTitles.add("Notifikace"); //3
-        pageTitles.add("Seznam zápasů"); //4
-        pageTitles.add("Přidat pívo"); //5
-        pageTitles.add("Přidat pokutu"); //6
-        pageTitles.add("Nastavení pokut"); //7
-        pageTitles.add("Statistika Piv"); //8
-        pageTitles.add("Statistika pokut"); //9
-        pageTitles.add("Nastavení"); //10
-        pageTitles.add("Splacení pokut"); //11
-        pageTitles.add("Zápasy PKFL"); //12
-        pageTitles.add("Přidat zápas"); //13
-        pageTitles.add("Upravit zápas"); //14
-        pageTitles.add("Přidat piva"); //15
-        pageTitles.add("Přidat pokuty hráči"); //16
-        pageTitles.add("Přidat hráče"); //17
-        pageTitles.add("Upravit hráče"); //18
-        pageTitles.add("Přidat sezonu"); //19
-        pageTitles.add("Upravit sezonu"); //20
-        pageTitles.add("Přidat pokutu"); //21
-        pageTitles.add("Upravit pokutu"); //22
-        pageTitles.add("Přidat platbu"); //23
-    }
-
     private void setNewPage(int fragmentId) {
-        Log.d(TAG, "setNewPage: " + pageTitles.get(fragmentId).getClass().getSimpleName());
-        setTitle(pageTitles.get(fragmentId));
+        setTitle(adapter.getPagetitle(fragmentId));
         viewPager.setCurrentItem(fragmentId);
     }
 

@@ -151,7 +151,7 @@ public class Match extends Model {
                 return;
             }
         }
-        season = seasonList.get(seasonList.size()-1);
+        season = new Season().otherSeason();
     }
 
     public void setPlayerList(List<Player> playerList) {
@@ -195,6 +195,19 @@ public class Match extends Model {
         }
         return liquorNumber;
     }
+
+    /**
+     * @return počet piv, která se vypila v zápase
+     */
+    public int returnNumberOfBeersAndLiquorsInMatch() {
+        int boozeNumber = 0;
+        for (Player player : returnPlayerListOnlyWithParticipants()) {
+            boozeNumber += player.getNumberOfBeers();
+            boozeNumber += player.getNumberOfLiquors();
+        }
+        return boozeNumber;
+    }
+
     /**
      * @return počet účastníků zápasu
      */
@@ -346,10 +359,7 @@ public class Match extends Model {
         if (!playerList.contains(player)) {
             return false;
         }
-        if (playerList.get(playerList.indexOf(player)).returnNumberOfAllReceviedFines() > 0) {
-            return true;
-        }
-        return false;
+        return playerList.get(playerList.indexOf(player)).returnNumberOfAllReceviedFines() > 0;
     }
 
     /**
@@ -360,6 +370,24 @@ public class Match extends Model {
         for (Player playerInMatch : playerList) {
             if (playerInMatch.equals(player)) {
                 return playerInMatch.getNumberOfBeers()+playerInMatch.getNumberOfLiquors();
+            }
+        }
+        return 0;
+    }
+
+    public int returnNumberOfBeersForPlayer(Player player) {
+        for (Player playerInMatch : playerList) {
+            if (playerInMatch.equals(player)) {
+                return playerInMatch.getNumberOfBeers();
+            }
+        }
+        return 0;
+    }
+
+    public int returnNumberOfLiquorsForPlayer(Player player) {
+        for (Player playerInMatch : playerList) {
+            if (playerInMatch.equals(player)) {
+                return playerInMatch.getNumberOfLiquors();
             }
         }
         return 0;

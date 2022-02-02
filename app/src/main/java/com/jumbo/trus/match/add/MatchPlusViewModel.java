@@ -141,7 +141,12 @@ public class MatchPlusViewModel extends MatchViewModelHelper implements ItemLoad
                 }
             }
         }
-        pkflMatch.setValue(returnMatch);
+        if (returnMatch != null) {
+            pkflMatch.setValue(returnMatch);
+        }
+        else {
+            Log.e(TAG, "setLastMatch: nelze najít předchozí pkfl zápas!" );
+        }
     }
 
     @Override

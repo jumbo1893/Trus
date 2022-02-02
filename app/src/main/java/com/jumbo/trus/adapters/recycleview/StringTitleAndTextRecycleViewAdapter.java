@@ -13,23 +13,29 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jumbo.trus.Model;
-import com.jumbo.trus.listener.OnListListener;
 import com.jumbo.trus.R;
+import com.jumbo.trus.fine.Fine;
+import com.jumbo.trus.fine.ReceivedFine;
+import com.jumbo.trus.listener.OnListListener;
 import com.jumbo.trus.match.Match;
+import com.jumbo.trus.pkfl.PkflMatch;
 import com.jumbo.trus.player.Player;
+import com.jumbo.trus.repayment.Repayment;
+import com.jumbo.trus.statistics.player.ListTexts;
+import com.jumbo.trus.user.User;
 
 import java.util.List;
 
-public class FineStatisticsRecycleViewAdapter extends RecyclerView.Adapter<FineStatisticsRecycleViewAdapter.ViewHolder> {
+public class StringTitleAndTextRecycleViewAdapter extends RecyclerView.Adapter<StringTitleAndTextRecycleViewAdapter.ViewHolder> {
 
-    private static final String TAG = "FineStatisticsRecycleViewAdapter";
+    private static final String TAG = "StringTitleAndTextRecycleViewAdapter";
 
-    private List<? extends Model> models;
+    private List<ListTexts> listTexts;
     private Context context;
     private OnListListener onListListener;
 
-    public FineStatisticsRecycleViewAdapter(List<? extends Model> models, Context context, OnListListener onListListener) {
-        this.models = models;
+    public StringTitleAndTextRecycleViewAdapter(List<ListTexts> listTexts, Context context, OnListListener onListListener) {
+        this.listTexts = listTexts;
         this.context = context;
         this.onListListener = onListListener;
     }
@@ -45,25 +51,13 @@ public class FineStatisticsRecycleViewAdapter extends RecyclerView.Adapter<FineS
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        Log.d(TAG, "onBindViewHolder: called");
-        if (models.get(position) instanceof Match) {
-            holder.tv_title.setText(((Match) models.get(position)).toStringNameWithOpponent());
-            holder.tv_text.setText("Datum zápasu: " + ((Match) models.get(position)).returnDateOfMatchInStringFormat() + "\n\nPočet pokut: " + ((Match) models.get(position)).returnNumberOfFinesInMatch() + " v celkové výši: "
-                    + ((Match) models.get(position)).returnAmountOfFinesInMatch() + " Kč");
-        }
-        else if (models.get(position) instanceof Player) {
-            holder.tv_title.setText((models.get(position)).getName());
-            holder.tv_text.setText("Počet pokut: " + ((Player) models.get(position)).getNumberOfFinesInMatches() + " v celkové částce "
-                    + ((Player) models.get(position)).getAmountOfFinesInMatches() + " Kč");
-        }
-        else {
-            holder.tv_title.setText(models.get(position).toString());
-        }
+        holder.tv_title.setText(listTexts.get(position).getTitle());
+        holder.tv_text.setText(listTexts.get(position).getText());
     }
 
     @Override
     public int getItemCount() {
-        return models.size();
+        return listTexts.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -83,7 +77,7 @@ public class FineStatisticsRecycleViewAdapter extends RecyclerView.Adapter<FineS
 
         @Override
         public void onClick(View v) {
-            onListListener.onItemClick(getAdapterPosition());
+            onListListener.onItemClick(getBindingAdapterPosition());
         }
     }
 

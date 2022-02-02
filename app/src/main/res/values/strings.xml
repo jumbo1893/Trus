@@ -24,6 +24,12 @@
     <string name="nav_settings">Nastavení</string>
     <string name="nav_notification">oznámení</string>
 
+    <!-- taby statistik -->
+    <string name="tab_beer_player">"Piva hráči"</string>
+    <string name="tab_beer_match">"Piva zápasy"</string>
+    <string name="tab_fine_player">Pokuty hráči</string>
+    <string name="tab_fine_match">Pokuty zápasy</string>
+
 
     <!-- HINTY -->
     <string name="hint_mandatory"><font color='#FF0000'>*</font></string>

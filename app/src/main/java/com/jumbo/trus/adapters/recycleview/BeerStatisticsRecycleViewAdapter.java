@@ -50,7 +50,7 @@ public class BeerStatisticsRecycleViewAdapter extends RecyclerView.Adapter<BeerS
             holder.tv_title.setText(((Match) models.get(position)).toStringNameWithOpponent());
             int beerNumber = ((Match) models.get(position)).returnNumberOfBeersInMatch();
             int liquorNumber = ((Match) models.get(position)).returnNumberOfLiquorsInMatch();
-            holder.tv_text.setText("Počet pivek v zápase: " + beerNumber + ", počet panáků: " + liquorNumber + ", dohromady: " + (beerNumber + liquorNumber));
+            holder.tv_text.setText("Datum zápasu: " + ((Match) models.get(position)).returnDateOfMatchInStringFormat() + "\n\nPočet pivek v zápase: " + beerNumber + ", počet panáků: " + liquorNumber + ", dohromady: " + (beerNumber + liquorNumber));
         }
         else if (models.get(position) instanceof Player) {
             int beerNumber = ((Player) models.get(position)).getNumberOfBeersInMatches();

@@ -1,4 +1,4 @@
-package com.jumbo.trus.playerlist.beer;
+package com.jumbo.trus.beer;
 
 
 import android.annotation.SuppressLint;
@@ -222,7 +222,7 @@ public class BeerFragment extends CustomUserFragment implements OnPlusButtonList
      */
     private void initVariablesFromMatch() {
         selectedPlayers = match.returnPlayerListOnlyWithParticipants();
-        Collections.sort(selectedPlayers, new OrderByBeerThenName());
+        Collections.sort(selectedPlayers, new OrderByBeerThenName(false));
         selectedPlayersSize = selectedPlayers.size();
         player = selectedPlayers.get(0);
         selectedPlayer = 0;

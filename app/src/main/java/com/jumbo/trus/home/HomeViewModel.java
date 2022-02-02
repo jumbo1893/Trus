@@ -220,7 +220,12 @@ public class HomeViewModel extends BaseViewModel implements ChangeListener, Item
                     }
                 }
             }
-            setPkflMatchText(returnMatch);
+            if (returnMatch != null) {
+                setPkflMatchText(returnMatch);
+            }
+            else {
+                pkflMatch.setValue("Nelze najít žádný další zápas Liščího Trusu!");
+            }
         }
     }
 

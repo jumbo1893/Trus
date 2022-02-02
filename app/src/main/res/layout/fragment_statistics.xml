@@ -4,85 +4,70 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Switch
-        android:id="@+id/sw_player_match"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="přepni pro zobrazení hráčů"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textSeason"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:endIconMode="dropdown_menu"
+            app:errorIconDrawable="@null"
+            app:endIconTint="@color/oranzova"
+            app:endIconDrawable="@drawable/ic_keyboard_arrow_down_black_24dp"
+            app:boxBackgroundColor="@color/bila">
 
-    <Spinner
-        android:id="@+id/sp_select_player_season"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sw_player_match" />
+            <AutoCompleteTextView
+                android:id="@+id/tvSeason"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="@color/cerna"
+                android:inputType="none"
+                android:textAlignment="textEnd"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/btn_overall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="celkové statistiky"
-        android:textSize="9sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btn_order_rc"
-        app:layout_constraintTop_toBottomOf="@+id/et_search" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textSearch"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/textSeason"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:hint="hledej"
+            app:errorIconDrawable="@null"
+            app:endIconMode="clear_text"
+            app:boxBackgroundColor="@color/bila">
 
-    <Button
-        android:id="@+id/btn_order_rc"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tvSearch"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/cerna"
+                android:textSize="15sp"
+                android:textAlignment="textEnd"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+    <ImageButton
+        android:id="@+id/btnOrder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="seřaď podle výkonu"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toStartOf="@+id/btn_overall"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btn_overall" />
+        app:layout_constraintBottom_toBottomOf="@+id/textSeason"
+        app:layout_constraintStart_toEndOf="@+id/textSeason"
+        app:layout_constraintEnd_toStartOf="@id/textSearch"
+        android:backgroundTint="@color/bila"
+        android:src="@drawable/baseline_swap_vert_24"/>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rc_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constrainedHeight="true"
-        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_overall" />
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/textSeason" />
 
-    <Button
-        android:id="@+id/btn_search"
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:text="hledej"
-        android:textSize="10sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/et_search" />
-
-    <Button
-        android:id="@+id/btn_table"
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:text="tabulka"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/et_search"
-        app:layout_constraintTop_toTopOf="@+id/et_search" />
-
-    <EditText
-        android:id="@+id/et_search"
-        android:layout_width="100dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="12dp"
-        android:ems="10"
-        android:hint="hledané slovo"
-        android:inputType="textPersonName"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toStartOf="@+id/btn_search"
-        app:layout_constraintTop_toBottomOf="@+id/sp_select_player_season" />
 
     <RelativeLayout
         android:layout_width="match_parent"

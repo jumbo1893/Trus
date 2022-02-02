@@ -379,6 +379,31 @@ public class Player extends Model {
     }
 
     /**
+     * použití pro jeden zápas, nutné použít na hráče co je v zápase
+     *
+     * @return Text pro každou pokutu včetně počtu, názvu a ceny
+     */
+    public List<String> returnListOfFineInStringList() {
+        List<String> returnText = new ArrayList<>();
+        for (ReceivedFine receivedFine : returnReceivedFineWithCount()) {
+            StringBuilder text = new StringBuilder(receivedFine.getCount() + " ");
+
+            if (receivedFine.getCount() == 1) {
+                text.append("pokuta ");
+            }
+            else if (receivedFine.getCount() < 5) {
+                text.append("pokuty ");
+            }
+            else {
+                text.append("pokut ");
+            }
+            text.append(receivedFine.getFine().getName()).append(" v celkové částce ").append(receivedFine.getFine().getAmount() * receivedFine.getCount() + " Kč");
+            returnText.add(text.toString());
+        }
+        return returnText;
+    }
+
+    /**
      * vrátí částku, kterou hráč zaplatil na této konkrétní pokutě v konkrétních zápasech
      *
      * @param matchList seznam zápasů, ze kterých se to počítá
