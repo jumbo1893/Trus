@@ -310,6 +310,7 @@ public class HomeViewModel extends BaseViewModel implements ChangeListener, Item
             case MATCH:
                 matches.setValue(list);
                 if (pickedMainMatch.getValue() == null) {
+                    Log.d(TAG, "itemListLoaded: ");
                     findLastMatch(list);
                 }
                 break;

@@ -237,6 +237,7 @@ public class FirebaseRepository {
                 for(QueryDocumentSnapshot documentSnapshot : value) {
                     Match match = documentSnapshot.toObject(Match.class);
                     match.setId(documentSnapshot.getId());
+                    Log.d(TAG, "itemChanged: " + ((Match)match).returnPlayerListOnlyWithParticipants().get(0).getNumberOfBeers() + match.getOpponent());
                     modelsDataSet.add(match);
 
                 }

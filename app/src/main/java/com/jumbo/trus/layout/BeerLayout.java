@@ -39,10 +39,12 @@ public class BeerLayout extends View {
     private int inte = 0;
     boolean animated;
     private OnLineFinishedListener onLineFinishedListener;
+    private OnChangedPlayerListener onChangedPlayerListener;
     private Drawable liquorImage;
     private boolean liquerDraw;
     private int layoutHeight;
     private int layoutWidth;
+    private boolean measured = false;
 
     public BeerLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -57,34 +59,63 @@ public class BeerLayout extends View {
 
     private void initBorders() {
         backroundPaint = new Paint();
-        backroundPaint.setColor( Color.BLACK );
-        backroundPaint.setStrokeWidth( 5.5f );
-        backroundPaint.setStyle( Paint.Style.STROKE );
+        backroundPaint.setColor(Color.BLACK);
+        backroundPaint.setStrokeWidth(5.5f);
+        backroundPaint.setStyle(Paint.Style.STROKE);
     }
 
     private void initPaintParameters() {
         paint.setColor(Color.BLUE);
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
-        Log.d(TAG, "initPaintParameters: " + layoutWidth/100);
-        paint.setStrokeWidth(layoutWidth/100);
+        Log.d(TAG, "initPaintParameters: " + layoutWidth / 100);
+        paint.setStrokeWidth(layoutWidth / 100);
         paint.setStrokeCap(Paint.Cap.ROUND);
     }
 
-    /** nutno tuto metodu zavolat před jakoukoliv další akcí.
+    /**
+     * nutno tuto metodu zavolat před jakoukoliv další akcí.
      * Metoda vezme seznam hráčů a počet jeho piv a body zapíše do instance třídy PlayerLines
+     *
      * @param playerList seznam hráčů, kteří budou mít uložená piva
      */
-    public void loadPlayers (List<Player> playerList) {
-        this.playerList = playerList;
+    public void loadPlayers(List<Player> playerList) {
+        this.playerList = new ArrayList<>(playerList);
+        Log.d(TAG, "loadPlayers: " + playerList.get(0).getNumberOfBeers());
+        playerIndex = 0;
+        liquerDraw = false;
+        initPlayer();
     }
 
-    public boolean reloadPlayers(List<Player> playerList) {
-        if (layoutHeight != 0 && layoutWidth != 0) { //podmínka aby se relodovali hráči až po změření
-            this.playerList = playerList;
+    private void initPlayer() {
+        if (measured) {
             initPlayerLines();
-            return true;
+            drawBeers();
         }
-        return false;
+    }
+
+    public List<Player> getPlayerList() {
+        Log.d(TAG, "getPlayerList: " + playerList.get(playerIndex).getNumberOfBeers());
+        return playerList;
+    }
+
+    public void setNextPlayer() {
+        if (!(playerIndex == playerList.size() - 1)) {
+            playerIndex++;
+        } else {
+            playerIndex = 0;
+        }
+        onChangedPlayerListener.playerChanged(playerList.get(playerIndex));
+        drawBeers();
+    }
+
+    public void setPreviousPlayer() {
+        if (playerIndex > 0) {
+            playerIndex--;
+        } else {
+            playerIndex = playerList.size() - 1;
+        }
+        onChangedPlayerListener.playerChanged(playerList.get(playerIndex));
+        drawBeers();
     }
 
     private void initPlayerLines() {
@@ -105,8 +136,12 @@ public class BeerLayout extends View {
         }
     }
 
-    public void attachListener(OnLineFinishedListener onLineFinishedListener) {
+    public void attachOnLineFinishedListener(OnLineFinishedListener onLineFinishedListener) {
         this.onLineFinishedListener = onLineFinishedListener;
+    }
+
+    public void attachOnChangedPlayerListener(OnChangedPlayerListener onChangedPlayerListener) {
+        this.onChangedPlayerListener = onChangedPlayerListener;
     }
 
 
@@ -115,155 +150,189 @@ public class BeerLayout extends View {
 
     }
 
-    /** vyhledá uloženého hráče z metody loadPlayers a zadá vykreslení jeho piv
-     * @param player hráč, kterého se vykreslení všech jeho piv týká
+    /**
+     * vyhledá uloženého hráče z metody loadPlayers a zadá vykreslení jeho piv
      */
-    public void drawBeers(Player player) {
+    private void drawBeers() {
         Log.d(TAG, "draw: ");
         onLineFinishedListener.drawFinished(false);
-        playerIndex = playerList.indexOf(player);
         invalidate();
     }
 
-    /** přidá lajnu piva (body) do instance třídy PlayerLines a vykreslí výsledek
-     * @param player hráč, kterého se přidání piva týká
-     */
-    public void addBeer(Player player) {
-        calculateBeerLinePosition(player.getNumberOfBeers()-1);
-        onLineFinishedListener.drawFinished(false);
-        playerIndex = playerList.indexOf(player);
-        divideLineIntoEqualParts();
-        animated = true;
-        liquerDraw = false;
-        invalidate();
-        onLineFinishedListener.drawFinished(false);
+    public boolean addLine() {
+        if (liquerDraw) {
+            return addLiquor();
+        }
+        else {
+            Log.d(TAG, "addLine: " + playerList.get(playerIndex).getNumberOfBeers());
+            return addBeer();
+        }
     }
 
-    /** odebere lajnu piva z instance třídy PlayerLines a vykreslí výsledek
-     * @param player hráč, kterého se odebrání piva týká
+    public void removeLine() {
+        if (liquerDraw) {
+            removeLiquor();
+        }
+        else {
+            removeBeer();
+        }
+        Log.d(TAG, "removeLine: " + playerList.get(playerIndex).getNumberOfBeers());
+    }
+
+    /**
+     * přidá lajnu piva (body) do instance třídy PlayerLines a vykreslí výsledek
      */
-    public void removeBeer(Player player) {
-        playerIndex = playerList.indexOf(player);
+    public boolean addBeer() {
+        if (playerList.get(playerIndex).getNumberOfBeers() < BeerLayout.BEER_LIMIT) {
+            playerList.get(playerIndex).addBeer();
+            calculateBeerLinePosition(playerList.get(playerIndex).getNumberOfBeers() - 1);
+            onLineFinishedListener.drawFinished(false);
+            divideLineIntoEqualParts();
+            animated = true;
+            liquerDraw = false;
+            invalidate();
+            onLineFinishedListener.drawFinished(false);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * odebere lajnu piva z instance třídy PlayerLines a vykreslí výsledek
+     */
+    public void removeBeer() {
         playerLinesList.get(playerIndex).removeLastBeerPosition();
-        drawBeers(player);
+        playerList.get(playerIndex).removeBeer();
+        drawBeers();
     }
 
-    /** přidá lajnu tvrdýho (body) do instance třídy PlayerLines a vykreslí výsledek
-     * @param player hráč, kterého se přidání piva týká
+    /**
+     * přidá lajnu tvrdýho (body) do instance třídy PlayerLines a vykreslí výsledek
      */
-    public void addLiquor(Player player) {
-        calculateLiquorLinePosition(player.getNumberOfLiquors()-1);
-        onLineFinishedListener.drawFinished(false);
-        playerIndex = playerList.indexOf(player);
-        divideLineIntoEqualParts();
-        animated = true;
-        liquerDraw = true;
-        invalidate();
-        onLineFinishedListener.drawFinished(false);
+    public boolean addLiquor() {
+        if (playerList.get(playerIndex).getNumberOfLiquors() < BeerLayout.LIQUOR_LIMIT) {
+            playerList.get(playerIndex).addLiquor();
+            calculateLiquorLinePosition(playerList.get(playerIndex).getNumberOfLiquors() - 1);
+            onLineFinishedListener.drawFinished(false);
+            divideLineIntoEqualParts();
+            animated = true;
+            liquerDraw = true;
+            invalidate();
+            onLineFinishedListener.drawFinished(false);
+            return true;
+        }
+        return false;
     }
 
-    /** odebere lajnu tvrdýho z instance třídy PlayerLines a vykreslí výsledek
-     * @param player hráč, kterého se odebrání piva týká
+    /**
+     * odebere lajnu tvrdýho z instance třídy PlayerLines a vykreslí výsledek
      */
-    public void removeLiquor(Player player) {
-        playerIndex = playerList.indexOf(player);
+    public void removeLiquor() {
         playerLinesList.get(playerIndex).removeLastLiquorPosition();
-        drawBeers(player);
+        playerList.get(playerIndex).removeLiquor();
+        drawBeers();
     }
 
-    /**přidá text, který značí čárkování kořalek ("tvrdej")
-     * @param player player hráč, kterého se přidání textu týká
+    public String changeBooze() {
+        String returnText;
+        if (liquerDraw) {
+            removeLiquorText();
+            returnText = "Zpátky k pivku";
+        }
+        else {
+            drawLiquorText();
+            returnText = "Přitvrdíme";
+        }
+        liquerDraw = !liquerDraw;
+        return returnText;
+    }
+
+    /**
+     * přidá text, který značí čárkování kořalek ("tvrdej")
+     *
      */
-    public void drawLiquorText(Player player) {
-        playerIndex = playerList.indexOf(player);
+    public void drawLiquorText() {
         playerLinesList.get(playerIndex).setLiquorImage(true);
         invalidate();
     }
 
-    /**odebere text, který značí čárkování kořalek ("tvrdej")
-     * @param player player hráč, kterého se odebrání textu týká
+    /**
+     * odebere text, který značí čárkování kořalek ("tvrdej")
+     *
      */
-    public void removeLiquorText(Player player) {
-        playerIndex = playerList.indexOf(player);
-        playerLinesList.get(playerIndex).setLiquorImage(false);
-        invalidate();
+    public void removeLiquorText() {
+        if (playerList.get(playerIndex).getNumberOfLiquors() == 0) {
+            playerLinesList.get(playerIndex).setLiquorImage(false);
+            invalidate();
+        }
     }
 
     /**
      * vypočítá pozice čáry dalšího přidaného piva
+     *
      * @param i kolikáté pivo hráče to je
      */
     private void calculateBeerLinePosition(int i) {
-        Log.d(TAG, "calculateBeerLinePosition: " + layoutHeight + " širka " +layoutWidth);
+        Log.d(TAG, "calculateBeerLinePosition: " + layoutHeight + " širka " + layoutWidth);
         if (i == 4 || i == 9 || i == 14) {
-            y1 = (layoutHeight/6) + random.nextInt(layoutHeight/8)-layoutHeight/16;
-            y2 = (layoutHeight/6) + random.nextInt(layoutHeight/8)-layoutHeight/16;
-        }
-        else if (i == 19 || i == 24 || i == 29) {
-            y1 = (layoutHeight/2) + random.nextInt(layoutHeight/8)-layoutHeight/16;
-            y2 = (layoutHeight/2)+20 + random.nextInt(layoutHeight/8)-layoutHeight/16;
-        }
-        else if (i < 15) {
-            y1 = random.nextInt(layoutHeight/12);
-            y2 = (layoutHeight/3) + random.nextInt(layoutHeight/12) - layoutHeight/24;
-        }
-        else {
-            y1 = (layoutHeight/3) + random.nextInt(layoutHeight/12);
-            y2 = (layoutHeight/3)*2 + random.nextInt(layoutHeight/12) - layoutHeight/24;
+            y1 = (layoutHeight / 6) + random.nextInt(layoutHeight / 8) - layoutHeight / 16;
+            y2 = (layoutHeight / 6) + random.nextInt(layoutHeight / 8) - layoutHeight / 16;
+        } else if (i == 19 || i == 24 || i == 29) {
+            y1 = (layoutHeight / 2) + random.nextInt(layoutHeight / 8) - layoutHeight / 16;
+            y2 = (layoutHeight / 2) + 20 + random.nextInt(layoutHeight / 8) - layoutHeight / 16;
+        } else if (i < 15) {
+            y1 = random.nextInt(layoutHeight / 12);
+            y2 = (layoutHeight / 3) + random.nextInt(layoutHeight / 12) - layoutHeight / 24;
+        } else {
+            y1 = (layoutHeight / 3) + random.nextInt(layoutHeight / 12);
+            y2 = (layoutHeight / 3) * 2 + random.nextInt(layoutHeight / 12) - layoutHeight / 24;
         }
         if (i == 4 || i == 19) {
-            x1 = random.nextInt(layoutWidth/15);
-            x2 = (layoutWidth/15)*5 + random.nextInt(layoutWidth/15)-layoutWidth/30;
-        }
-        else if (i == 9 || i == 24) {
-            x1 = (layoutWidth/15)*5 + random.nextInt(layoutWidth/15)-layoutWidth/30;
-            x2 = (layoutWidth/15)*10 + random.nextInt(layoutWidth/15)-layoutWidth/30;
-        }
-        else if (i == 14 || i == 29) {
-            x1 = (layoutWidth/15)*10 + random.nextInt(layoutWidth/15)-layoutWidth/30;
-            x2 = layoutWidth + random.nextInt(layoutWidth/20)-layoutWidth/20;
-        }
-        else {
+            x1 = random.nextInt(layoutWidth / 15);
+            x2 = (layoutWidth / 15) * 5 + random.nextInt(layoutWidth / 15) - layoutWidth / 30;
+        } else if (i == 9 || i == 24) {
+            x1 = (layoutWidth / 15) * 5 + random.nextInt(layoutWidth / 15) - layoutWidth / 30;
+            x2 = (layoutWidth / 15) * 10 + random.nextInt(layoutWidth / 15) - layoutWidth / 30;
+        } else if (i == 14 || i == 29) {
+            x1 = (layoutWidth / 15) * 10 + random.nextInt(layoutWidth / 15) - layoutWidth / 30;
+            x2 = layoutWidth + random.nextInt(layoutWidth / 20) - layoutWidth / 20;
+        } else {
             if (i >= 15) {
-                i=i-15;
+                i = i - 15;
             }
-            x1 = layoutWidth/15 + i * layoutWidth/15 + random.nextInt(layoutWidth/30);
-            x2 = layoutWidth/15 + i * layoutWidth/15 + random.nextInt(layoutWidth/30);
+            x1 = layoutWidth / 15 + i * layoutWidth / 15 + random.nextInt(layoutWidth / 30);
+            x2 = layoutWidth / 15 + i * layoutWidth / 15 + random.nextInt(layoutWidth / 30);
         }
     }
 
     /**
      * vypočítá pozice čáry dalšího přidaného tvrdýho
+     *
      * @param i kolikátej tvrdej hráče to je
      */
     private void calculateLiquorLinePosition(int i) throws NullPointerException {
         if (i == 4 || i == 9 || i == 14 || i == 19) {
-            y1 = (layoutHeight/6)*5 + random.nextInt(layoutHeight/8)-layoutHeight/16;
-            y2 = (layoutHeight/6)*5 + random.nextInt(layoutHeight/8)-layoutHeight/16;
-        }
-        else {
-            y1 = (layoutHeight/3)*2 + random.nextInt(layoutHeight/12);
-            y2 = layoutHeight + random.nextInt(layoutHeight/12) - layoutHeight/24;
+            y1 = (layoutHeight / 6) * 5 + random.nextInt(layoutHeight / 8) - layoutHeight / 16;
+            y2 = (layoutHeight / 6) * 5 + random.nextInt(layoutHeight / 8) - layoutHeight / 16;
+        } else {
+            y1 = (layoutHeight / 3) * 2 + random.nextInt(layoutHeight / 12);
+            y2 = layoutHeight + random.nextInt(layoutHeight / 12) - layoutHeight / 24;
         }
         if (i == 4) {
-            x1 = layoutWidth/3 + random.nextInt(layoutWidth/30);
-            x2 = (layoutWidth/6)*3 + random.nextInt(layoutWidth/30);
-        }
-        else if (i == 9) {
-            x1 = (layoutWidth/6)*3 +  random.nextInt(layoutWidth/30);
-            x2 = (layoutWidth/6)*4 + random.nextInt(layoutWidth/30);
-        }
-        else if (i == 14) {
-            x1 = (layoutWidth/6)*4 + random.nextInt(layoutWidth/30);
-            x2 = (layoutWidth/6)*5 + random.nextInt(layoutWidth/30);
-        }
-        else if (i == 19) {
-            x1 = (layoutWidth/6)*5 + random.nextInt(layoutWidth/30);
-            x2 = layoutWidth + random.nextInt(layoutWidth/20)-layoutWidth/40;
-        }
-        else {
-            x1 = (layoutWidth/3) + layoutWidth/20 + i * layoutWidth/30 + random.nextInt(layoutWidth/40);
-            x2 = (layoutWidth/3) + layoutWidth/20 + i * layoutWidth/30 + random.nextInt(layoutWidth/40);
+            x1 = layoutWidth / 3 + random.nextInt(layoutWidth / 30);
+            x2 = (layoutWidth / 6) * 3 + random.nextInt(layoutWidth / 30);
+        } else if (i == 9) {
+            x1 = (layoutWidth / 6) * 3 + random.nextInt(layoutWidth / 30);
+            x2 = (layoutWidth / 6) * 4 + random.nextInt(layoutWidth / 30);
+        } else if (i == 14) {
+            x1 = (layoutWidth / 6) * 4 + random.nextInt(layoutWidth / 30);
+            x2 = (layoutWidth / 6) * 5 + random.nextInt(layoutWidth / 30);
+        } else if (i == 19) {
+            x1 = (layoutWidth / 6) * 5 + random.nextInt(layoutWidth / 30);
+            x2 = layoutWidth + random.nextInt(layoutWidth / 20) - layoutWidth / 40;
+        } else {
+            x1 = (layoutWidth / 3) + layoutWidth / 20 + i * layoutWidth / 30 + random.nextInt(layoutWidth / 40);
+            x2 = (layoutWidth / 3) + layoutWidth / 20 + i * layoutWidth / 30 + random.nextInt(layoutWidth / 40);
         }
     }
 
@@ -276,10 +345,10 @@ public class BeerLayout extends View {
         listOfPoints.clear();
         int pixelsNumber = 20;
         for (int k = 1; k <= pixelsNumber; k++) {
-            listOfPoints.add(new PointF(x1 + ((k * (x2 - x1)) / pixelsNumber),y1 + (k * (y2 - y1)) / pixelsNumber));
+            listOfPoints.add(new PointF(x1 + ((k * (x2 - x1)) / pixelsNumber), y1 + (k * (y2 - y1)) / pixelsNumber));
         }
 
-        Log.d("listOfPoints : size : ",listOfPoints.size()+", x1: " + x1);
+        Log.d("listOfPoints : size : ", listOfPoints.size() + ", x1: " + x1);
     }
 
     @Override
@@ -295,35 +364,33 @@ public class BeerLayout extends View {
             canvas.drawLine(playerLines.getLiquor_x1().get(i), playerLines.getLiquor_y1().get(i), playerLines.getLiquor_x2().get(i), playerLines.getLiquor_y2().get(i), paint);
         }
 
-        if(inte < listOfPoints.size() && animated){
-            canvas.drawLine(listOfPoints.get(0).x, listOfPoints.get(0).y, listOfPoints.get(inte).x,listOfPoints.get(inte).y, paint);
+        if (inte < listOfPoints.size() && animated) {
+            canvas.drawLine(listOfPoints.get(0).x, listOfPoints.get(0).y, listOfPoints.get(inte).x, listOfPoints.get(inte).y, paint);
             inte++;
 
-            if(inte < listOfPoints.size()){
+            if (inte < listOfPoints.size()) {
                 invalidate();
-            }
-            else {
+            } else {
                 animated = false;
                 inte = 0;
                 if (liquerDraw) {
                     playerLinesList.get(playerIndex).addAllLiquorPositions(x1, x2, y1, y2);
-                }
-                else {
+                } else {
                     playerLinesList.get(playerIndex).addAllBeerPositions(x1, x2, y1, y2);
                 }
                 onLineFinishedListener.drawFinished(true);
             }
-        }
-        else {
+        } else {
             onLineFinishedListener.drawFinished(true);
         }
         //text tvrdýho
-         if (playerLines.isLiquorImage()) {
-             liquorImage.setBounds(5, (layoutHeight-5)-(layoutWidth/9)*2, layoutWidth/3, layoutHeight-5);
-             liquorImage.draw(canvas);
+        if (playerLines.isLiquorImage()) {
+            liquorImage.setBounds(5, (layoutHeight - 5) - (layoutWidth / 9) * 2, layoutWidth / 3, layoutHeight - 5);
+            liquorImage.draw(canvas);
             //onLineFinishedListener.drawFinished(true);
         }
     }
+
     //než budem kreslit čáry musíme zjistit výšku a šířku
     //až to zjistíme můžeme kreslit čárky
     @Override
@@ -332,9 +399,10 @@ public class BeerLayout extends View {
         layoutWidth = getMeasuredWidth();
         layoutHeight = getMeasuredHeight();
         Log.d(TAG, "onMeasure: w: " + getMeasuredWidth() + " h: " + getMeasuredHeight());
-        if (playerLinesList == null) {
-            initPaintParameters();
-            initPlayerLines();
+        initPaintParameters();
+        measured = true;
+        if (playerList != null) {
+            initPlayer();
         }
     }
 }

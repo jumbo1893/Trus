@@ -6,78 +6,143 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.jumbo.trus.BaseViewModel;
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.INotificationSender;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.Result;
+import com.jumbo.trus.comparator.OrderByBeerAndLiquorNumber;
+import com.jumbo.trus.comparator.OrderByBeerThenName;
 import com.jumbo.trus.listener.ChangeListener;
+import com.jumbo.trus.match.Compensation;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.player.Player;
 import com.jumbo.trus.repository.FirebaseRepository;
 import com.jumbo.trus.season.Season;
+import com.jumbo.trus.user.User;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class BeerViewModel extends ViewModel implements ChangeListener, INotificationSender {
+public class BeerViewModel extends BaseViewModel implements ChangeListener, INotificationSender {
 
     private static final String TAG = "BeerViewModel";
 
     private MutableLiveData<List<Match>> matches;
+    private MutableLiveData<List<Player>> players = new MutableLiveData<>();
+    private Match pickedMatch;
+    private List<Player> allPlayerList = new ArrayList<>();
     private MutableLiveData<Season> selectedSeason = new MutableLiveData<>();
-    private MutableLiveData<Boolean> isUpdating = new MutableLiveData<>();
-    private MutableLiveData<String> alert = new MutableLiveData<>();
+    private MutableLiveData<String> titleText = new MutableLiveData<>();
     private FirebaseRepository firebaseRepository;
+    private Compensation matchCompensation;
+    private boolean commit = false;
 
     public void init() {
+        commit = false;
         firebaseRepository = new FirebaseRepository(FirebaseRepository.MATCH_TABLE, this);
         if (matches == null) {
             matches = new MutableLiveData<>();
             firebaseRepository.loadMatchesFromRepository();
-            Log.d(TAG, "init: nacitam zapasy");
         }
+        firebaseRepository.loadMatchesFromRepository();
+        firebaseRepository.loadPlayersFromRepository();
     }
 
-    public Result editMatchBeers(final List<Player> playerList, Match match) {
+    public Match editMatchBeers(final List<Player> playerList, User user) {
         isUpdating.setValue(true);
-        Result result = new Result(false);
-        match.mergePlayerLists(playerList);
+        commit = true;
+        pickedMatch.mergePlayerLists(playerList);
         try {
-            firebaseRepository.editModel(match);
-        }
-        catch (Exception e) {
+            firebaseRepository.editModel(pickedMatch);
+        } catch (Exception e) {
             Log.e(TAG, "editMatchInRepository: toto by nemělo nastat, ošetřeno validací", e);
-            result.setText("Něco se posralo při přidávání do db, zkus to znova");
-            alert.setValue(result.getText());
-            isUpdating.setValue(true);
-            return result;
+            alert.setValue("Něco se posralo při přidávání do db, zkus to znova");
+            isUpdating.setValue(false);
+            return pickedMatch;
         }
 
-        result.setText("Měním pivka u zápasu se soupeřem " + match.getOpponent());
-        result.setTrue(true);
-        alert.setValue(result.getText());
-        return result;
+        Notification notification = new Notification(pickedMatch, playerList, matchCompensation.getBeerCompensation(), matchCompensation.getLiquorCompensation());
+        sendNotification(notification, user);
+        Log.d(TAG, "editMatchBeers: " + pickedMatch.getOpponent());
+        alert.setValue("Měním počty piv u zápasu se soupeřem " + pickedMatch.getOpponent());
+        return pickedMatch;
     }
 
-    private void setMatchAsAdded(final Match match, Flag flag) {
-        Log.d(TAG, "setMatchAsAdded: " + match.getName());
-        String action = "";
-        switch (flag) {
-            case MATCH_PLUS:
-                action = "přidán";
-                break;
-            case MATCH_EDIT:
-                action = "upraven";
-                break;
-            case MATCH_DELETE:
-                action = "smazán";
-                break;
+    private void sendNotification(Notification notification, User user) {
+        notification.setUser(user);
+        sendNotificationToRepository(notification);
+    }
+
+    public void setPickedMatch(Match match) {
+        pickedMatch = findMatchFromRepo(match);
+        setTitleText(pickedMatch);
+        updatePlayerList();
+        setPlayerList(pickedMatch);
+    }
+
+    private void setPlayerList(Match match) {
+        List<Player> selectedPlayers = match.returnPlayerListOnlyWithParticipants();
+        Collections.sort(selectedPlayers, new OrderByBeerThenName(true));
+        Log.d(TAG, "setPlayerList: " + selectedPlayers);
+        players.setValue(selectedPlayers);
+    }
+
+    private void updatePlayerList() {
+        Log.d(TAG, "updatePlayerList: " + allPlayerList.size());
+        Log.d(TAG, "updatePlayerList: " + pickedMatch.getPlayerList().size());
+        Log.d(TAG, "updatePlayerList: " + pickedMatch.returnPlayerListOnlyWithParticipants().get(0).getNumberOfBeers());
+        if (allPlayerList.size() > 0) {
+            pickedMatch.mergePlayerListsWithoutReplace(allPlayerList);
         }
-        alert.setValue("Zápas " + match.getName() + " úspěšně " + action);
-        isUpdating.setValue(false);
+        initCompensationVariables();
+    }
+
+    private void setTitleText(Match match) {
+        if (match != null) {
+            titleText.setValue(match.toStringNameWithOpponent());
+            return;
+        }
+        titleText.setValue("...načítám");
+    }
+
+    private Match findMatchFromRepo(Match match) {
+        Log.d(TAG, "findMatchFromRepo: " + match);
+        if (matches.getValue() != null) {
+            for (Match repoMatch : matches.getValue()) {
+                if (repoMatch.equals(match)) {
+                    Log.d(TAG, "findMatchFromRepo: " + repoMatch.returnPlayerListOnlyWithParticipants().get(0).getNumberOfBeers());
+                    return repoMatch;
+                }
+            }
+        }
+        return match;
+    }
+
+    private void updateMatchFromLoadedMatches(List<Match> matches) {
+        Log.d(TAG, "updateMatchFromLoadedMatches: init");
+        for (Match match : matches) {
+            if (match.equals(pickedMatch)) {
+                String comp = match.compareIfMatchWasChanged(matchCompensation.getBeerCompensation(), matchCompensation.getLiquorCompensation(), matchCompensation.getFinesCompesation(), pickedMatch);
+                if (comp != null) {
+                    Log.d(TAG, "updateMatchFromLoadedMatches: nastala změna");
+                    alert.setValue(comp);
+                    pickedMatch = match;
+                    initCompensationVariables();
+                    setPlayerList(pickedMatch);
+                    setTitleText(match);
+                }
+            }
+        }
+    }
+
+    private void initCompensationVariables() {
+        matchCompensation = new Compensation(pickedMatch);
+        matchCompensation.initBeerAndLiquorCompensation();
+        matchCompensation.initFineCompensation();
     }
 
     @Override
@@ -89,12 +154,12 @@ public class BeerViewModel extends ViewModel implements ChangeListener, INotific
         return matches;
     }
 
-    public LiveData<Boolean> isUpdating() {
-        return isUpdating;
+    public LiveData<List<Player>> getPlayers() {
+        return players;
     }
 
-    public LiveData<String> getAlert() {
-        return alert;
+    public LiveData<String> getTitleText() {
+        return titleText;
     }
 
     public void setSelectedSeason(Season season) {
@@ -105,6 +170,7 @@ public class BeerViewModel extends ViewModel implements ChangeListener, INotific
     private void useSeasonsFilter(List<Match> models) {
         Log.d(TAG, "useSeasonsFilter: načítám zápasy s filtren" + selectedSeason.getValue());
         if (selectedSeason.getValue() == null) {
+            Log.d(TAG, "useSeasonsFilter: nastavuji v3echnz zapasy");
             matches.setValue(models);
             return;
         }
@@ -119,29 +185,41 @@ public class BeerViewModel extends ViewModel implements ChangeListener, INotific
 
     @Override
     public void itemAdded(Model model) {
-        setMatchAsAdded((Match) model, Flag.MATCH_PLUS);
+
     }
 
     @Override
     public void itemChanged(Model model) {
-        setMatchAsAdded((Match) model, Flag.MATCH_EDIT);
+        isUpdating.setValue(false);
+        closeFragment.setValue(true);
     }
 
     @Override
     public void itemDeleted(Model model) {
-        setMatchAsAdded((Match) model, Flag.MATCH_DELETE);
+
     }
 
     @Override
     public void itemListLoaded(List models, Flag flag) {
-        Collections.sort(models, new Comparator<Match>() {
-            @Override
-            public int compare(Match o1, Match o2) {
-                return Long.compare(o2.getDateOfMatch(), o1.getDateOfMatch());
+        List list = new ArrayList(models);
+        if (flag.equals(Flag.MATCH)) {
+            Match match = (Match) list.get(0);
+            Log.d(TAG, "itemListLoaded: " + match.returnPlayerListOnlyWithParticipants().get(0).getNumberOfBeers());
+            Collections.sort(list, new Comparator<Match>() {
+                @Override
+                public int compare(Match o1, Match o2) {
+                    return Long.compare(o2.getDateOfMatch(), o1.getDateOfMatch());
+                }
+            });
+            useSeasonsFilter(list);
+            if (!commit) {
+                updateMatchFromLoadedMatches(list);
             }
-        });
-        Log.d(TAG, "itemListLoaded: zapasy: " + models);
-        useSeasonsFilter(models);
+        } else if (flag.equals(Flag.PLAYER)) {
+            allPlayerList = list;
+            updatePlayerList();
+            setPlayerList(pickedMatch);
+        }
     }
 
     @Override

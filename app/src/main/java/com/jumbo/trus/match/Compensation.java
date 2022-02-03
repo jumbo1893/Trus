@@ -61,7 +61,6 @@ public class Compensation {
         Log.d(TAG, "initFineCompensation: ukládám do proměnné současný seznam pokut pro zápas " + match + ", velikost hráčů je " + match.returnPlayerListWithoutFans());
         finesCompesation = new ArrayList<>();
         for (Player player : match.returnPlayerListWithoutFans()) {
-            Log.d(TAG, "initFineCompensation: " + player.getName() + player.returnNumberOfFines());
             finesCompesation.add(player.returnNumberOfFines());
         }
         Log.d(TAG, "initFineCompensation: " + finesCompesation);

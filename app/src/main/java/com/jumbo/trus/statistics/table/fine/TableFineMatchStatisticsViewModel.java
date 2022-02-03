@@ -32,6 +32,7 @@ public class TableFineMatchStatisticsViewModel extends MatchHelperStatisticsView
     private MutableLiveData<List<List<String>>> rowLists;
     private MutableLiveData<String> clipboardText = new MutableLiveData<>();
     private List<Player> allPlayers = new ArrayList<>();
+
     private FirebaseRepository firebaseRepository;
 
 

@@ -123,6 +123,7 @@ public class FineAddFragment extends CustomUserFragment implements OnPlusButtonL
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_commit: {
+                Log.d(TAG, "onClick: fine");
                 if (sharedViewModel.isMultiplayers()) {
                     sharedViewModel.setMainMatch(fineAddViewModel.editMatchPlayersFines(multiAdapter.getFinesNumber(), user));
                 }

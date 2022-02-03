@@ -52,7 +52,6 @@ public class FineAddViewModel extends ViewModel implements ChangeListener, INoti
             firebaseRepository.loadMatchesFromRepository();
             Log.d(TAG, "init: nacitam zapasy");
         }
-
         firebaseRepository.loadFinesFromRepository();
 
     }

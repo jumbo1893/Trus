@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.jumbo.trus.BaseViewModel;
 import com.jumbo.trus.Date;
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.INotificationSender;
@@ -27,7 +28,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class FinePlayersViewModel extends ViewModel implements ChangeListener {
+public class FinePlayersViewModel extends BaseViewModel implements ChangeListener {
 
     private static final String TAG = "FinePlayersViewModel";
 
@@ -35,8 +36,6 @@ public class FinePlayersViewModel extends ViewModel implements ChangeListener {
     private Match pickedMatch;
     private List<Player> allPlayerList = new ArrayList<>();
     private MutableLiveData<Season> selectedSeason = new MutableLiveData<>();
-    private MutableLiveData<Boolean> isUpdating = new MutableLiveData<>();
-    private MutableLiveData<String> alert = new MutableLiveData<>();
     private MutableLiveData<List<Player>> players = new MutableLiveData<>();
     private MutableLiveData<List<Boolean>> checkedPlayers = new MutableLiveData<>();
     private MutableLiveData<String> titleText = new MutableLiveData<>();
@@ -67,16 +66,6 @@ public class FinePlayersViewModel extends ViewModel implements ChangeListener {
         return checkedPlayers;
     }
 
-
-
-    public LiveData<Boolean> isUpdating() {
-        return isUpdating;
-    }
-
-    public LiveData<String> getAlert() {
-        return alert;
-    }
-
     public LiveData<String> getTitleText() {
         return titleText;
     }
@@ -91,7 +80,6 @@ public class FinePlayersViewModel extends ViewModel implements ChangeListener {
         setTitleText(pickedMatch);
         updatePlayerList();
         setPlayerList(pickedMatch);
-
     }
 
     private void updatePlayerList() {

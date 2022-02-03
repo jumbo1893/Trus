@@ -91,7 +91,9 @@ public class HomeFragment extends CustomUserFragment implements View.OnClickList
         homeViewModel.getLastMainMatch().observe(getViewLifecycleOwner(), new Observer<Match>() {
             @Override
             public void onChanged(Match match) {
-                sharedViewModel.setMainMatch(match);
+                if (sharedViewModel.getMainMatch().getValue() == null) {
+                    sharedViewModel.setMainMatch(match);
+                }
                 hideProgressBar();
             }
         });

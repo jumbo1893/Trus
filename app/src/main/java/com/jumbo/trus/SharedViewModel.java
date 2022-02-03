@@ -67,6 +67,7 @@ public class SharedViewModel extends ViewModel {
     }
 
     public LiveData<Match> getMainMatch() {
+        Log.d("shared", "getMainMatch: " + mainMatch.getValue());
         return mainMatch;
     }
 
@@ -91,6 +92,7 @@ public class SharedViewModel extends ViewModel {
     }
 
     public void setMainMatch(Match match) {
+        Log.d("shared", "setMainMatch: " + match);
         mainMatch.setValue(match);
     }
 
@@ -104,25 +106,5 @@ public class SharedViewModel extends ViewModel {
 
     public void setPickedSeasonForEdit(Season season) {
         pickedSeasonForEdit.setValue(season);
-    }
-
-    public void updateMainMatch(List<Match> matches) {
-        for (Match match : matches) {
-            if (match.equals(getMainMatch().getValue())) {
-                setMainMatch(match);
-            }
-        }
-    }
-
-    public void findLastMatch(List<Match> matches) {
-        if (matches != null && matches.size() > 0) {
-            Collections.sort(matches, new Comparator<Match>() {
-                @Override
-                public int compare(Match o1, Match o2) {
-                    return Long.compare(o2.getDateOfMatch(), o1.getDateOfMatch());
-                }
-            });
-            setMainMatch(matches.get(0));
-        }
     }
 }

@@ -46,10 +46,9 @@ public class MatchArrayAdapter extends ArrayAdapter<Match> {
         return listItem;
     }
 
-    /*@Override
+    @Override
     public int getCount() {
         Log.d(TAG, "MatchArrayAdapter: " + matchList);
-        Log.d(TAG, "MatchArrayAdapter: " + matchList.size());
         return matchList!=null ? matchList.size() : 0;
-    }*/
+    }
 }
