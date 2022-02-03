@@ -30,6 +30,10 @@
     <string name="tab_fine_player">Pokuty hráči</string>
     <string name="tab_fine_match">Pokuty zápasy</string>
 
+    <!-- taby statistik -->
+    <string name="tab_table_beer">"Piva"</string>
+    <string name="tab_table_fine_match">"Pokuty zápasy"</string>
+    <string name="tab_table_fine_detail">Pokuty detail</string>
 
     <!-- HINTY -->
     <string name="hint_mandatory"><font color='#FF0000'>*</font></string>
@@ -90,6 +94,6 @@
     <string name="nav_settings_season">Nastavení sezon</string>
     <string name="nav_settings_info">Informace o appce</string>
     <string name="nav_statistics">Statistiky piv/pokut</string>
-    <string name="nav_statistics_export">Export statistik</string>
+    <string name="nav_statistics_export">Tabulka/Export statistik</string>
     <string name="logout">Odhlásit</string>
 </resources>

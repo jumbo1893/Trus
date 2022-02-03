@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class BeerPlayerStatisticsViewModel extends PlayerHelperStatisticsViewModel implements ChangeListener, INotificationSender {
+public class BeerPlayerStatisticsViewModel extends PlayerHelperStatisticsViewModel implements ChangeListener {
 
     private static final String TAG = "BeerPlayerStatisticsViewModel";
 
@@ -48,12 +48,6 @@ public class BeerPlayerStatisticsViewModel extends PlayerHelperStatisticsViewMod
     public void changeOrderBy() {
         super.changeOrderBy();
         players.setValue(filterPlayers(allPlayers, true));
-    }
-
-
-    @Override
-    public void sendNotificationToRepository(Notification notification) {
-        firebaseRepository.addNotification(notification);
     }
 
     public LiveData<List<Player>> getPlayers() {

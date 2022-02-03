@@ -10,12 +10,16 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.jumbo.trus.CustomViewPager;
 import com.jumbo.trus.R;
 import com.jumbo.trus.statistics.TabPagerAdapter;
 import com.jumbo.trus.statistics.match.beer.BeerMatchStatisticsFragment;
 import com.jumbo.trus.statistics.match.fine.FineMatchStatisticsFragment;
 import com.jumbo.trus.statistics.player.beer.BeerPlayerStatisticsFragment;
 import com.jumbo.trus.statistics.player.fine.FinePlayerStatisticsFragment;
+import com.jumbo.trus.statistics.table.beer.TableBeerStatisticsFragment;
+import com.jumbo.trus.statistics.table.detail.TableFineDetailStatisticsFragment;
+import com.jumbo.trus.statistics.table.fine.TableFineMatchStatisticsFragment;
 
 import java.util.Objects;
 
@@ -23,7 +27,7 @@ public class TableStatisticsFragment extends Fragment implements TabLayout.OnTab
 
     private static final String TAG = "TableStatisticsFragment";
 
-    private ViewPager viewPager;
+    private CustomViewPager viewPager;
     private TabLayout tabLayout;
     private TabPagerAdapter adapter;
 
@@ -31,9 +35,9 @@ public class TableStatisticsFragment extends Fragment implements TabLayout.OnTab
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: ");
-        View view = inflater.inflate(R.layout.fragment_main_statistics, container, false);
+        View view = inflater.inflate(R.layout.fragment_table_statistics, container, false);
         tabLayout = view.findViewById(R.id.tabLayout);
-        viewPager = view.findViewById(R.id.statisticsViewpager);
+        viewPager = view.findViewById(R.id.tableViewpager);
         setupViewPager(viewPager);
         tabLayout.addOnTabSelectedListener(this);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -59,10 +63,9 @@ public class TableStatisticsFragment extends Fragment implements TabLayout.OnTab
 
     private void setupViewPager(ViewPager viewPager) {
         adapter = new TabPagerAdapter(getChildFragmentManager());
-        adapter.addFragment(new BeerPlayerStatisticsFragment()); //0
-        adapter.addFragment(new BeerMatchStatisticsFragment()); //1
-        adapter.addFragment(new FinePlayerStatisticsFragment()); //2
-        adapter.addFragment(new FineMatchStatisticsFragment()); //3
+        adapter.addFragment(new TableBeerStatisticsFragment()); //0
+        adapter.addFragment(new TableFineMatchStatisticsFragment()); //1
+        adapter.addFragment(new TableFineDetailStatisticsFragment()); //2
         viewPager.setAdapter(adapter);
     }
 

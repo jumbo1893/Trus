@@ -54,6 +54,7 @@ import com.jumbo.trus.statistics.match.beer.detail.BeerMatchStatisticsDetailFrag
 import com.jumbo.trus.statistics.match.fine.detail.FineMatchStatisticsDetailFragment;
 import com.jumbo.trus.statistics.player.beer.detail.BeerPlayerStatisticsDetailFragment;
 import com.jumbo.trus.statistics.player.fine.detail.FinePlayerStatisticsDetailFragment;
+import com.jumbo.trus.statistics.table.TableStatisticsFragment;
 import com.jumbo.trus.user.User;
 import com.jumbo.trus.user.UserInteractionFragment;
 
@@ -282,6 +283,9 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
             case R.id.nav_player_plus:
                 fragmentNumber = 17;
                 break;
+            case R.id.nav_statistics_export:
+                fragmentNumber = 28;
+                break;
             default:
                 return false;
         }
@@ -368,6 +372,8 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
         adapter.addFragment(new FinePlayerStatisticsDetailFragment(), "Stats pokut hráče"); //25
         adapter.addFragment(new BeerMatchStatisticsDetailFragment(), "Stats piv v zápase"); //26
         adapter.addFragment(new FineMatchStatisticsDetailFragment(), "Stats pokut v zápase"); //27
+        adapter.addFragment(new TableStatisticsFragment(), "Tabulka/export"); //28
+
         viewPager.setAdapter(adapter);
     }
 
@@ -430,26 +436,6 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
             navigation.getMenu().getItem(i).setCheckable(checkable);
         }
     }
-
-    public Match findPickedMatchFromList(Match pickedMatch, List<Match> matches) {
-        if (pickedMatch != null && matches != null) {
-            for (Match match : matches) {
-                if (match.equalsByOpponentName(pickedMatch)) {
-                    return match;
-                }
-            }
-        }
-        return findLastMatch(matches);
-    }
-
-    public Match findLastMatch(List<Match> matches) {
-        if (matches != null && matches.size() > 0) {
-            return matches.get(0);
-        }
-        Log.d(TAG, "findLastMatch: Nelze najít žádný zápas!!");
-        return null;
-    }
-
 
     @Override
     public boolean onMenuItemPicked(MenuItem item) {
