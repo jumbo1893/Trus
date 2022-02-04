@@ -29,6 +29,7 @@ import com.jumbo.trus.fine.detail.edit.FineEditFragment;
 import com.jumbo.trus.fine.detail.list.FineFragment;
 import com.jumbo.trus.fine.playerlist.FinePlayersFragment;
 import com.jumbo.trus.home.HomeFragment;
+import com.jumbo.trus.info.AppInfoFragment;
 import com.jumbo.trus.main.NotificationBadgeCounter;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.match.edit.MatchEditFragment;
@@ -56,7 +57,10 @@ import com.jumbo.trus.statistics.player.beer.detail.BeerPlayerStatisticsDetailFr
 import com.jumbo.trus.statistics.player.fine.detail.FinePlayerStatisticsDetailFragment;
 import com.jumbo.trus.statistics.table.TableStatisticsFragment;
 import com.jumbo.trus.user.User;
-import com.jumbo.trus.user.UserInteractionFragment;
+import com.jumbo.trus.user.interaction.AdminInteracionFragment;
+import com.jumbo.trus.user.interaction.ApprovePasswordsFragment;
+import com.jumbo.trus.user.interaction.ResetPasswordsFragment;
+import com.jumbo.trus.user.interaction.UserInteractionFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -286,6 +290,9 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
             case R.id.nav_statistics_export:
                 fragmentNumber = 28;
                 break;
+            case R.id.nav_settings_info:
+                fragmentNumber = 29;
+                break;
             default:
                 return false;
         }
@@ -373,6 +380,10 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
         adapter.addFragment(new BeerMatchStatisticsDetailFragment(), "Stats piv v zápase"); //26
         adapter.addFragment(new FineMatchStatisticsDetailFragment(), "Stats pokut v zápase"); //27
         adapter.addFragment(new TableStatisticsFragment(), "Tabulka/export"); //28
+        adapter.addFragment(new AppInfoFragment(), "Info o appce"); //29
+        adapter.addFragment(new ApprovePasswordsFragment(), "Schválení uživatelů"); //30
+        adapter.addFragment(new ResetPasswordsFragment(), "Reset hesel"); //31
+        adapter.addFragment(new AdminInteracionFragment(), "Změna uživatelů"); //32
 
         viewPager.setAdapter(adapter);
     }

@@ -96,4 +96,13 @@
     <string name="nav_statistics">Statistiky piv/pokut</string>
     <string name="nav_statistics_export">Tabulka/Export statistik</string>
     <string name="logout">Odhlásit</string>
+    <string name="version_info">verze appky</string>
+    <string name="test_db_players">test DB players</string>
+    <string name="test_db_matches">test DB matches</string>
+    <string name="test_db_notifications">test DB notifications</string>
+    <string name="test_db_users">test DB users</string>
+    <string name="test_db_all">test DB vše</string>
+    <string name="current_password">aktuální heslo</string>
+    <string name="new_password">nové heslo</string>
+    <string name="change_password">změň heslo</string>
 </resources>

@@ -5,7 +5,10 @@ import android.util.Log;
 import com.google.android.material.textfield.TextInputLayout;
 import com.jumbo.trus.Result;
 import com.jumbo.trus.season.Season;
+import com.jumbo.trus.user.PasswordEncryption;
+import com.jumbo.trus.user.User;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 public class TextFieldValidator implements ITextFieldValidator {
@@ -86,6 +89,32 @@ public class TextFieldValidator implements ITextFieldValidator {
             textInputLayout.setError(null);
         }
         return nameResult.isTrue();
+    }
+
+    public boolean checkNewPassword(final String password) {
+        if (!validator.fieldIsNotEmpty(password)) {
+            textInputLayout.setError("Není vyplněné heslo");
+            return false;
+        }
+        else if (!validator.checkPasswordFormat(password)) {
+            textInputLayout.setError("Heslo musí mít mezi dýlku 1 až 30 znaků, tak nevymejšlej píčoviny");
+            return false;
+        }
+        return true;
+    }
+
+
+    public boolean comparePasswords(final String userHashedPassword, final String oldPassword) {
+        PasswordEncryption encryption = new PasswordEncryption();
+        try {
+            if (!encryption.compareHashedPassword(userHashedPassword, oldPassword)) {
+                textInputLayout.setError("Nezadal si stejný heslo");
+                return false;
+            }
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 
 
