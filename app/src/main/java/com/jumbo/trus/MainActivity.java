@@ -129,6 +129,8 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
         beerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                setToolbarIconsColorToWhite();
+                setBottomNavigationButtonsCheckable(false);
                 startNewFragmentBranch(15);
             }
         });

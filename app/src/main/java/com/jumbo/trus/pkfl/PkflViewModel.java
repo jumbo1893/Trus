@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModel;
 import com.jumbo.trus.comparator.OrderByDate;
 import com.jumbo.trus.listener.ItemLoadedListener;
 import com.jumbo.trus.repository.FirebaseRepository;
-import com.jumbo.trus.web.RetreiveMatchesTask;
+import com.jumbo.trus.web.RetrieveMatchesTask;
 import com.jumbo.trus.web.TaskRunner;
 
 import java.util.List;
@@ -40,7 +40,7 @@ public class PkflViewModel extends ViewModel implements ItemLoadedListener {
         isUpdating.setValue(true);
         if (pkflUrl != null) {
             TaskRunner taskRunner = new TaskRunner();
-            taskRunner.executeAsync(new RetreiveMatchesTask(pkflUrl), new TaskRunner.Callback<List<PkflMatch>>() {
+            taskRunner.executeAsync(new RetrieveMatchesTask(pkflUrl), new TaskRunner.Callback<List<PkflMatch>>() {
                 @Override
                 public void onComplete(List<PkflMatch> result) {
                     isUpdating.setValue(false);

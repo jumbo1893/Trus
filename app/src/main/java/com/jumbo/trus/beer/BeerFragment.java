@@ -34,6 +34,7 @@ import com.jumbo.trus.match.Match;
 import com.jumbo.trus.player.Player;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -86,7 +87,7 @@ public class BeerFragment extends CustomUserFragment implements OnLineFinishedLi
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.d(TAG, "onItemClick: kliknuto na pozici" + i);
-                beerViewModel.setPickedMatch(beerViewModel.getMatches().getValue().get(i));
+                beerViewModel.setPickedMatch(Objects.requireNonNull(beerViewModel.getMatches().getValue()).get(i));
             }
         });
         btn_commit.setOnClickListener(this);
@@ -137,16 +138,23 @@ public class BeerFragment extends CustomUserFragment implements OnLineFinishedLi
         beerViewModel.closeFragment().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean b) {
-                if (b && getViewLifecycleOwner().getLifecycle().getCurrentState()== Lifecycle.State.RESUMED) {
+                if (b && getViewLifecycleOwner().getLifecycle().getCurrentState() == Lifecycle.State.RESUMED) {
                     openPreviousFragment();
                 }
+            }
+        });
+        beerViewModel.isUpdating().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean b) {
+                showProgressBar(b);
+
             }
         });
     }
 
     private void setupMatchDropDownMenu(List<Match> selectedMatches) {
         Log.d(TAG, "setupMatchDropDownMenu: " + selectedMatches);
-        matchArrayAdapter = new MatchArrayAdapter(getActivity(), selectedMatches);
+        matchArrayAdapter = new MatchArrayAdapter(requireActivity(), selectedMatches);
         tvMatch.setText(beerViewModel.getTitleText().getValue());
         tvMatch.setAdapter(matchArrayAdapter);
         tvMatch.dismissDropDown();
@@ -157,7 +165,6 @@ public class BeerFragment extends CustomUserFragment implements OnLineFinishedLi
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_commit:
-                showProgressBar(true);
                 Log.d(TAG, "onClick: beer");
                 sharedViewModel.setMainMatch(beerViewModel.editMatchBeers(beer_layout.getPlayerList(), user));
                 break;

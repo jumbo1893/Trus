@@ -12,12 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class RetreiveMatchesTask implements Callable<List<PkflMatch>> {
+public class RetrieveMatchesTask implements Callable<List<PkflMatch>> {
 
     private final String url;
     private static final String TAG = "RetreiveMatchesTask";
 
-    public RetreiveMatchesTask(String url) {
+    public RetrieveMatchesTask(String url) {
         this.url = url;
     }
 

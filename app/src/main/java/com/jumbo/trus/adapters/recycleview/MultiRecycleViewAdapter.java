@@ -75,8 +75,7 @@ public class MultiRecycleViewAdapter extends RecyclerView.Adapter<MultiRecycleVi
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_multi_listitem_checkbox, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view, onListListener);
-        return viewHolder;
+        return new ViewHolder(view, onListListener);
     }
 
 

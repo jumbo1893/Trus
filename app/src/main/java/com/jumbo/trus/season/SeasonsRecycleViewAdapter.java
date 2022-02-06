@@ -1,5 +1,6 @@
 package com.jumbo.trus.season;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,10 +43,10 @@ public class SeasonsRecycleViewAdapter extends RecyclerView.Adapter<SeasonsRecyc
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_listitem, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view, onListListener);
-        return viewHolder;
+        return new ViewHolder(view, onListListener);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         Log.d(TAG, "onBindViewHolder: called");

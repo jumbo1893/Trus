@@ -12,6 +12,8 @@ import com.jumbo.trus.BuildConfig;
 import com.jumbo.trus.CustomUserFragment;
 import com.jumbo.trus.R;
 
+import java.util.Objects;
+
 public class AppInfoFragment extends CustomUserFragment {
 
     private static final String TAG = "AppInfoFragment";
@@ -27,7 +29,7 @@ public class AppInfoFragment extends CustomUserFragment {
         View view = inflater.inflate(R.layout.fragment_app_info, container, false);
         progress_bar = view.findViewById(R.id.progress_bar);
         textAppInfo = view.findViewById(R.id.textAppInfo);
-        textAppInfo.getEditText().setText("Verze aplikace je " + BuildConfig.VERSION_NAME + ", code: " + BuildConfig.VERSION_CODE);
+        Objects.requireNonNull(textAppInfo.getEditText()).setText("Verze aplikace je " + BuildConfig.VERSION_NAME + ", code: " + BuildConfig.VERSION_CODE);
         return view;
     }
 }

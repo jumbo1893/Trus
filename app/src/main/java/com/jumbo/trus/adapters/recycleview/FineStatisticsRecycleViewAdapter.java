@@ -38,8 +38,7 @@ public class FineStatisticsRecycleViewAdapter extends RecyclerView.Adapter<FineS
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_listitem, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view, onListListener);
-        return viewHolder;
+        return new ViewHolder(view, onListListener);
     }
 
     @SuppressLint("SetTextI18n")
@@ -66,7 +65,7 @@ public class FineStatisticsRecycleViewAdapter extends RecyclerView.Adapter<FineS
         return models.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView tv_title, tv_text;
         RelativeLayout layout_parent;
@@ -83,7 +82,7 @@ public class FineStatisticsRecycleViewAdapter extends RecyclerView.Adapter<FineS
 
         @Override
         public void onClick(View v) {
-            onListListener.onItemClick(getAdapterPosition());
+            onListListener.onItemClick(getBindingAdapterPosition());
         }
     }
 

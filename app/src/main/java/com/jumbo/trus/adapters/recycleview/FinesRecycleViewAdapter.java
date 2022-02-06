@@ -41,8 +41,7 @@ public class FinesRecycleViewAdapter extends RecyclerView.Adapter<FinesRecycleVi
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_listitem_add, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view, onPlusButtonListener);
-        return viewHolder;
+        return new ViewHolder(view, onPlusButtonListener);
     }
 
     @SuppressLint("SetTextI18n")

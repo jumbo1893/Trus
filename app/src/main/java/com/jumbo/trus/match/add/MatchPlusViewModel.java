@@ -19,7 +19,7 @@ import com.jumbo.trus.player.Player;
 import com.jumbo.trus.repository.FirebaseRepository;
 import com.jumbo.trus.season.Season;
 import com.jumbo.trus.user.User;
-import com.jumbo.trus.web.RetreiveMatchesTask;
+import com.jumbo.trus.web.RetrieveMatchesTask;
 import com.jumbo.trus.web.TaskRunner;
 
 import java.time.DateTimeException;
@@ -112,7 +112,7 @@ public class MatchPlusViewModel extends MatchViewModelHelper implements ItemLoad
         isUpdating.setValue(true);
         if (pkflUrl != null) {
             TaskRunner taskRunner = new TaskRunner();
-            taskRunner.executeAsync(new RetreiveMatchesTask(pkflUrl), new TaskRunner.Callback<List<PkflMatch>>() {
+            taskRunner.executeAsync(new RetrieveMatchesTask(pkflUrl), new TaskRunner.Callback<List<PkflMatch>>() {
                 @Override
                 public void onComplete(List<PkflMatch> result) {
                     isUpdating.setValue(false);

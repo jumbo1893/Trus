@@ -36,7 +36,7 @@ public class FineAddFragment extends CustomUserFragment implements OnPlusButtonL
     //widgety
     private RecyclerView rc_fines;
     private AppCompatButton btn_commit;
-    private LinearLayout match_toolbar;
+
     private ProgressBar progress_bar;
     private AutoCompleteTextView tvMatch;
 
@@ -54,7 +54,6 @@ public class FineAddFragment extends CustomUserFragment implements OnPlusButtonL
         progress_bar = view.findViewById(R.id.progress_bar);
         btn_commit = view.findViewById(R.id.btn_commit);
         btn_commit.setVisibility(View.VISIBLE);
-        match_toolbar = view.findViewById(R.id.match_toolbar);
         tvMatch = view.findViewById(R.id.tvMatch);
         btn_commit.setOnClickListener(this);
         return view;
@@ -116,16 +115,12 @@ public class FineAddFragment extends CustomUserFragment implements OnPlusButtonL
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_commit: {
-                Log.d(TAG, "onClick: fine");
-                if (sharedViewModel.isMultiplayers()) {
-                    sharedViewModel.setMainMatch(fineAddViewModel.editMatchPlayersFines(multiAdapter.getFinesNumber(), user));
-                }
-                else {
-                    sharedViewModel.setMainMatch(fineAddViewModel.editMatchPlayersFines(adapter.getFinesNumber(), user));
-                }
-                break;
+        if (view.getId() == R.id.btn_commit) {
+            Log.d(TAG, "onClick: fine");
+            if (sharedViewModel.isMultiplayers()) {
+                sharedViewModel.setMainMatch(fineAddViewModel.editMatchPlayersFines(multiAdapter.getFinesNumber(), user));
+            } else {
+                sharedViewModel.setMainMatch(fineAddViewModel.editMatchPlayersFines(adapter.getFinesNumber(), user));
             }
         }
     }

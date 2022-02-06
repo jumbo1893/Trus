@@ -66,8 +66,7 @@ public class MultiFinesRecycleViewAdapter extends RecyclerView.Adapter<MultiFine
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_listitem_add, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+        return new ViewHolder(view);
     }
 
     @SuppressLint("SetTextI18n")
