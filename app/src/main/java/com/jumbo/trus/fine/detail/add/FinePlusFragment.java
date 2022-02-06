@@ -12,8 +12,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.jumbo.trus.fine.detail.FineHelperFragment;
-import com.jumbo.trus.player.PlayerHelperFragment;
-import com.jumbo.trus.player.add.PlayerPlusViewModel;
 
 
 public class FinePlusFragment extends FineHelperFragment {

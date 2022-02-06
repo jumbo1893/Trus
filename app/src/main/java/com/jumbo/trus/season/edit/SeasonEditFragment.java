@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.jumbo.trus.IFragment;
 import com.jumbo.trus.Model;
-import com.jumbo.trus.Result;
 import com.jumbo.trus.season.Season;
 import com.jumbo.trus.season.SeasonHelperFragment;
 

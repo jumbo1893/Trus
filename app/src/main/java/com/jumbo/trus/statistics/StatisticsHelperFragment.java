@@ -5,41 +5,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
-import android.widget.Switch;
 
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.jumbo.trus.CustomUserFragment;
-import com.jumbo.trus.Flag;
 import com.jumbo.trus.R;
 import com.jumbo.trus.SimpleDividerItemDecoration;
 import com.jumbo.trus.adapters.array.SeasonArrayAdapter;
-import com.jumbo.trus.adapters.recycleview.BeerStatisticsRecycleViewAdapter;
-import com.jumbo.trus.comparator.OrderByBeerAndLiquorNumber;
-import com.jumbo.trus.listener.OnListListener;
-import com.jumbo.trus.match.Match;
-import com.jumbo.trus.match.MatchAllViewModel;
-import com.jumbo.trus.player.Player;
-import com.jumbo.trus.player.PlayerViewModelTODELETE;
 import com.jumbo.trus.season.Season;
-import com.jumbo.trus.season.SeasonsViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class StatisticsHelperFragment extends CustomUserFragment {

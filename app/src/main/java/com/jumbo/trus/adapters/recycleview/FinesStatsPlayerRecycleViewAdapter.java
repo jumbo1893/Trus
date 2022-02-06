@@ -11,8 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.jumbo.trus.listener.OnListListener;
 import com.jumbo.trus.R;
+import com.jumbo.trus.listener.OnListListener;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.player.Player;
 
@@ -45,7 +45,7 @@ public class FinesStatsPlayerRecycleViewAdapter extends RecyclerView.Adapter<Fin
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         Log.d(TAG, "onBindViewHolder: called");
-        holder.tv_title.setText(((Match) matches.get(position)).toStringNameWithOpponent());
+        holder.tv_title.setText(matches.get(position).toStringNameWithOpponent());
         holder.tv_text.setText("Počet pokut pro hráče: " + players.get(position).returnNumberOfAllReceviedFines() +
         " v celkové výši " + players.get(position).returnAmountOfAllReceviedFines() + " Kč");
     }

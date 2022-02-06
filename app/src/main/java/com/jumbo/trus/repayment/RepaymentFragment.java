@@ -14,18 +14,12 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jumbo.trus.CustomUserFragment;
 import com.jumbo.trus.R;
 import com.jumbo.trus.SimpleDividerItemDecoration;
 import com.jumbo.trus.adapters.recycleview.PlayerRepaymentRecycleViewAdapter;
-import com.jumbo.trus.match.Match;
-import com.jumbo.trus.match.MatchAllViewModel;
-import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.player.Player;
-import com.jumbo.trus.player.PlayerViewModelTODELETE;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RepaymentFragment extends CustomUserFragment {

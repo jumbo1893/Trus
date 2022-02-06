@@ -9,7 +9,6 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.jumbo.trus.CustomAddFragment;

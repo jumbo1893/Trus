@@ -11,8 +11,6 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.jumbo.trus.R;
-import com.jumbo.trus.match.list.MatchFragment;
-import com.jumbo.trus.player.edit.PlayerEditFragment;
 import com.jumbo.trus.statistics.match.beer.BeerMatchStatisticsFragment;
 import com.jumbo.trus.statistics.match.fine.FineMatchStatisticsFragment;
 import com.jumbo.trus.statistics.player.beer.BeerPlayerStatisticsFragment;

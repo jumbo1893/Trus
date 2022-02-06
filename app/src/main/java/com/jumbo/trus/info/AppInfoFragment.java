@@ -1,35 +1,16 @@
 package com.jumbo.trus.info;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.ProgressBar;
-import android.widget.Switch;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.jumbo.trus.BuildConfig;
-import com.jumbo.trus.CustomAddFragment;
 import com.jumbo.trus.CustomUserFragment;
 import com.jumbo.trus.R;
-import com.jumbo.trus.user.LoginActivity;
-import com.jumbo.trus.validator.AmountTextWatcher;
-import com.jumbo.trus.validator.NameTextWatcher;
-import com.jumbo.trus.validator.TextFieldValidator;
-
-import java.util.Objects;
 
 public class AppInfoFragment extends CustomUserFragment {
 

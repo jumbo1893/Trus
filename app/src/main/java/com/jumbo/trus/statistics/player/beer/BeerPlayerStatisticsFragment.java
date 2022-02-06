@@ -15,10 +15,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-
-import com.jumbo.trus.listener.OnListListener;
-
 import com.jumbo.trus.adapters.recycleview.BeerStatisticsRecycleViewAdapter;
+import com.jumbo.trus.listener.OnListListener;
 import com.jumbo.trus.player.Player;
 import com.jumbo.trus.season.Season;
 import com.jumbo.trus.statistics.StatisticsHelperFragment;

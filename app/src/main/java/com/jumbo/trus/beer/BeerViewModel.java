@@ -4,14 +4,11 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.jumbo.trus.BaseViewModel;
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.INotificationSender;
 import com.jumbo.trus.Model;
-import com.jumbo.trus.Result;
-import com.jumbo.trus.comparator.OrderByBeerAndLiquorNumber;
 import com.jumbo.trus.comparator.OrderByBeerThenName;
 import com.jumbo.trus.listener.ChangeListener;
 import com.jumbo.trus.match.Compensation;

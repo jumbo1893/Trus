@@ -18,10 +18,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.jumbo.trus.adapters.recycleview.BeerStatisticsRecycleViewAdapter;
 import com.jumbo.trus.listener.OnListListener;
 import com.jumbo.trus.match.Match;
-import com.jumbo.trus.player.Player;
 import com.jumbo.trus.season.Season;
 import com.jumbo.trus.statistics.StatisticsHelperFragment;
-import com.jumbo.trus.statistics.player.beer.BeerPlayerStatisticsViewModel;
 
 import java.util.List;
 import java.util.Objects;

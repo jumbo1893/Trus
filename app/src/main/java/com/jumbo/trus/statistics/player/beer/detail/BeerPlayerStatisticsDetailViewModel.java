@@ -7,16 +7,13 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.jumbo.trus.Flag;
-import com.jumbo.trus.INotificationSender;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.listener.ChangeListener;
 import com.jumbo.trus.match.Match;
-import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.player.Player;
 import com.jumbo.trus.repository.FirebaseRepository;
 import com.jumbo.trus.season.Season;
 import com.jumbo.trus.statistics.player.ListTexts;
-import com.jumbo.trus.statistics.player.PlayerHelperStatisticsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -13,7 +13,6 @@ import androidx.annotation.Nullable;
 
 import com.jumbo.trus.R;
 import com.jumbo.trus.match.Match;
-import com.jumbo.trus.season.Season;
 
 import java.util.List;
 

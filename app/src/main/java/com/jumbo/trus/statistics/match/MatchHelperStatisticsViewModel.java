@@ -7,11 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.jumbo.trus.BaseViewModel;
 import com.jumbo.trus.Date;
-import com.jumbo.trus.comparator.OrderByBeerAndLiquorNumber;
-import com.jumbo.trus.comparator.OrderByDate;
-import com.jumbo.trus.comparator.OrderByFineAmount;
 import com.jumbo.trus.match.Match;
-import com.jumbo.trus.player.Player;
 import com.jumbo.trus.season.Season;
 
 import java.util.ArrayList;

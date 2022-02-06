@@ -1,5 +1,6 @@
-package com.jumbo.trus.user;
+package com.jumbo.trus.user.login;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.util.Log;
 
@@ -7,77 +8,65 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.jumbo.trus.listener.ChangeListener;
+import com.jumbo.trus.BaseViewModel;
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.Model;
-import com.jumbo.trus.validator.Validator;
+import com.jumbo.trus.listener.ChangeListener;
 import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.repository.FirebaseRepository;
+import com.jumbo.trus.user.PasswordEncryption;
+import com.jumbo.trus.user.User;
+import com.jumbo.trus.validator.Validator;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class LoginViewModel extends ViewModel implements ChangeListener {
+public class LoginViewModel extends BaseViewModel implements ChangeListener {
 
     private static final String TAG = "LoginViewModel";
 
     private FirebaseRepository firebaseRepository;
-    private MutableLiveData<List<User>> users;
+    private List<User> users = new ArrayList();
     private MutableLiveData<User> user;
-    private MutableLiveData<Boolean> isUpdating = new MutableLiveData<>();
-    private MutableLiveData<String> alert = new MutableLiveData<>();
     private PasswordEncryption encryption;
+    private MutableLiveData<String> textViewHelperText = new MutableLiveData();
+    private MutableLiveData<Boolean> loginEnabled = new MutableLiveData();
+    private MutableLiveData<Boolean> registrationEnabled = new MutableLiveData();
+    private MutableLiveData<String> passwordErrorText = new MutableLiveData();
+    private MutableLiveData<String> loginErrorText = new MutableLiveData();
+    private String rememberedLogin;
+    private String rememberedPassword;
+    private boolean autoLogin = false;
 
     public void init() {
         firebaseRepository = new FirebaseRepository(FirebaseRepository.USER_TABLE, this);
         encryption = new PasswordEncryption();
-        if (users == null) {
-            users = new MutableLiveData<>();
-            firebaseRepository.loadUsersFromRepository();
-            Log.d(TAG, "init: nacitam uživatele");
-        }
         if (user == null) {
             user = new MutableLiveData<>();
         }
+        firebaseRepository.loadUsersFromRepository();
     }
+
 
     private boolean checkNewUserValidation(final String name, final String password) {
         Validator validator = new Validator();
         if (!validator.fieldIsNotEmpty(name)) {
-            alert.setValue("Pro registraci musíš vyplnit jméno a heslo");
+            loginErrorText.setValue("Pro registraci musíš vyplnit jméno a heslo");
+            passwordErrorText.setValue("Pro registraci musíš vyplnit jméno a heslo");
         }
         else if (!validator.checkFieldFormat(name, 20)) {
-            alert.setValue("Uživatelský jméno je moc dlouhý nebo obsahuje nesmysly");
+            loginErrorText.setValue("Uživatelský jméno je moc dlouhý nebo obsahuje nesmysly");
         }
         else if (!validator.fieldIsNotEmpty(password)) {
-            alert.setValue("Není vyplněné heslo");
+            passwordErrorText.setValue("Není vyplněné heslo");
         }
         else if (!validator.checkPasswordFormat(password)) {
-            alert.setValue("Heslo musí mít mezi dýlku 1 až 30 znaků, tak nevymejšlej píčoviny");
+            passwordErrorText.setValue("Heslo musí mít mezi dýlku 1 až 30 znaků, tak nevymejšlej píčoviny");
         }
         else if (checkIfUsernameAlreadyExists(name)) {
-            alert.setValue("Uživatel se stejným jménem už existuje");
-        }
-        /*else if (!validator.fieldIsNotEmpty(mail)) {
-            response = "Není vyplněn mail";
-        }
-        else if (!validator.checkEmailFormat(mail)) {
-            response = "Mail není ve správném formátu";
-        }*/
-        else {
-            return true;
-        }
-        return false;
-    }
-
-    private boolean checkNewPassword(final String password) {
-        Validator validator = new Validator();
-        if (!validator.fieldIsNotEmpty(password)) {
-            alert.setValue("Není vyplněné heslo");
-        }
-        else if (!validator.checkPasswordFormat(password)) {
-            alert.setValue("Heslo musí mít mezi dýlku 1 až 30 znaků, tak nevymejšlej píčoviny");
+            loginErrorText.setValue("Uživatel se stejným jménem už existuje");
         }
         else {
             return true;
@@ -85,51 +74,50 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
         return false;
     }
 
-    boolean editUserPasswordInRepository(final String password, final String oldPassword, User user) {
-        isUpdating.setValue(true);
-        PasswordEncryption encryption = new PasswordEncryption();
-        try {
-            if (!encryption.compareHashedPassword(user.getPassword(), oldPassword)) {
-                isUpdating.setValue(false);
-                alert.setValue("Nezadal si stejný heslo");
-                return false;
-            } else if (!checkNewPassword(password)) {
-                isUpdating.setValue(false);
-                return false;
+    public void checkLoginTextForPermissions(String username, String password) {
+        if(!(username.length() > 0) || !(password.length() > 0)) {
+            loginEnabled.setValue(false);
+            registrationEnabled.setValue(false);
+            textViewHelperText.setValue("Pro přihlášení/registraci musíš vyplnit jméno a heslo");
+            return;
+        }
+        for (User user : users) {
+            if (username.equals(user.getName())) {
+                if (user.getStatus() == User.Status.WAITING_FOR_APPROVE) {
+                    textViewHelperText.setValue("Uživatel " + username + " čeká na schválení registrace. Do té doby jsou nastaveny read-only práva");
+                    loginEnabled.setValue(true);
+                    break;
+                }
+                else if (user.getStatus() == User.Status.DENIED) {
+                    loginEnabled.setValue(false);
+                    textViewHelperText.setValue("Přístup zamítnut PÍČO");
+                    break;
+                }
+                else if (user.getStatus() == User.Status.FORGOTTEN_PASSWORD) {
+                    loginEnabled.setValue(true);
+                    textViewHelperText.setValue("Zaslána žádost o resetování hesla. Řekni nějakýmu Trusákovi ať ti to potvrdí. Do tý doby si dej pivo na paměť a můžeš to zkoušet");
+                    break;
+                }
+                else if (user.getStatus() == User.Status.PASSWORD_RESET) {
+                    loginEnabled.setValue(true);
+                    textViewHelperText.setValue("Heslo bylo resetováno. Přihlaš se s libovolným novým a uloží se ti. A někam si ho radši zapiš DEBILE");
+                    break;
+                } else {
+                    loginEnabled.setValue(true);
+                    registrationEnabled.setValue(true);
+                    textViewHelperText.setValue("");
+                }
             }
-            user.setPassword(encryption.hashPassword(password));
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            alert.setValue("Chyba při šifrování, soráč");
-            isUpdating.setValue(false);
-            return false;
+            else {
+                loginEnabled.setValue(true);
+                registrationEnabled.setValue(true);
+                textViewHelperText.setValue("");
+            }
         }
-        try {
-            firebaseRepository.editModel(user);
-        } catch (Exception e) {
-            alert.setValue("Nastala nějaká kokotina při ukládání změny hesla do db, tak se na to teď vyser");
-            isUpdating.setValue(false);
-            return false;
-        }
-
-        return true;
-    }
-
-    int changeColorOfUserInRepository(User user) {
-        isUpdating.setValue(true);
-        user.setRandomCharColor();
-        try {
-            firebaseRepository.editModel(user);
-        } catch (Exception e) {
-            isUpdating.setValue(false);
-            alert.setValue("Nastala nějaká kokotina při změně barvičky v db, tak se na to teď vyser");
-            return 0;
-        }
-        return user.getCharColor();
     }
 
     private boolean checkIfUsernameAlreadyExists(String name) {
-        for (User user : Objects.requireNonNull(users.getValue())) {
+        for (User user : users) {
             if (user.getName().equals(name)) {
                 return true;
             }
@@ -139,7 +127,12 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
 
     boolean loginWithUsernameAndPassword(String name, String password) {
         isUpdating.setValue(true);
-        for (User user : Objects.requireNonNull(getUsers().getValue())) {
+        if (users.size() == 0) {
+            alert.setValue("Počkej až se načte db ");
+            isUpdating.setValue(false);
+            return false;
+        }
+        for (User user : users) {
             try {
                 if (name.equals(user.getName()) && encryption.compareHashedPassword(user.getPassword(), password)) {
                     if (user.getStatus() == User.Status.FORGOTTEN_PASSWORD) {
@@ -165,7 +158,7 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
                 }
                 else if (name.equals(user.getName()) && !password.equals(user.getPassword())) {
                     isUpdating.setValue(false);
-                    alert.setValue("Zadal si špatný heslo!");
+                    passwordErrorText.setValue("Zadal si špatný heslo!");
                     return true;
                 }
             } catch (NoSuchAlgorithmException e) {
@@ -175,14 +168,19 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
             }
         }
         isUpdating.setValue(false);
-        alert.setValue("Nikoho takovýho tu neznáme!");
+        loginErrorText.setValue("Nikoho takovýho tu neznáme!");
         return false;
     }
 
     boolean loginWithHashedPassword(String name, String password) {
         isUpdating.setValue(true);
-
-        for (User user : Objects.requireNonNull(getUsers().getValue())) {
+        if (users.size() == 0) {
+            autoLogin = true;
+            rememberedLogin = name;
+            rememberedPassword = password;
+            Log.d(TAG, "loginWithHashedPassword: zaznamenán pokus o přihlášení před načtenejma uživatelema" );
+        }
+        for (User user : users) {
             if (name.equals(user.getName()) && password.equals(user.getPassword())) {
                 this.user.setValue(user);
                 alert.setValue("Vítejte pane " + user.getName() + ", přeji příjemné chlastání");
@@ -191,12 +189,12 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
             }
             else if (name.equals(user.getName()) && !password.equals(user.getPassword())) {
                 isUpdating.setValue(false);
-                alert.setValue("Zadal si špatný heslo!");
+                passwordErrorText.setValue("Zadal si špatný heslo!");
                 return false;
             }
         }
         isUpdating.setValue(false);
-        alert.setValue("Nikoho takovýho tu neznáme!");
+        loginErrorText.setValue("Nikoho takovýho tu neznáme!");
         return false;
     }
 
@@ -235,7 +233,7 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
             isUpdating.setValue(false);
             return false;
         }
-        for (User dbUser : Objects.requireNonNull(getUsers().getValue())) {
+        for (User dbUser : users) {
             if (name.equals(dbUser.getName())) {
                 user = dbUser;
                 break;
@@ -267,52 +265,6 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
         }
     }
 
-    boolean changeUserStatus(final User user, User.Status newStatus) {
-        isUpdating.setValue(true);
-        user.setStatus(newStatus);
-        try {
-            firebaseRepository.editModel(user);
-        }
-        catch (Exception e) {
-            alert.setValue("Chyba při komunikaci s db, sorry, zkus to jindy");
-            isUpdating.setValue(false);
-            return false;
-        }
-        alert.setValue("Potvrzuji změnu uživatele na " + newStatus);
-        return true;
-    }
-
-    boolean changeUserPermission(final User user, User.Permission newPermission) {
-        isUpdating.setValue(true);
-        user.setPermission(newPermission);
-        try {
-            firebaseRepository.editModel(user);
-        }
-        catch (Exception e) {
-            alert.setValue("Chyba při komunikaci s db, sorry, zkus to jindy");
-            isUpdating.setValue(false);
-            return false;
-        }
-        alert.setValue("Přiděluji uživatelovi práva: " + newPermission);
-        return true;
-    }
-
-    boolean changeUserPermissionAndStatus(final User user, User.Permission newPermission, User.Status newStatus) {
-        isUpdating.setValue(true);
-        user.setPermission(newPermission);
-        user.setStatus(newStatus);
-        try {
-            firebaseRepository.editModel(user);
-        }
-        catch (Exception e) {
-            alert.setValue("Chyba při komunikaci s db, sorry, zkus to jindy");
-            isUpdating.setValue(false);
-            return false;
-        }
-        alert.setValue("Potvrzuji změnu uživatele na " + newStatus + " a přiděluji mu práva: " + newPermission);
-        return true;
-    }
-
     private void setUserAsAdded(final User user, Flag flag) {
         String action = "";
         switch (flag) {
@@ -338,22 +290,6 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
     private void sendNotificationToRepository(Notification notification) {
         firebaseRepository.addNotification(notification);
     }
-
-    public LiveData<Boolean> isUpdating() {
-        return isUpdating;
-    }
-
-    public LiveData<String> getAlert() {
-        return alert;
-    }
-    public LiveData<List<User>> getUsers() {
-        return users;
-    }
-
-    public LiveData<User> getUser() {
-        return user;
-    }
-
     private void checkIfCurrentUserIsChanged(List<User> userList) {
         for (User user : userList) {
             if (user.equals(getUser().getValue())) {
@@ -362,9 +298,31 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
         }
     }
 
-    public void setUser(User user) {
-        this.user.setValue(user);
+    public LiveData<String> getLoginErrorText() {
+        return loginErrorText;
     }
+
+    public LiveData<String> getPasswordErrorText() {
+        return passwordErrorText;
+    }
+
+    public LiveData<String> getTextViewHelperText() {
+        return textViewHelperText;
+    }
+
+
+    public LiveData<Boolean> isLoginEnabled() {
+        return loginEnabled;
+    }
+
+    public LiveData<Boolean> isRegistrationEnabled() {
+        return registrationEnabled;
+    }
+
+    public LiveData<User> getUser() {
+        return user;
+    }
+
 
     @Override
     public void itemAdded(Model model) {
@@ -384,8 +342,11 @@ public class LoginViewModel extends ViewModel implements ChangeListener {
     @Override
     public void itemListLoaded(List models, Flag flag) {
         Log.d(TAG, "itemListLoaded: " + models);
-        users.setValue(models);
+        users = models;
         checkIfCurrentUserIsChanged(models);
+        if (autoLogin) {
+            loginWithHashedPassword(rememberedLogin, rememberedPassword);
+        }
     }
 
     @Override

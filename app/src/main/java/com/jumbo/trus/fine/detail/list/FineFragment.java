@@ -18,16 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jumbo.trus.CustomUserFragment;
-import com.jumbo.trus.Flag;
-import com.jumbo.trus.Model;
 import com.jumbo.trus.R;
-import com.jumbo.trus.Result;
 import com.jumbo.trus.SimpleDividerItemDecoration;
 import com.jumbo.trus.adapters.recycleview.SimpleRecycleViewAdapter;
 import com.jumbo.trus.fine.Fine;
-import com.jumbo.trus.fine.FineViewModel;
-import com.jumbo.trus.fine.IFineFragment;
-import com.jumbo.trus.notification.Notification;
 
 import java.util.List;
 

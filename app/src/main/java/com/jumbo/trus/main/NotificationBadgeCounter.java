@@ -1,13 +1,11 @@
 package com.jumbo.trus.main;
 
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.user.User;
 
 import java.util.List;
-import java.util.Objects;
 
 public class NotificationBadgeCounter {
 
@@ -46,10 +44,7 @@ public class NotificationBadgeCounter {
     }
 
     private boolean isAnyNotificationSaved(String id, String def) {
-        if (id.equals(def)) {
-            return false;
-        }
-        return true;
+        return !id.equals(def);
     }
 
     /** Funkce porovná poslední notifikaci uloženou v preferences a pokusí se najít shodu u seznamu notifikací

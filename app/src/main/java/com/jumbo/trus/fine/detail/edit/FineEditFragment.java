@@ -16,9 +16,6 @@ import com.jumbo.trus.IFragment;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.fine.Fine;
 import com.jumbo.trus.fine.detail.FineHelperFragment;
-import com.jumbo.trus.player.Player;
-import com.jumbo.trus.player.PlayerHelperFragment;
-import com.jumbo.trus.player.edit.PlayerEditViewModel;
 
 
 public class FineEditFragment extends FineHelperFragment implements IFragment {

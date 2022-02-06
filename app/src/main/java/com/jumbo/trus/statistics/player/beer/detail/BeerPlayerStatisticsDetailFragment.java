@@ -2,16 +2,13 @@ package com.jumbo.trus.statistics.player.beer.detail;
 
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,11 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.jumbo.trus.CustomUserFragment;
 import com.jumbo.trus.R;
 import com.jumbo.trus.SimpleDividerItemDecoration;
-import com.jumbo.trus.adapters.recycleview.FinesRecycleViewAdapter;
-import com.jumbo.trus.adapters.recycleview.MultiFinesRecycleViewAdapter;
 import com.jumbo.trus.adapters.recycleview.StringTitleAndTextRecycleViewAdapter;
-import com.jumbo.trus.fine.ReceivedFine;
-import com.jumbo.trus.fine.add.FineAddViewModel;
 import com.jumbo.trus.statistics.player.ListTexts;
 
 import java.util.List;

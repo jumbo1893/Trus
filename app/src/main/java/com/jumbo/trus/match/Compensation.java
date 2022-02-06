@@ -2,7 +2,6 @@ package com.jumbo.trus.match;
 
 import android.util.Log;
 
-import com.jumbo.trus.fine.ReceivedFine;
 import com.jumbo.trus.player.Player;
 
 import java.util.ArrayList;

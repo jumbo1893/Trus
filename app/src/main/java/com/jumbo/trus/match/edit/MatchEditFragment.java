@@ -1,8 +1,6 @@
 package com.jumbo.trus.match.edit;
 
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,15 +15,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.jumbo.trus.IFragment;
 import com.jumbo.trus.Model;
-import com.jumbo.trus.Result;
-import com.jumbo.trus.SharedViewModel;
 import com.jumbo.trus.match.Match;
-import com.jumbo.trus.match.MatchAllViewModel;
 import com.jumbo.trus.match.MatchHelperFragment;
 import com.jumbo.trus.player.Player;
 import com.jumbo.trus.season.Season;
 
-import java.util.ArrayList;
 import java.util.List;
 
 

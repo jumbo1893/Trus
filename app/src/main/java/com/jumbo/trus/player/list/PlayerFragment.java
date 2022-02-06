@@ -17,11 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jumbo.trus.CustomUserFragment;
 import com.jumbo.trus.R;
-import com.jumbo.trus.SharedViewModel;
 import com.jumbo.trus.SimpleDividerItemDecoration;
 import com.jumbo.trus.player.Player;
 import com.jumbo.trus.player.PlayerRecycleViewAdapter;
-import com.jumbo.trus.player.PlayerViewModelTODELETE;
 
 import java.util.List;
 

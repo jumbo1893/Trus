@@ -2,7 +2,6 @@ package com.jumbo.trus.validator;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 
 public class EmptyTextWatcher implements TextWatcher {
 

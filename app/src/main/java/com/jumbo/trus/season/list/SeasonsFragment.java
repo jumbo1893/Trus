@@ -18,10 +18,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jumbo.trus.CustomUserFragment;
 import com.jumbo.trus.R;
 import com.jumbo.trus.SimpleDividerItemDecoration;
-import com.jumbo.trus.match.MatchAllViewModel;
 import com.jumbo.trus.season.Season;
 import com.jumbo.trus.season.SeasonsRecycleViewAdapter;
-import com.jumbo.trus.season.SeasonsViewModel;
 
 import java.util.List;
 

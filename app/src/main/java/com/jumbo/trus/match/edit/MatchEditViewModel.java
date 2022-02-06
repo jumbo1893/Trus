@@ -76,6 +76,7 @@ public class MatchEditViewModel extends MatchViewModelHelper implements ChangeLi
             alert.setValue("Datum musí být ve formátu " + Date.DATE_PATTERN);
             return;
         }
+        changeAlertLocked = true;
         String text = "Zápas byl změněn na " + (homeMatch ? "domácí zápas" : "venkovní zápas") + " se soupeřem " + opponent + " hraný " + datum;
         sendNotificationToRepository(new Notification("Upraven zápas " + opponent, text, user));
     }
@@ -89,6 +90,7 @@ public class MatchEditViewModel extends MatchViewModelHelper implements ChangeLi
             alert.setValue("Chyba při posílání požadavku do DB");
             return;
         }
+        changeAlertLocked = true;
         String text = "hraný " + pickedMatch.returnDateOfMatchInStringFormat();
         sendNotificationToRepository(new Notification("Smazán zápas " + pickedMatch.getOpponent(), text, user));
     }

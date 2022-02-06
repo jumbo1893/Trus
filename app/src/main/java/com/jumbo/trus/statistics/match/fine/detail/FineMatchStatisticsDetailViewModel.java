@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.jumbo.trus.comparator.OrderByBeerThenName;
 import com.jumbo.trus.comparator.OrderPlayersByFinesAmountThenName;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.player.Player;

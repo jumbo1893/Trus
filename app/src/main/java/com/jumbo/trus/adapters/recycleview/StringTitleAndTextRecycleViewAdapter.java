@@ -2,7 +2,6 @@ package com.jumbo.trus.adapters.recycleview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,17 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.jumbo.trus.Model;
 import com.jumbo.trus.R;
-import com.jumbo.trus.fine.Fine;
-import com.jumbo.trus.fine.ReceivedFine;
 import com.jumbo.trus.listener.OnListListener;
-import com.jumbo.trus.match.Match;
-import com.jumbo.trus.pkfl.PkflMatch;
-import com.jumbo.trus.player.Player;
-import com.jumbo.trus.repayment.Repayment;
 import com.jumbo.trus.statistics.player.ListTexts;
-import com.jumbo.trus.user.User;
 
 import java.util.List;
 

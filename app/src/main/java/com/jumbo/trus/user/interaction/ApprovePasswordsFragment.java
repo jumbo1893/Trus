@@ -1,34 +1,27 @@
 package com.jumbo.trus.user.interaction;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jumbo.trus.CustomUserFragment;
-import com.jumbo.trus.Flag;
 import com.jumbo.trus.R;
 import com.jumbo.trus.SimpleDividerItemDecoration;
 import com.jumbo.trus.adapters.recycleview.SimpleRecycleViewAdapter;
 import com.jumbo.trus.listener.OnListListener;
-import com.jumbo.trus.user.IUserInteraction;
 import com.jumbo.trus.user.User;
 
 import java.util.List;
-import java.util.Objects;
 
 public class ApprovePasswordsFragment extends CustomUserFragment implements OnListListener {
 

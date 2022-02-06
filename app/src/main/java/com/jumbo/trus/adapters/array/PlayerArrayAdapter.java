@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.jumbo.trus.R;
-import com.jumbo.trus.match.Match;
 import com.jumbo.trus.player.Player;
 
 import java.util.List;

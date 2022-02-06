@@ -15,7 +15,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.jumbo.trus.season.Season;
 import com.jumbo.trus.statistics.table.TableStatisticsHelperFragment;
-import com.jumbo.trus.statistics.table.beer.TableBeerStatisticsViewModel;
 
 import org.json.JSONException;
 

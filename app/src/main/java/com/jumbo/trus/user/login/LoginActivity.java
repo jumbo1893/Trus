@@ -1,18 +1,15 @@
-package com.jumbo.trus.user;
+package com.jumbo.trus.user.login;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -23,21 +20,22 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.jumbo.trus.MainActivity;
 import com.jumbo.trus.R;
 import com.jumbo.trus.update.ForceUpdateChecker;
 import com.jumbo.trus.update.StorageManager;
+import com.jumbo.trus.user.User;
 
-import java.util.List;
 import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher, ForceUpdateChecker.OnUpdateNeededListener {
 
     private static final String TAG = "LoginActivity";
 
-    private EditText et_username, et_password;
-    private TextView tv_emptyfields, tv_permissions;
-    private Button btn_login, btn_register, btn_password_forgotten;
+    private TextInputLayout textLogin, textPassword;
+    private TextView tv_help;
+    private Button btnLogin, btn_register, btn_password_forgotten;
     private Switch sw_remember;
     private ProgressBar progress_bar;
 
@@ -60,24 +58,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         pref = getSharedPreferences("Preferences", MODE_PRIVATE);
         loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
         loginViewModel.init();
-        et_username = findViewById(R.id.et_username);
-        et_password = findViewById(R.id.et_password);
-        tv_emptyfields = findViewById(R.id.tv_emptyfields);
-        tv_permissions = findViewById(R.id.tv_permissions);
-        tv_permissions.setVisibility(View.GONE);
-        btn_login = findViewById(R.id.btn_login);
+        textLogin = findViewById(R.id.textLogin);
+        textPassword = findViewById(R.id.textPassword);
+        tv_help = findViewById(R.id.tv_help);
+        btnLogin = findViewById(R.id.btnLogin);
         btn_register = findViewById(R.id.btn_register);
         btn_password_forgotten = findViewById(R.id.btn_password_forgotten);
         sw_remember = findViewById(R.id.sw_remember);
         progress_bar = findViewById(R.id.progress_bar);
-        btn_login.setOnClickListener(this);
+        btnLogin.setOnClickListener(this);
         btn_register.setOnClickListener(this);
         btn_password_forgotten.setOnClickListener(this);
-        et_username.addTextChangedListener(this);
-        et_password.addTextChangedListener(this);
-        showProgressBar();
-        et_username.setFocusable(false);
-        et_password.setFocusable(false);
+        Objects.requireNonNull(textLogin.getEditText()).addTextChangedListener(this);
+        Objects.requireNonNull(textPassword.getEditText()).addTextChangedListener(this);
         setRememberedCredentials();
 
         loginViewModel.isUpdating().observe(this, new Observer<Boolean>() {
@@ -101,18 +94,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         });
 
-        loginViewModel.getUsers().observe(this, new Observer<List<User>>() {
-            @Override
-            public void onChanged(List<User> users) {
-                hideProgressBar();
-                et_username.setFocusableInTouchMode(true);
-                et_password.setFocusableInTouchMode(true);
-                loginWithRememberedLogin();
-                usersLoaded = true;
-                checkLoginForEmptyPermissions();
-            }
-        });
-
         loginViewModel.getUser().observe(this, new Observer<User>() {
             @Override
             public void onChanged(User user) {
@@ -132,6 +113,55 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 switchToMainActivity(user);
             }
         });
+        loginViewModel.getTextViewHelperText().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                //podmínka aby se upozornění nezobrazovalo vždy když se mění fragment
+                if (getLifecycle().getCurrentState() == Lifecycle.State.RESUMED) {
+                    tv_help.setText(s);
+                }
+            }
+        });
+        loginViewModel.isLoginEnabled().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean) {
+                    enableButton(btnLogin);
+                }
+                else {
+                    disableButton(btnLogin);
+                }
+            }
+        });
+        loginViewModel.isRegistrationEnabled().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean) {
+                    enableButton(btn_register);
+                }
+                else {
+                    disableButton(btn_register);
+                }
+            }
+        });
+        loginViewModel.getLoginErrorText().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                //podmínka aby se upozornění nezobrazovalo vždy když se mění fragment
+                if (getLifecycle().getCurrentState() == Lifecycle.State.RESUMED) {
+                    textLogin.setError(s);
+                }
+            }
+        });
+        loginViewModel.getPasswordErrorText().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                //podmínka aby se upozornění nezobrazovalo vždy když se mění fragment
+                if (getLifecycle().getCurrentState() == Lifecycle.State.RESUMED) {
+                    textPassword.setError(s);
+                }
+            }
+        });
     }
 
     private void showProgressBar() {
@@ -142,55 +172,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         progress_bar.setVisibility(View.GONE);
     }
 
-    private void checkFieldsForEmptyValues() {
-
-        String name = et_username.getText().toString().trim();
-        String password = et_password.getText().toString().trim();
-
-        if(!(name.length() > 0) || !(password.length() > 0)) {
-            btn_login.setEnabled(false);
-            btn_register.setEnabled(false);
-            tv_emptyfields.setVisibility(View.VISIBLE);
-        } else {
-            btn_login.setEnabled(true);
-            btn_register.setEnabled(true);
-            tv_emptyfields.setVisibility(View.GONE);
-        }
+    private void enableButton(Button button) {
+        button.setEnabled(true);
     }
 
-    @SuppressLint("SetTextI18n")
-    private void checkLoginForEmptyPermissions() {
-        String name = et_username.getText().toString().trim();
-        for (User user : Objects.requireNonNull(loginViewModel.getUsers().getValue())) {
-            if (name.equals(user.getName())) {
-                if (user.getStatus() == User.Status.WAITING_FOR_APPROVE) {
-                    tv_permissions.setVisibility(View.VISIBLE);
-                    tv_permissions.setText("Uživatel " + name + " čeká na schválení registrace. Do té doby jsou nastaveny read-only práva");
-                    break;
-                }
-                else if (user.getStatus() == User.Status.DENIED) {
-                    tv_permissions.setVisibility(View.VISIBLE);
-                    btn_login.setEnabled(false);
-                    tv_permissions.setText("Přístup zamítnut PÍČO");
-                    break;
-                }
-                else if (user.getStatus() == User.Status.FORGOTTEN_PASSWORD) {
-                    tv_permissions.setVisibility(View.VISIBLE);
-                    tv_permissions.setText("Zaslána žádost o resetování hesla. Řekni nějakýmu Trusákovi ať ti to potvrdí. Do tý doby si dej pivo na paměť a můžeš to zkoušet");
-                    break;
-                }
-                else if (user.getStatus() == User.Status.PASSWORD_RESET) {
-                    tv_permissions.setVisibility(View.VISIBLE);
-                    tv_permissions.setText("Heslo bylo resetováno. Přihlaš se s libovolným novým a uloží se ti. A někam si ho radši zapiš DEBILE");
-                    break;
-                } else {
-                    tv_permissions.setVisibility(View.GONE);
-                }
-            }
-            else {
-                tv_permissions.setVisibility(View.GONE);
-            }
-        }
+    private void disableButton(Button button) {
+        button.setEnabled(false);
     }
 
     private void switchToMainActivity(User user) {
@@ -200,28 +187,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void loginWithRememberedLogin() {
-        Log.d(TAG, "loginWithRememberedLogin: ");
-        if (pref.getBoolean("remember", false) && !logout && !forceUpdate && usersLoaded) {
+        Log.d(TAG, "loginWithRememberedLogin: " + logout + forceUpdate);
+        if (pref.getBoolean("remember", false) && !logout && !forceUpdate) {
             loginViewModel.loginWithHashedPassword(pref.getString("username", ""), pref.getString("password", ""));
         }
     }
 
     private void setRememberedCredentials() {
         if (pref.getBoolean("remember", false)) {
-            et_username.setText(pref.getString("username", ""));
+            Objects.requireNonNull(textLogin.getEditText()).setText(pref.getString("username", ""));
             sw_remember.setChecked(pref.getBoolean("remember", false));
         }
     }
 
     @Override
     public void onClick(View v) {
-        String name = et_username.getText().toString().trim();
-        String password = et_password.getText().toString().trim();
+        String name = textLogin.getEditText().getText().toString();
+        String password = textPassword.getEditText().getText().toString();
         switch (v.getId()) {
-            case R.id.btn_login:
+            case R.id.btnLogin:
                 if (loginViewModel.loginWithUsernameAndPassword(name, password) && sw_remember.isChecked()) {
                 }
-
                 break;
             case R.id.btn_register:
                 loginViewModel.addUserToRepository(name, password);
@@ -232,7 +218,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -240,17 +225,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        checkFieldsForEmptyValues();
-        if (loginViewModel.getUsers().getValue() != null) {
-            checkLoginForEmptyPermissions();
-        }
-
+        loginViewModel.checkLoginTextForPermissions(textLogin.getEditText().getText().toString(), textPassword.getEditText().getText().toString());
+        textLogin.setError(null);
+        textPassword.setError(null);
     }
-
     @Override
     public void afterTextChanged(Editable s) {
-
-
     }
 
     @Override

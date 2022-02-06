@@ -1,18 +1,12 @@
 package com.jumbo.trus.match.add;
 
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
-
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,17 +16,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.jumbo.trus.FadeAnimation;
 import com.jumbo.trus.R;
-import com.jumbo.trus.Result;
-import com.jumbo.trus.SharedViewModel;
-import com.jumbo.trus.adapters.array.SeasonArrayAdapter;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.match.MatchHelperFragment;
 import com.jumbo.trus.pkfl.PkflMatch;
-import com.jumbo.trus.pkfl.PkflViewModel;
-import com.jumbo.trus.player.Player;
 import com.jumbo.trus.season.Season;
 
-import java.util.ArrayList;
 import java.util.List;
 
 

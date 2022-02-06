@@ -1,9 +1,5 @@
 package com.jumbo.trus.web;
 
-import android.graphics.BitmapFactory;
-import android.util.Log;
-
-import com.google.gson.internal.$Gson$Preconditions;
 import com.jumbo.trus.pkfl.PkflMatch;
 
 import org.jsoup.Jsoup;
@@ -12,9 +8,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Callable;
 

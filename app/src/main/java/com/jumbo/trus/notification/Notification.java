@@ -2,7 +2,6 @@ package com.jumbo.trus.notification;
 
 import com.jumbo.trus.Date;
 import com.jumbo.trus.Model;
-import com.jumbo.trus.fine.Fine;
 import com.jumbo.trus.fine.ReceivedFine;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.player.Player;

@@ -17,12 +17,12 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.jumbo.trus.listener.ChangeListener;
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.Model;
+import com.jumbo.trus.fine.Fine;
+import com.jumbo.trus.listener.ChangeListener;
 import com.jumbo.trus.listener.ItemLoadedListener;
 import com.jumbo.trus.listener.NotificationListener;
-import com.jumbo.trus.fine.Fine;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.player.Player;
@@ -35,11 +35,11 @@ public class FirebaseRepository {
 
     private static final String TAG = "FirebaseRepository";
     public static final String SEASON_TABLE = "season";
-    public static final String PLAYER_TABLE = "player";
+    public static final String PLAYER_TABLE = "player_test";
     public static final String FINE_TABLE = "fine";
-    public static final String MATCH_TABLE = "match";
-    public static final String USER_TABLE = "user";
-    public static final String NOTIFICATION_TABLE = "notification";
+    public static final String MATCH_TABLE = "match_test";
+    public static final String USER_TABLE = "user_test";
+    public static final String NOTIFICATION_TABLE = "notification_test";
     public static final String PKFL_TABLE = "pkfl";
 
     private FirebaseFirestore db;

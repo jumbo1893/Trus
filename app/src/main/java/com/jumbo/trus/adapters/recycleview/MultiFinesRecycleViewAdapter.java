@@ -15,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jumbo.trus.R;
-import com.jumbo.trus.fine.Fine;
 import com.jumbo.trus.fine.ReceivedFine;
 
 import java.util.ArrayList;

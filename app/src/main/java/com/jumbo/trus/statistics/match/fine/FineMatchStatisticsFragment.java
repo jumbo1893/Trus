@@ -15,13 +15,11 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.jumbo.trus.adapters.recycleview.BeerStatisticsRecycleViewAdapter;
 import com.jumbo.trus.adapters.recycleview.FineStatisticsRecycleViewAdapter;
 import com.jumbo.trus.listener.OnListListener;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.season.Season;
 import com.jumbo.trus.statistics.StatisticsHelperFragment;
-import com.jumbo.trus.statistics.match.beer.BeerMatchStatisticsViewModel;
 
 import java.util.List;
 import java.util.Objects;

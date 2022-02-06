@@ -10,11 +10,8 @@ import com.jumbo.trus.Flag;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.listener.ChangeListener;
 import com.jumbo.trus.repository.FirebaseRepository;
-import com.jumbo.trus.user.PasswordEncryption;
 import com.jumbo.trus.user.User;
-import com.jumbo.trus.validator.Validator;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 

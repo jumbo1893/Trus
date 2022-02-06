@@ -20,8 +20,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.jumbo.trus.listener.OnListListener;
 import com.jumbo.trus.notification.Notification;
-import com.jumbo.trus.user.LoginActivity;
-import com.jumbo.trus.user.LoginViewModel;
+import com.jumbo.trus.user.login.LoginActivity;
 import com.jumbo.trus.user.User;
 
 import java.util.ArrayList;

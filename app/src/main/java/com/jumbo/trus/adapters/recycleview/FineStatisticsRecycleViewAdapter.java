@@ -13,8 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jumbo.trus.Model;
-import com.jumbo.trus.listener.OnListListener;
 import com.jumbo.trus.R;
+import com.jumbo.trus.listener.OnListListener;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.player.Player;
 

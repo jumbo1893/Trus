@@ -1,12 +1,9 @@
 package com.jumbo.trus.validator;
 
-import android.util.Log;
-
 import com.google.android.material.textfield.TextInputLayout;
 import com.jumbo.trus.Result;
 import com.jumbo.trus.season.Season;
 import com.jumbo.trus.user.PasswordEncryption;
-import com.jumbo.trus.user.User;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;

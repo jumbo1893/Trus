@@ -11,8 +11,6 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.jumbo.trus.Result;
-import com.jumbo.trus.player.PlayerHelperFragment;
 import com.jumbo.trus.season.SeasonHelperFragment;
 
 

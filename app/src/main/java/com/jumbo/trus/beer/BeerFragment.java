@@ -25,22 +25,14 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.textfield.TextInputLayout;
 import com.jumbo.trus.CustomUserFragment;
 import com.jumbo.trus.R;
-import com.jumbo.trus.Result;
-import com.jumbo.trus.SharedViewModel;
 import com.jumbo.trus.adapters.array.MatchArrayAdapter;
-import com.jumbo.trus.comparator.OrderByBeerThenName;
 import com.jumbo.trus.layout.BeerLayout;
 import com.jumbo.trus.layout.OnChangedPlayerListener;
 import com.jumbo.trus.layout.OnLineFinishedListener;
-import com.jumbo.trus.listener.OnPlusButtonListener;
 import com.jumbo.trus.listener.OnSwipeTouchListener;
-import com.jumbo.trus.match.Compensation;
 import com.jumbo.trus.match.Match;
-import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.player.Player;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**

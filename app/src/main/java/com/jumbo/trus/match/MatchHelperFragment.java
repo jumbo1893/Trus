@@ -182,12 +182,7 @@ public class MatchHelperFragment extends CustomAddFragment {
         }
         boolean[] checkedPlayersList = new boolean[allPlayers.size()];
         for (int i = 0; i < allPlayers.size(); i++) {
-            if (currentPlayers.contains(allPlayers.get(i))) {
-                checkedPlayersList[i] = true;
-            }
-            else {
-                checkedPlayersList[i] = false;
-            }
+            checkedPlayersList[i] = currentPlayers.contains(allPlayers.get(i));
         }
         return checkedPlayersList;
     }

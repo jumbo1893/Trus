@@ -19,10 +19,10 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
+import com.jumbo.trus.beer.BeerFragment;
 import com.jumbo.trus.fine.add.FineAddFragment;
 import com.jumbo.trus.fine.detail.add.FinePlusFragment;
 import com.jumbo.trus.fine.detail.edit.FineEditFragment;
@@ -32,24 +32,21 @@ import com.jumbo.trus.home.HomeFragment;
 import com.jumbo.trus.info.AppInfoFragment;
 import com.jumbo.trus.main.NotificationBadgeCounter;
 import com.jumbo.trus.match.Match;
+import com.jumbo.trus.match.add.MatchPlusFragment;
 import com.jumbo.trus.match.edit.MatchEditFragment;
 import com.jumbo.trus.match.list.MatchFragment;
-import com.jumbo.trus.match.add.MatchPlusFragment;
 import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.notification.NotificationFragment;
 import com.jumbo.trus.notification.NotificationViewModel;
 import com.jumbo.trus.pkfl.LoadedMatchesFragment;
+import com.jumbo.trus.player.add.PlayerPlusFragment;
 import com.jumbo.trus.player.edit.PlayerEditFragment;
 import com.jumbo.trus.player.list.PlayerFragment;
-import com.jumbo.trus.player.add.PlayerPlusFragment;
-import com.jumbo.trus.beer.BeerFragment;
-
 import com.jumbo.trus.repayment.RepaymentFragment;
 import com.jumbo.trus.repayment.RepaymentPlusFragment;
-import com.jumbo.trus.season.edit.SeasonEditFragment;
 import com.jumbo.trus.season.add.SeasonPlusFragment;
+import com.jumbo.trus.season.edit.SeasonEditFragment;
 import com.jumbo.trus.season.list.SeasonsFragment;
-
 import com.jumbo.trus.statistics.MainStatisticsFragment;
 import com.jumbo.trus.statistics.match.beer.detail.BeerMatchStatisticsDetailFragment;
 import com.jumbo.trus.statistics.match.fine.detail.FineMatchStatisticsDetailFragment;
@@ -137,15 +134,7 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
         });
         navigation.setOnItemSelectedListener(onItemSelectedListener);
         navigation.getMenu().getItem(2).setEnabled(false);
-        notificationViewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
-        notificationViewModel.init();
-        notificationViewModel.getNotifications().observe(this, new Observer<List<Notification>>() {
-            @Override
-            public void onChanged(List<Notification> notifications) {
-                setNotificationsBadgeNumber(notificationBadgeCounter.returnNumberOfLastNotification(notifications));
-            }
 
-        });
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -202,6 +191,15 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
             public void onClick(View v) {
                 onOptionsItemSelected(plusMenuItem);
             }
+        });
+        notificationViewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
+        notificationViewModel.init();
+        notificationViewModel.getNotifications().observe(this, new Observer<List<Notification>>() {
+            @Override
+            public void onChanged(List<Notification> notifications) {
+                setNotificationsBadgeNumber(notificationBadgeCounter.returnNumberOfLastNotification(notifications));
+            }
+
         });
         return true;
     }
@@ -429,6 +427,7 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
             tv_notifications.setVisibility(View.GONE);
             return;
         } else if (notificationNumber == NotificationBadgeCounter.MAX_NUMBER) {
+            Log.d(TAG, "setNotificationsBadgeNumber: " + tv_notifications);
             tv_notifications.setText(notificationNumber + "+");
         } else {
             tv_notifications.setText(String.valueOf(notificationNumber));

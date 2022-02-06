@@ -4,7 +4,6 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.jumbo.trus.BaseViewModel;
 import com.jumbo.trus.Date;
@@ -12,15 +11,11 @@ import com.jumbo.trus.Flag;
 import com.jumbo.trus.INotificationSender;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.listener.ChangeListener;
-import com.jumbo.trus.match.Match;
 import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.player.Player;
 import com.jumbo.trus.repository.FirebaseRepository;
 import com.jumbo.trus.user.User;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class RepaymentPlusViewModel extends BaseViewModel implements ChangeListener, INotificationSender {

@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AutoCompleteTextView;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.Switch;
@@ -16,7 +15,6 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.jumbo.trus.CustomAddFragment;
 import com.jumbo.trus.R;
 import com.jumbo.trus.validator.AmountTextWatcher;
-import com.jumbo.trus.validator.DateTextWatcher;
 import com.jumbo.trus.validator.NameTextWatcher;
 import com.jumbo.trus.validator.TextFieldValidator;
 

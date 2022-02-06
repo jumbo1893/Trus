@@ -4,10 +4,8 @@ import android.util.Log;
 import android.widget.EditText;
 
 import com.jumbo.trus.Date;
-import com.jumbo.trus.Model;
 import com.jumbo.trus.Result;
 import com.jumbo.trus.fine.Fine;
-import com.jumbo.trus.player.Player;
 import com.jumbo.trus.season.Season;
 
 import java.text.ParseException;
@@ -26,10 +24,7 @@ public class Validator {
     }
 
     public boolean fieldIsNotEmpty (String text) {
-        if (text.isEmpty()) {
-            return false;
-        }
-        return true;
+        return !text.isEmpty();
     }
 
     public boolean isDateInCorrectFormat (String datum) {
@@ -48,40 +43,28 @@ public class Validator {
         String regex = "^[a-zA-Z0-9_ áčďéěíňóřšťůúýžÁČĎÉĚÍŇÓŘŠŤŮÚÝŽ.()-]{0,100}$";
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(name);
-        if (m.matches()) {
-            return true;
-        }
-        return false;
+        return m.matches();
     }
 
     public boolean checkFieldFormat (String name, int nameLength) {
         String regex = "^[a-zA-Z0-9_ áčďéěíňóřšťůúýžÁČĎÉĚÍŇÓŘŠŤŮÚÝŽ-]{0," + nameLength + "}$";
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(name);
-        if (m.matches()) {
-            return true;
-        }
-        return false;
+        return m.matches();
     }
 
     public boolean checkPasswordFormat (String password) {
         String regex = "^[a-zA-Z0-9_.! áčďéěíňóřšťůúýžÁČĎÉĚÍŇÓŘŠŤŮÚÝŽ-]{1,30}$";
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(password);
-        if (m.matches()) {
-            return true;
-        }
-        return false;
+        return m.matches();
     }
 
     public boolean checkEmailFormat (String mail) {
         String regex = "^\\S+@\\S+\\.\\S+$";
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(mail);
-        if (m.matches()) {
-            return true;
-        }
-        return false;
+        return m.matches();
     }
 
     public boolean checkEqualityOfSeason(String name, String seasonStart, String seasonEnd, Season currentSeason) {
@@ -107,24 +90,14 @@ public class Validator {
         String regex = "^[0-9]{0,2}$";
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(piva.getText().toString());
-        if (m.matches()) {
-            return false;
-        }
-        else {
-            return true;
-        }
+        return !m.matches();
     }
 
     public boolean checkAmount(int amount) {
         String regex = "^[0-9]{0,5}$";
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(String.valueOf(amount));
-        if (m.matches()) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return m.matches();
     }
 
     public Result checkFineAmount(String amount) {

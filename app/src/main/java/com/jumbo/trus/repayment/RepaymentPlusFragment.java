@@ -2,24 +2,17 @@ package com.jumbo.trus.repayment;
 
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -28,16 +21,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.jumbo.trus.CustomAddFragment;
-import com.jumbo.trus.CustomUserFragment;
 import com.jumbo.trus.IFragment;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.R;
 import com.jumbo.trus.SimpleDividerItemDecoration;
 import com.jumbo.trus.adapters.recycleview.SimpleRecycleViewAdapter;
-import com.jumbo.trus.listener.OnListListener;
 import com.jumbo.trus.player.Player;
 import com.jumbo.trus.validator.AmountTextWatcher;
-import com.jumbo.trus.validator.NameTextWatcher;
 import com.jumbo.trus.validator.NoteTextWatcher;
 import com.jumbo.trus.validator.TextFieldValidator;
 

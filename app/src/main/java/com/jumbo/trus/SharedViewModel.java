@@ -7,15 +7,11 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.jumbo.trus.fine.Fine;
-import com.jumbo.trus.listener.ChangeListener;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.player.Player;
-import com.jumbo.trus.repository.FirebaseRepository;
 import com.jumbo.trus.season.Season;
 import com.jumbo.trus.user.User;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class SharedViewModel extends ViewModel {

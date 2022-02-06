@@ -19,7 +19,6 @@ import com.jumbo.trus.R;
 import com.jumbo.trus.SimpleDividerItemDecoration;
 import com.jumbo.trus.adapters.recycleview.StringTitleAndTextRecycleViewAdapter;
 import com.jumbo.trus.statistics.player.ListTexts;
-import com.jumbo.trus.statistics.player.beer.detail.BeerPlayerStatisticsDetailViewModel;
 
 import java.util.List;
 

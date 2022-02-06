@@ -27,7 +27,6 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.jumbo.trus.CustomUserFragment;
 import com.jumbo.trus.FadeAnimation;
 import com.jumbo.trus.R;
-import com.jumbo.trus.SharedViewModel;
 import com.jumbo.trus.SimpleDividerItemDecoration;
 import com.jumbo.trus.adapters.array.MatchArrayAdapter;
 import com.jumbo.trus.adapters.recycleview.MultiRecycleViewAdapter;
@@ -232,10 +231,7 @@ public class FinePlayersFragment extends CustomUserFragment implements View.OnCl
     }
 
     private boolean checkIfAtLeastOnePlayerIsChecked() {
-        if (adapter.getCheckedPlayers().contains(Boolean.TRUE)) {
-            return true;
-        }
-        return false;
+        return adapter.getCheckedPlayers().contains(Boolean.TRUE);
     }
 
     private void setButtonsTransparency() {

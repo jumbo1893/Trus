@@ -22,15 +22,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jumbo.trus.CustomUserFragment;
 import com.jumbo.trus.R;
-import com.jumbo.trus.Result;
-import com.jumbo.trus.SharedViewModel;
 import com.jumbo.trus.adapters.recycleview.FinesRecycleViewAdapter;
 import com.jumbo.trus.adapters.recycleview.MultiFinesRecycleViewAdapter;
 import com.jumbo.trus.fine.ReceivedFine;
-import com.jumbo.trus.layout.BeerLayout;
 import com.jumbo.trus.listener.OnPlusButtonListener;
-import com.jumbo.trus.match.Compensation;
-import com.jumbo.trus.notification.Notification;
 
 import java.util.List;
 
