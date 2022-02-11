@@ -10,6 +10,7 @@ import com.jumbo.trus.Flag;
 import com.jumbo.trus.INotificationSender;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.listener.ChangeListener;
+import com.jumbo.trus.listener.ModelLoadedListener;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.match.MatchViewModelHelper;
 import com.jumbo.trus.notification.Notification;
@@ -25,7 +26,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-public class MatchEditViewModel extends MatchViewModelHelper implements ChangeListener, INotificationSender{
+public class MatchEditViewModel extends MatchViewModelHelper implements ChangeListener, INotificationSender, ModelLoadedListener {
 
     private static final String TAG = "MatchViewModel";
 
@@ -36,10 +37,11 @@ public class MatchEditViewModel extends MatchViewModelHelper implements ChangeLi
     private FirebaseRepository firebaseRepository;
     private boolean changeAlertLocked;
 
-    public void init() {
+    public void init(Match match) {
+        setPickedMatch(match);
         changeAlertLocked = true;
-        firebaseRepository = new FirebaseRepository(FirebaseRepository.MATCH_TABLE, this, false, true);
-        firebaseRepository.loadMatchesFromRepository();
+        firebaseRepository = new FirebaseRepository(FirebaseRepository.MATCH_TABLE, this, false, true, this);
+        firebaseRepository.loadMatchFromRepository(pickedMatch.getId());
         Log.d(TAG, "init: nacitam zapasy");
         if (seasons == null) {
             seasons = new MutableLiveData<>();
@@ -51,6 +53,13 @@ public class MatchEditViewModel extends MatchViewModelHelper implements ChangeLi
             firebaseRepository.loadPlayersFromRepository();
             Log.d(TAG, "init: nacitam zapasy");
         }
+    }
+
+    private void setPickedMatch(Match match) {
+        pickedMatch = match;
+        setMatch(match);
+        setPlayerList(pickedMatch);
+        setCheckedSeason(pickedMatch.getSeason());
     }
 
     public void editMatchInRepository(final String opponent, final boolean homeMatch, final String datum, User user) {
@@ -95,13 +104,6 @@ public class MatchEditViewModel extends MatchViewModelHelper implements ChangeLi
         sendNotificationToRepository(new Notification("Smazán zápas " + pickedMatch.getOpponent(), text, user));
     }
 
-    public void setPickedMatch(Match match) {
-        pickedMatch = match;
-        setMatch(match);
-        setPlayerList(pickedMatch);
-        setCheckedSeason(pickedMatch.getSeason());
-    }
-
     public LiveData<List<Player>> getPlayers() {
         return players;
     }
@@ -110,12 +112,14 @@ public class MatchEditViewModel extends MatchViewModelHelper implements ChangeLi
         return seasons;
     }
 
-    private void updatePickedMatch(List<Match> matches) {
-        pickedMatch = findMatchFromRepo(pickedMatch, matches);
+    private void updatePickedMatch(Match match) {
+        if (match.equals(pickedMatch)) {
+            sendChangedMatchAlert();
+        }
+        pickedMatch = match;
         setMatch(pickedMatch);
         setPlayerList(pickedMatch);
         setCheckedSeason(pickedMatch.getSeason());
-        sendChangedMatchAlert();
     }
 
     private void sendChangedMatchAlert() {
@@ -132,15 +136,8 @@ public class MatchEditViewModel extends MatchViewModelHelper implements ChangeLi
         checkedPlayers.setValue(selectedPlayers);
     }
 
-    private Match findMatchFromRepo(Match match, List<Match> matches) {
-        if (matches != null) {
-            for (Match repoMatch : matches) {
-                if (repoMatch.equals(match)) {
-                    return repoMatch;
-                }
-            }
-        }
-        return match;
+    public void removeReg() {
+        firebaseRepository.removeListener();
     }
 
     @Override
@@ -191,15 +188,6 @@ public class MatchEditViewModel extends MatchViewModelHelper implements ChangeLi
         } else if (flag.equals(Flag.SEASON)) {
             list.add(0, new Season().automaticSeason());
             seasons.setValue(list);
-
-        } else if (flag.equals(Flag.MATCH)) {
-            Collections.sort(list, new Comparator<Match>() {
-                @Override
-                public int compare(Match o1, Match o2) {
-                    return Long.compare(o2.getDateOfMatch(), o1.getDateOfMatch());
-                }
-            });
-            updatePickedMatch(list);
         }
         isUpdating.setValue(false);
     }
@@ -207,5 +195,11 @@ public class MatchEditViewModel extends MatchViewModelHelper implements ChangeLi
     @Override
     public void alertSent(String message) {
         alert.setValue(message);
+    }
+
+    @Override
+    public void itemLoaded(Model model) {
+
+        updatePickedMatch((Match) model);
     }
 }

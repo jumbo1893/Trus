@@ -37,6 +37,11 @@ public class FineMatchStatisticsViewModel extends MatchHelperStatisticsViewModel
         firebaseRepository.loadSeasonsFromRepository();
     }
 
+    public void removeReg() {
+        firebaseRepository.removeListener();
+    }
+
+
     @Override
     public void changeOrderBy() {
         super.changeOrderBy();

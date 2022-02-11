@@ -99,6 +99,12 @@ public class TableBeerStatisticsFragment extends TableStatisticsHelperFragment {
     }
 
     @Override
+    public void onDestroy() {
+        viewModel.removeReg();
+        super.onDestroy();
+    }
+
+    @Override
     protected void onDownloadClick() {
         try {
             viewModel.sendToGoogle("beer", requireActivity());

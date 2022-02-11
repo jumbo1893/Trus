@@ -47,6 +47,11 @@ public class FinePlayersViewModel extends BaseViewModel implements ChangeListene
         }
     }
 
+    public void removeReg() {
+        firebaseRepository.removeListener();
+    }
+
+
     public void reduceNumberOfFines() {
         for (Player player : pickedMatch.getPlayerList()) {
             List<ReceivedFine> receivedFines = new ArrayList<>();

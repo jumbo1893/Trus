@@ -118,6 +118,12 @@ public class BeerPlayerStatisticsFragment extends StatisticsHelperFragment imple
         });
     }
 
+    @Override
+    public void onDestroy() {
+        viewModel.removeReg();
+        super.onDestroy();
+    }
+
     private void initRecycleView(List<Player> playerList) {
         Log.d(TAG, "initRecycleView: " + playerList.size());
         adapter = new BeerStatisticsRecycleViewAdapter(playerList, getActivity(), this);

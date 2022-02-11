@@ -117,6 +117,12 @@ public class FineMatchStatisticsFragment extends StatisticsHelperFragment implem
         });
     }
 
+    @Override
+    public void onDestroy() {
+        viewModel.removeReg();
+        super.onDestroy();
+    }
+
     private void initRecycleView(List<Match> matchList) {
         adapter = new FineStatisticsRecycleViewAdapter(matchList, getActivity(), this);
     }

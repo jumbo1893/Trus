@@ -71,6 +71,10 @@ public class MatchListViewModel extends BaseViewModel implements ChangeListener 
         matches.setValue(selectedMatches);
     }
 
+    public void removeReg() {
+        firebaseRepository.removeListener();
+    }
+
     @Override
     public void itemAdded(Model model) {
 

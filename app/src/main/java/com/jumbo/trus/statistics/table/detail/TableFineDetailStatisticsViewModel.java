@@ -50,6 +50,11 @@ public class TableFineDetailStatisticsViewModel extends MatchHelperStatisticsVie
         firebaseRepository.loadFinesFromRepository();
     }
 
+    public void removeReg() {
+        firebaseRepository.removeListener();
+    }
+
+
     public void setSeason (Season season) {
         this.season.setValue(season);
         startMakingTexts(matches, allPlayers, allFines);

@@ -43,7 +43,6 @@ public class BeerViewModel extends BaseViewModel implements ChangeListener, INot
         firebaseRepository = new FirebaseRepository(FirebaseRepository.MATCH_TABLE, this);
         if (matches == null) {
             matches = new MutableLiveData<>();
-            firebaseRepository.loadMatchesFromRepository();
         }
         firebaseRepository.loadMatchesFromRepository();
         firebaseRepository.loadPlayersFromRepository();
@@ -51,7 +50,7 @@ public class BeerViewModel extends BaseViewModel implements ChangeListener, INot
 
     public Match editMatchBeers(final List<Player> playerList, User user) {
         isUpdating.setValue(true);
-        changeAlertEnabled = true;
+        changeAlertEnabled = false;
         pickedMatch.mergePlayerLists(playerList);
         try {
             firebaseRepository.editModel(pickedMatch);

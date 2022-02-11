@@ -32,7 +32,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class FineAddViewModel extends ViewModel implements ChangeListener, INotificationSender {
+public class FineAddViewModel extends ViewModel implements ChangeListener, INotificationSender, ModelLoadedListener {
 
     private static final String TAG = "FineAddViewModel";
 
@@ -46,17 +46,16 @@ public class FineAddViewModel extends ViewModel implements ChangeListener, INoti
     private MutableLiveData<String> alert = new MutableLiveData<>();
     private MutableLiveData<String> titleText = new MutableLiveData<>();
     private boolean multiplayers;
-    private Compensation matchCompensation;
     private boolean changeAlertEnabled = false;
     private FirebaseRepository firebaseRepository;
 
     public void init(Match match, Player player, List<Player> playerList, boolean multiplayers) {
-        if (firebaseRepository == null) {
-            firebaseRepository = new FirebaseRepository(FirebaseRepository.MATCH_TABLE, this);
-        }
         setPickedMatchAndPlayer(match, player, playerList, multiplayers);
+        if (firebaseRepository == null) {
+            firebaseRepository = new FirebaseRepository(FirebaseRepository.MATCH_TABLE, this, this);
+        }
+        firebaseRepository.loadMatchFromRepository(pickedMatch.getId());
         changeAlertEnabled = false;
-        firebaseRepository.loadMatchesFromRepository();
         firebaseRepository.loadFinesFromRepository();
     }
 
@@ -67,7 +66,6 @@ public class FineAddViewModel extends ViewModel implements ChangeListener, INoti
         pickedPlayers = playerList;
         this.multiplayers = multiplayers;
         setFines(fineList);
-        initCompensationVariables();
         setTitleText(pickedMatch, player);
     }
 
@@ -106,7 +104,7 @@ public class FineAddViewModel extends ViewModel implements ChangeListener, INoti
 
     public Match editMatchPlayersFines(List<Integer> finesPlus, User user) {
         isUpdating.setValue(true);
-        changeAlertEnabled = true;
+        changeAlertEnabled = false;
         if (multiplayers) {
             updatePlayersFines(finesPlus, user);
 
@@ -142,7 +140,6 @@ public class FineAddViewModel extends ViewModel implements ChangeListener, INoti
 
     private List<ReceivedFine> mergeReceivedFinesAndNumber(List<Integer> finesPlus) {
         List<ReceivedFine> fines = new ArrayList();
-        matchCompensation.getFinesCompesation().get(pickedMatch.returnPlayerListWithoutFans().indexOf(pickedPlayer)).clear();
         for (int i = 0; i < finesPlus.size(); i++) {
             if (finesPlus.get(i) > 0) {
                 fines.add(new ReceivedFine(this.fines.getValue().get(i).getFine(), finesPlus.get(i)));
@@ -155,12 +152,6 @@ public class FineAddViewModel extends ViewModel implements ChangeListener, INoti
         Log.d(TAG, "setMatchAsAdded: " + match.getName());
         isUpdating.setValue(false);
         closeFragment.setValue(true);
-    }
-
-    private void initCompensationVariables() {
-        matchCompensation = new Compensation(pickedMatch);
-        matchCompensation.initBeerAndLiquorCompensation();
-        matchCompensation.initFineCompensation();
     }
 
     private void mergeFineListFromLoadedFines(List<Fine> fines) {
@@ -236,24 +227,19 @@ public class FineAddViewModel extends ViewModel implements ChangeListener, INoti
         }
     }
 
-    private void updateMatchFromLoadedMatches(List<Match> matches) {
+    private void updateMatchFromLoadedMatches(Match match) {
         Log.d(TAG, "updateMatchFromLoadedMatches: inituji");
-        for (Match match : matches) {
-            if (match.equals(pickedMatch)) {
-                if (changeAlertEnabled) {
-                    Log.d(TAG, "updateMatchFromLoadedMatches: nastala změna");
-                    alert.setValue("Proběhla změna zápasu, reloaduji nové údaje");
-                } else {
-                    changeAlertEnabled = true;
-                }
-                pickedMatch = match;
-                initCompensationVariables();
-                setTitleText(match, pickedPlayer);
-                setNewPlayer(match);
-                setFines(fineList);
-                break;
+        if (match.equals(pickedMatch)) {
+            if (changeAlertEnabled) {
+                Log.d(TAG, "updateMatchFromLoadedMatches: nastala změna");
+                alert.setValue("Proběhla změna zápasu, reloaduji nové údaje");
+            } else {
+                changeAlertEnabled = true;
             }
-
+            pickedMatch = match;
+            setTitleText(match, pickedPlayer);
+            setNewPlayer(match);
+            setFines(fineList);
         }
     }
 
@@ -290,23 +276,15 @@ public class FineAddViewModel extends ViewModel implements ChangeListener, INoti
             setFines(list);
             fineList = list;
         }
-        else if (flag.equals(Flag.MATCH)) {
-            Match match = (Match) list.get(0);
-            Log.d(TAG, "itemListLoaded: " + match.returnPlayerListOnlyWithParticipants().get(0).getNumberOfBeers());
-            Collections.sort(list, new Comparator<Match>() {
-                @Override
-                public int compare(Match o1, Match o2) {
-                    return Long.compare(o2.getDateOfMatch(), o1.getDateOfMatch());
-                }
-            });
-
-            updateMatchFromLoadedMatches(list);
-        }
-
     }
 
     @Override
     public void alertSent(String message) {
         alert.setValue(message);
+    }
+
+    @Override
+    public void itemLoaded(Model model) {
+        updateMatchFromLoadedMatches((Match) model);
     }
 }

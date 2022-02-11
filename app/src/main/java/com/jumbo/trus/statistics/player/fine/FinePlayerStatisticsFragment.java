@@ -118,6 +118,12 @@ public class FinePlayerStatisticsFragment extends StatisticsHelperFragment imple
         });
     }
 
+    @Override
+    public void onDestroy() {
+        viewModel.removeReg();
+        super.onDestroy();
+    }
+
     private void initRecycleView(List<Player> playerList) {
         Log.d(TAG, "initRecycleView: " + playerList.size());
         adapter = new FineStatisticsRecycleViewAdapter(playerList, getActivity(), this);

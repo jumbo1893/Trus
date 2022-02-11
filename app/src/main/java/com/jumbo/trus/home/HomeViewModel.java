@@ -52,30 +52,33 @@ public class HomeViewModel extends BaseViewModel implements ChangeListener, Item
         }
         if (randomFacts == null) {
             randomFacts = new ArrayList<>();
-            //firebaseRepository.loadNotificationsFromRepository();
             Log.d(TAG, "init: načítám zajimavosti");
         }
         if (players == null) {
             players = new MutableLiveData<>();
-            firebaseRepository.loadPlayersFromRepository();
             Log.d(TAG, "init: nacitam hrace");
         }
         if (matches == null) {
             matches = new MutableLiveData<>();
-            firebaseRepository.loadMatchesFromRepository();
             Log.d(TAG, "init: nacitam zapasy");
         }
         if (seasons == null) {
             seasons = new MutableLiveData<>();
-            firebaseRepository.loadSeasonsFromRepository();
             Log.d(TAG, "init: nacitam sezony");
         }
         if (fines == null) {
             fines = new MutableLiveData<>();
-            firebaseRepository.loadFinesFromRepository();
             Log.d(TAG, "init: nacitam pokuty");
         }
         firebaseRepository.loadPkflUrlFromRepository();
+        firebaseRepository.loadPlayersFromRepository();
+        firebaseRepository.loadMatchesFromRepository();
+        firebaseRepository.loadSeasonsFromRepository();
+        firebaseRepository.loadFinesFromRepository();
+    }
+
+    public void removeReg() {
+        firebaseRepository.removeListener();
     }
 
     private void setRandomFacts() {

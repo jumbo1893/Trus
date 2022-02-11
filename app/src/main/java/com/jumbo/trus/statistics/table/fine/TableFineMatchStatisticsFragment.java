@@ -100,6 +100,12 @@ public class TableFineMatchStatisticsFragment extends TableStatisticsHelperFragm
     }
 
     @Override
+    public void onDestroy() {
+        viewModel.removeReg();
+        super.onDestroy();
+    }
+
+    @Override
     protected void onDownloadClick() {
         try {
             viewModel.sendToGoogle("fine_match", requireActivity());

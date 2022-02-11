@@ -37,8 +37,7 @@ public class MatchEditFragment extends MatchHelperFragment implements IFragment 
         btnDelete.setVisibility(View.VISIBLE);
         Log.d(TAG, "onViewCreated: ");
         matchEditViewModel = new ViewModelProvider(requireActivity()).get(MatchEditViewModel.class);
-        matchEditViewModel.init();
-        matchEditViewModel.setPickedMatch(sharedViewModel.getPickedMatchForEdit().getValue());
+        matchEditViewModel.init(sharedViewModel.getPickedMatchForEdit().getValue());
         matchEditViewModel.getSeasons().observe(getViewLifecycleOwner(), new Observer<List<Season>>() {
             @Override
             public void onChanged(List<Season> seasonList) {
@@ -123,6 +122,12 @@ public class MatchEditFragment extends MatchHelperFragment implements IFragment 
                 matchEditViewModel.setCheckedSeason(seasonArrayAdapter.getItem(i));
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        matchEditViewModel.removeReg();
+        super.onDestroyView();
     }
 
     private void setTextsToEditMatch(Match match) {

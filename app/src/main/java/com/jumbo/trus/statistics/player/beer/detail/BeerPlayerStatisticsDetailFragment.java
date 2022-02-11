@@ -65,6 +65,12 @@ public class BeerPlayerStatisticsDetailFragment extends CustomUserFragment {
         });
     }
 
+    @Override
+    public void onDestroy() {
+        viewModel.removeReg();
+        super.onDestroy();
+    }
+
     private void initRecycleView(List<ListTexts> texts) {
         adapter = new StringTitleAndTextRecycleViewAdapter(texts, getActivity(), this);
     }

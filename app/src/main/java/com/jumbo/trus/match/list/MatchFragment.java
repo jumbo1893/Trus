@@ -100,6 +100,12 @@ public class MatchFragment extends CustomUserFragment implements AdapterView.OnI
         return view;
     }
 
+    @Override
+    public void onDestroy() {
+        matchListViewModel.removeReg();
+        super.onDestroy();
+    }
+
     private void setSeasonAdapter() {
         sp_seasons.setAdapter(seasonArrayAdapter);
     }

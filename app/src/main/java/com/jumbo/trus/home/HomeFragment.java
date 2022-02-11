@@ -93,6 +93,12 @@ public class HomeFragment extends CustomUserFragment implements View.OnClickList
         });
     }
 
+    @Override
+    public void onDestroyView() {
+        homeViewModel.removeReg();
+        super.onDestroyView();
+    }
+
     private void initSwipeListener(View view) {
         view.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
             public void onSwipeRight() {

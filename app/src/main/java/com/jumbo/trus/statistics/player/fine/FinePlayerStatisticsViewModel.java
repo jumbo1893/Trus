@@ -38,6 +38,11 @@ public class FinePlayerStatisticsViewModel extends PlayerHelperStatisticsViewMod
         firebaseRepository.loadSeasonsFromRepository();
     }
 
+    public void removeReg() {
+        firebaseRepository.removeListener();
+    }
+
+
     @Override
     public void changeOrderBy() {
         super.changeOrderBy();

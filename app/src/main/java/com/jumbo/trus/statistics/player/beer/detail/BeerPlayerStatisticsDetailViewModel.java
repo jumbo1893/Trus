@@ -47,6 +47,11 @@ public class BeerPlayerStatisticsDetailViewModel extends ViewModel implements Ch
         }
     }
 
+    public void removeReg() {
+        firebaseRepository.removeListener();
+    }
+
+
     private void setTitleText(Player player, Season season) {
         if (season.equals(new Season().allSeason())) {
             titleText.setValue(player.getName() + " | " + "všechny sezony");

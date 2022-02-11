@@ -100,6 +100,12 @@ public class TableFineDetailStatisticsFragment extends TableStatisticsHelperFrag
     }
 
     @Override
+    public void onDestroy() {
+        viewModel.removeReg();
+        super.onDestroy();
+    }
+
+    @Override
     protected void onDownloadClick() {
         try {
             viewModel.sendToGoogle("fine_detail", requireActivity());

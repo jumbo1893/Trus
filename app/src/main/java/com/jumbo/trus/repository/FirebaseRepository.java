@@ -52,7 +52,8 @@ public class FirebaseRepository {
     private ModelLoadedListener modelLoadedListener;
     private NotificationListener notificationListener;
     private ArrayList<Model> modelsDataSet = new ArrayList<>();
-    private ListenerRegistration reg;
+    private ListenerRegistration matchesListener;
+    private ListenerRegistration matchListener;
 
     private boolean allSeasons = false;
     private boolean otherSeason = false;
@@ -98,6 +99,17 @@ public class FirebaseRepository {
         this.otherSeason = otherSeason;
     }
 
+    public FirebaseRepository(String keyword, ChangeListener changeListener, boolean allSeasons, boolean otherSeason, ModelLoadedListener modelLoadedListener) {
+        if (db == null) {
+            db = FirebaseFirestore.getInstance();
+        }
+        collectionReference = db.collection(keyword);
+        this.changeListener = changeListener;
+        this.modelLoadedListener = modelLoadedListener;
+        this.allSeasons = allSeasons;
+        this.otherSeason = otherSeason;
+    }
+
     public FirebaseRepository(String keyword, NotificationListener notificationListener) {
         if (db == null) {
             db = FirebaseFirestore.getInstance();
@@ -114,8 +126,11 @@ public class FirebaseRepository {
     }
 
     public void removeListener() {
-        if (reg != null) {
-            reg.remove();
+        if (matchesListener != null) {
+            matchesListener.remove();
+        }
+        if (matchListener != null) {
+            matchListener.remove();
         }
     }
 
@@ -255,7 +270,7 @@ public class FirebaseRepository {
     public void loadMatchesFromRepository() {
         modelsDataSet = new ArrayList<>();
         final CollectionReference collectionReference = db.collection(MATCH_TABLE);
-        reg = collectionReference.orderBy("dateOfMatch", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        matchesListener = collectionReference.orderBy("dateOfMatch", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error != null) {
@@ -277,7 +292,7 @@ public class FirebaseRepository {
 
     public void loadMatchFromRepository(String id) {
         DocumentReference document = db.collection(MATCH_TABLE).document(id);
-        document.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        matchListener = document.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error != null) {

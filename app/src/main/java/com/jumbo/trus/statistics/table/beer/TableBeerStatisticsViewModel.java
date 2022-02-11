@@ -47,6 +47,11 @@ public class TableBeerStatisticsViewModel extends MatchHelperStatisticsViewModel
         firebaseRepository.loadSeasonsFromRepository();
     }
 
+    public void removeReg() {
+        firebaseRepository.removeListener();
+    }
+
+
     public void setSeason (Season season) {
         this.season.setValue(season);
         startMakingTexts(matches, allPlayers);

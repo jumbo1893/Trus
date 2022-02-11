@@ -155,6 +155,12 @@ public class FinePlayersFragment extends CustomUserFragment implements View.OnCl
         });
     }
 
+    @Override
+    public void onDestroyView() {
+        finePlayersViewModel.removeReg();
+        super.onDestroyView();
+    }
+
     /**
      * nastaví a nasetuje adapter pro autocompletetextview. Zároveň nastaví text dle načteného zápasu. Nutno volat až po načtení zápasů
      */
