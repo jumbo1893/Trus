@@ -72,7 +72,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Objects.requireNonNull(textLogin.getEditText()).addTextChangedListener(this);
         Objects.requireNonNull(textPassword.getEditText()).addTextChangedListener(this);
         setRememberedCredentials();
-
+        disableButton(btnLogin);
+        disableButton(btn_register);
         loginViewModel.isUpdating().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {

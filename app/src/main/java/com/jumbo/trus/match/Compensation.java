@@ -2,6 +2,7 @@ package com.jumbo.trus.match;
 
 import android.util.Log;
 
+import com.jumbo.trus.fine.ReceivedFine;
 import com.jumbo.trus.player.Player;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class Compensation {
     private Match match;
     private List<Integer> beerCompensation;
     private List<Integer> liquorCompensation;
-    private List<List<Integer>> finesCompesation;
+    private List<List<ReceivedFine>> finesCompesation;
 
     public Compensation(Match match) {
         this.match = match;
@@ -28,7 +29,7 @@ public class Compensation {
         return liquorCompensation;
     }
 
-    public List<List<Integer>> getFinesCompesation() {
+    public List<List<ReceivedFine>> getFinesCompesation() {
         return finesCompesation;
     }
 
@@ -57,27 +58,12 @@ public class Compensation {
     }
 
     public void initFineCompensation() {
-        Log.d(TAG, "initFineCompensation: ukládám do proměnné současný seznam pokut pro zápas " + match + ", velikost hráčů je " + match.returnPlayerListWithoutFans());
         finesCompesation = new ArrayList<>();
         for (Player player : match.returnPlayerListWithoutFans()) {
-            finesCompesation.add(player.returnNumberOfFines());
+            List<ReceivedFine> fines = new ArrayList<>(player.getReceivedFines());
+            finesCompesation.add(fines);
         }
         Log.d(TAG, "initFineCompensation: " + finesCompesation);
 
-    }
-    public void setOriginalFineNumberForAllPlayers() {
-        Log.d(TAG, "returnOriginalFineNumberForAllPlayers: ");
-        for (int i = 0; i < match.returnPlayerListWithoutFans().size(); i++) {
-            match.returnPlayerListWithoutFans().get(i).setNewFineCountsToAllReceivedFines(finesCompesation.get(i));
-        }
-    }
-
-    public void setOriginalFineNumberForPlayer(Player player) {
-        Log.d(TAG, "returnOriginalFineNumberForPlayer: " + match.returnPlayerListWithoutFans().size() + finesCompesation.size());
-        for (int i = 0; i < match.returnPlayerListWithoutFans().size(); i++) {
-            if (match.returnPlayerListWithoutFans().get(i).equals(player)) {
-                match.returnPlayerListWithoutFans().get(i).setNewFineCountsToAllReceivedFines(finesCompesation.get(i));
-            }
-        }
     }
 }

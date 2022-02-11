@@ -36,10 +36,10 @@ public class BeerViewModel extends BaseViewModel implements ChangeListener, INot
     private MutableLiveData<String> titleText = new MutableLiveData<>();
     private FirebaseRepository firebaseRepository;
     private Compensation matchCompensation;
-    private boolean commit = false;
+    private boolean changeAlertEnabled = false;
 
     public void init() {
-        commit = false;
+        changeAlertEnabled = false;
         firebaseRepository = new FirebaseRepository(FirebaseRepository.MATCH_TABLE, this);
         if (matches == null) {
             matches = new MutableLiveData<>();
@@ -51,7 +51,7 @@ public class BeerViewModel extends BaseViewModel implements ChangeListener, INot
 
     public Match editMatchBeers(final List<Player> playerList, User user) {
         isUpdating.setValue(true);
-        commit = true;
+        changeAlertEnabled = true;
         pickedMatch.mergePlayerLists(playerList);
         try {
             firebaseRepository.editModel(pickedMatch);
@@ -123,15 +123,18 @@ public class BeerViewModel extends BaseViewModel implements ChangeListener, INot
         Log.d(TAG, "updateMatchFromLoadedMatches: init");
         for (Match match : matches) {
             if (match.equals(pickedMatch)) {
-                String comp = match.compareIfMatchWasChanged(matchCompensation.getBeerCompensation(), matchCompensation.getLiquorCompensation(), matchCompensation.getFinesCompesation(), pickedMatch);
-                if (comp != null) {
+                if (changeAlertEnabled) {
                     Log.d(TAG, "updateMatchFromLoadedMatches: nastala změna");
-                    alert.setValue(comp);
-                    pickedMatch = match;
-                    initCompensationVariables();
-                    setPlayerList(pickedMatch);
-                    setTitleText(match);
+                    alert.setValue("Proběhla změna zápasu, reloaduji nové údaje");
                 }
+                else {
+                    changeAlertEnabled = true;
+                }
+                pickedMatch = match;
+                initCompensationVariables();
+                setPlayerList(pickedMatch);
+                setTitleText(match);
+                break;
             }
         }
     }
@@ -180,6 +183,10 @@ public class BeerViewModel extends BaseViewModel implements ChangeListener, INot
         matches.setValue(selectedMatches);
     }
 
+    public void removeReg() {
+        firebaseRepository.removeListener();
+    }
+
     @Override
     public void itemAdded(Model model) {
 
@@ -209,9 +216,9 @@ public class BeerViewModel extends BaseViewModel implements ChangeListener, INot
                 }
             });
             useSeasonsFilter(list);
-            if (!commit) {
-                updateMatchFromLoadedMatches(list);
-            }
+
+            updateMatchFromLoadedMatches(list);
+
         } else if (flag.equals(Flag.PLAYER)) {
             allPlayerList = list;
             updatePlayerList();

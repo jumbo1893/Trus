@@ -63,8 +63,7 @@ public class FineAddFragment extends CustomUserFragment implements OnPlusButtonL
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         fineAddViewModel = new ViewModelProvider(requireActivity()).get(FineAddViewModel.class);
-        fineAddViewModel.init();
-        fineAddViewModel.setPickedMatchAndPlayer(sharedViewModel.getPickedMatchForEdit().getValue(), sharedViewModel.getPickedPlayerForEdit().getValue(), sharedViewModel.getPickedPlayersForEdit().getValue(), sharedViewModel.isMultiplayers());
+        fineAddViewModel.init(sharedViewModel.getPickedMatchForEdit().getValue(), sharedViewModel.getPickedPlayerForEdit().getValue(), sharedViewModel.getPickedPlayersForEdit().getValue(), sharedViewModel.isMultiplayers());
         fineAddViewModel.getFines().observe(getViewLifecycleOwner(), new Observer<List<ReceivedFine>>() {
             @Override
             public void onChanged(List<ReceivedFine> fines) {
@@ -100,6 +99,13 @@ public class FineAddFragment extends CustomUserFragment implements OnPlusButtonL
                 }
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        Log.d(TAG, "onDestroyView: ");
+        fineAddViewModel.removeReg();
+        super.onDestroyView();
     }
 
     private void setRecycleViews(List<ReceivedFine> fines) {

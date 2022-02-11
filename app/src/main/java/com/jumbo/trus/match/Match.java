@@ -422,7 +422,7 @@ public class Match extends Model {
         return opponent + " - Liščí Trus";
     }
 
-    public String compareIfMatchWasChanged(List<Integer> beerCompensation,  List<Integer> liquorCompensation, List<List<Integer>> fineCompensation, Match match) {
+    public String compareIfMatchWasChanged(List<Integer> beerCompensation,  List<Integer> liquorCompensation, Match match) {
         Log.d(TAG, "compareIfMatchWasChanged: ");
         if (!equalsForPlayerList(match.getPlayerList())) {
             Log.d(TAG, "compareIfMatchWasChanged: hráči");
@@ -431,10 +431,6 @@ public class Match extends Model {
         if (!equalsBeerAndLiquorCompensation(beerCompensation, liquorCompensation)) {
             Log.d(TAG, "compareIfMatchWasChanged: piva");
             return "Někdo právě načáral nový piva v aktuálně zobrazeném zápase, musím to reloadnout";
-        }
-        else if (!equalsFineCompensation(fineCompensation)) {
-            Log.d(TAG, "compareIfMatchWasChanged: pokuty");
-            return "Někdo právě přidal pokuty v aktuálně zobrazeném zápase, musím to reloadnout";
         }
         else if (!equalsForMatchDetails(match)) {
             Log.d(TAG, "compareIfMatchWasChanged: mač");

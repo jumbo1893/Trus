@@ -38,7 +38,7 @@ public class Notification extends Model {
     public Notification() {
     }
 
-    public Notification (Match match, List<Player> playerList, List<Integer> oldBeers, List<Integer> oldLiquors) {
+    public Notification(Match match, List<Player> playerList, List<Integer> oldBeers, List<Integer> oldLiquors) {
         timestamp = System.currentTimeMillis();
         this.title = "Změna pitiva v zápase proti " + match.getName();
         text = "";
@@ -52,14 +52,12 @@ public class Notification extends Model {
         }
     }
 
-    public Notification (Match match, Player player, List<ReceivedFine> newReceivedFines, List<Integer> oldReceivedFines) {
+    public Notification(Match match, Player player, List<ReceivedFine> newReceivedFines) {
         timestamp = System.currentTimeMillis();
         this.title = "Změna pokut v zápase proti " + match.getName() + " u hráče " + player.getName();
-        text = "";
-        for (int i = 0; i < oldReceivedFines.size(); i++) {
-            if (newReceivedFines.get(i).getCount() != oldReceivedFines.get(i)) {
-                text += newReceivedFines.get(i).getFine().getName() + ": " + oldReceivedFines.get(i) + " ==> " + newReceivedFines.get(i).getCount() + "\n";
-            }
+        text = "Nový stav pokut:\n";
+        for (int i = 0; i < newReceivedFines.size(); i++) {
+            text += newReceivedFines.get(i).getFine().getName() + ": ==> " + newReceivedFines.get(i).getCount() + "\n";
         }
     }
 
@@ -77,7 +75,7 @@ public class Notification extends Model {
         StringBuilder notificationTitle = new StringBuilder("V zápase proti " + match.getOpponent() + " byly změněny pokuty u hráčů: ");
         //pro notifikaci, ať to neprojíždí přes všechny hráče
         for (int i = 0; i < fines.size(); i++) {
-            int count =  finesNumbers.get(i);
+            int count = finesNumbers.get(i);
             if (count > 0) {
                 notificationText.append(fines.get(i).getName()).append(" navýšeno o ").append(count).append("\n");
 

@@ -194,6 +194,9 @@ public class Player extends Model {
                 return true;
             }
         }
+        if (receivedFines.add(new ReceivedFine(fine, count))) {
+            return true;
+        }
         return false;
     }
 

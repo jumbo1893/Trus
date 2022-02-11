@@ -152,6 +152,12 @@ public class BeerFragment extends CustomUserFragment implements OnLineFinishedLi
         });
     }
 
+    @Override
+    public void onDestroyView() {
+        beerViewModel.removeReg();
+        super.onDestroyView();
+    }
+
     private void setupMatchDropDownMenu(List<Match> selectedMatches) {
         Log.d(TAG, "setupMatchDropDownMenu: " + selectedMatches);
         matchArrayAdapter = new MatchArrayAdapter(requireActivity(), selectedMatches);

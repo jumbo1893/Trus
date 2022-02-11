@@ -9,6 +9,7 @@ import com.jumbo.trus.BaseViewModel;
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.comparator.OrderByNonPlayerThenName;
+import com.jumbo.trus.fine.ReceivedFine;
 import com.jumbo.trus.listener.ChangeListener;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.player.Player;
@@ -44,6 +45,19 @@ public class FinePlayersViewModel extends BaseViewModel implements ChangeListene
             firebaseRepository.loadPlayersFromRepository();
             Log.d(TAG, "init: nacitam zapasy");
         }
+    }
+
+    public void reduceNumberOfFines() {
+        for (Player player : pickedMatch.getPlayerList()) {
+            List<ReceivedFine> receivedFines = new ArrayList<>();
+            for (ReceivedFine receivedFine : player.getReceivedFines()) {
+                if (receivedFine.getCount() > 0) {
+                    receivedFines.add(receivedFine);
+                }
+            }
+            player.setReceivedFines(receivedFines);
+        }
+        firebaseRepository.editModel(pickedMatch);
     }
 
     public LiveData<List<Match>> getMatches() {
