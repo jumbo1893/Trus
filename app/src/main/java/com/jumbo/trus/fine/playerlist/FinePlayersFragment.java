@@ -253,7 +253,6 @@ public class FinePlayersFragment extends CustomUserFragment implements View.OnCl
                 adapter.showCheckboxes(false);
                 adapter.notifyDataSetChanged();
                 onMultiCheckClick(false);
-                finePlayersViewModel.reduceNumberOfFines();
                 break;
             }
             case R.id.btn_check_non_players: {

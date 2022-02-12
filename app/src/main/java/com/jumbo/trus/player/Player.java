@@ -194,10 +194,7 @@ public class Player extends Model {
                 return true;
             }
         }
-        if (receivedFines.add(new ReceivedFine(fine, count))) {
-            return true;
-        }
-        return false;
+        return receivedFines.add(new ReceivedFine(fine, count));
     }
 
     public void setNewFineCountsToAllReceivedFines(List<Integer> finesNumber) {
