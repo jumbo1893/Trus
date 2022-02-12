@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/seda">
+
+    <LinearLayout
+        android:id="@+id/layout_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bila"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="20dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="70dp">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:textSize="16sp"
+                    android:textColor="@color/svetleCerna"
+                    android:text="@string/fine_name"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textName"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/hint_fine_name"
+                    app:errorIconDrawable="@null"
+                    app:endIconMode="clear_text"
+                    app:boxBackgroundColor="@color/bila">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/fialova"
+                        android:textSize="15sp"
+                        android:textAlignment="textEnd"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="70dp">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:textSize="16sp"
+                    android:textColor="@color/svetleCerna"
+                    android:text="@string/fine_amount"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/hint_fine_amount"
+                    app:endIconMode="clear_text"
+                    app:errorIconDrawable="@null"
+                    app:boxBackgroundColor="@color/bila">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textColor="@color/fialova"
+                        android:inputType="number"
+                        android:textAlignment="textEnd"
+                        />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:minHeight="70dp"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="100dp"
+
+                    android:text="@string/fine_allplayers"
+                    android:textSize="16sp"
+                    android:textColor="@color/svetleCerna"
+                    android:layout_height="match_parent" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <Switch
+                        android:id="@+id/swPlayer"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center_vertical"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/ramecek"
+                        android:gravity="bottom" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:minHeight="70dp"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="100dp"
+
+                    android:text="@string/fine_nonplayers"
+                    android:textSize="16sp"
+                    android:textColor="@color/svetleCerna"
+                    android:layout_height="match_parent" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <Switch
+                        android:id="@+id/swNonPlayer"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center_vertical"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/ramecek"
+                        android:gravity="bottom" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnCommit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/commit"
+                android:background="@drawable/rounded_button" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnDelete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/fine_delete"
+                android:background="@drawable/rounded_button" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progress_bar"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,7 +6,6 @@ import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -90,9 +89,6 @@ public class Date {
     public boolean wasBirthdayInMatchday(long playerBirthday, long matchDay) {
         LocalDate player = LocalDate.ofEpochDay(playerBirthday);
         LocalDate match = LocalDate.ofEpochDay(matchDay);
-        if (player.getMonthValue() == match.getMonthValue() && player.getDayOfMonth() == match.getDayOfMonth()) {
-            return true;
-        }
-        return false;
+        return player.getMonthValue() == match.getMonthValue() && player.getDayOfMonth() == match.getDayOfMonth();
     }
 }

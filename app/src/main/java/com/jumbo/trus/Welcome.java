@@ -8,7 +8,7 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.jumbo.trus.user.LoginActivity;
+import com.jumbo.trus.user.login.LoginActivity;
 
 public class Welcome extends AppCompatActivity {
 

@@ -4,26 +4,26 @@
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/ic_home"
-        android:title="@string/nav_piva" />
+        android:title="@string/nav_home" />
 
     <item
-        android:id="@+id/nav_plus"
-        android:icon="@drawable/ic_plus"
-        android:title="@string/nav_plus" />
+        android:id="@+id/nav_fine"
+        android:icon="@drawable/baseline_savings_24"
+        android:title="@string/nav_fine" />
 
     <item
         android:id="@+id/nav_settings"
-        android:icon="@drawable/ic_settings"
-        android:title="@string/nav_settings" />
+        android:title=""
+        />
 
     <item
         android:id="@+id/nav_statistics"
-        android:icon="@drawable/ic_dashboard"
+        android:icon="@drawable/ic_equalizer_black_24dp"
         android:title="@string/statistika" />
 
     <item
-        android:id="@+id/nav_notification"
-        android:icon="@drawable/ic_notification"
-        android:title="@string/nav_notification" />
+        android:id="@+id/nav_navigation"
+        android:icon="@drawable/ic_menu_black_24dp"
+        android:title="Menu" />
 
 </menu>

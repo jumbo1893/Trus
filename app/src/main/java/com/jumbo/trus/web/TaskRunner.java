@@ -1,6 +1,5 @@
 package com.jumbo.trus.web;
 
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 

@@ -17,6 +17,7 @@ public class Notification extends Model {
     private long timestamp;
 
     public Notification(String title, String text, User user) {
+        super(title);
         this.title = title;
         this.text = text;
         this.user = user;
@@ -24,12 +25,14 @@ public class Notification extends Model {
     }
 
     public Notification(String title, String text) {
+        super(title);
         this.title = title;
         this.text = text;
         timestamp = System.currentTimeMillis();
     }
 
     public Notification(String title, User user) {
+        super(title);
         this.title = title;
         this.user = user;
         timestamp = System.currentTimeMillis();
@@ -38,7 +41,7 @@ public class Notification extends Model {
     public Notification() {
     }
 
-    public Notification (Match match, List<Player> playerList, List<Integer> oldBeers, List<Integer> oldLiquors) {
+    public Notification(Match match, List<Player> playerList, List<Integer> oldBeers, List<Integer> oldLiquors) {
         timestamp = System.currentTimeMillis();
         this.title = "Změna pitiva v zápase proti " + match.getName();
         text = "";
@@ -52,14 +55,12 @@ public class Notification extends Model {
         }
     }
 
-    public Notification (Match match, Player player, List<ReceivedFine> newReceivedFines, List<Integer> oldReceivedFines) {
+    public Notification(Match match, Player player, List<ReceivedFine> newReceivedFines) {
         timestamp = System.currentTimeMillis();
         this.title = "Změna pokut v zápase proti " + match.getName() + " u hráče " + player.getName();
-        text = "";
-        for (int i = 0; i < oldReceivedFines.size(); i++) {
-            if (newReceivedFines.get(i).getCount() != oldReceivedFines.get(i)) {
-                text += newReceivedFines.get(i).getFine().getName() + ": " + oldReceivedFines.get(i) + " ==> " + newReceivedFines.get(i).getCount() + "\n";
-            }
+        text = "Nový stav pokut:\n";
+        for (int i = 0; i < newReceivedFines.size(); i++) {
+            text += newReceivedFines.get(i).getFine().getName() + ": ==> " + newReceivedFines.get(i).getCount() + "\n";
         }
     }
 
@@ -67,9 +68,26 @@ public class Notification extends Model {
         String title = "U následujících zápasů byla změněna sezona: ";
         String text = "";
         for (Match match : matchList) {
-            text += "zápas s " + match.getName() + ", " + match.getDateOfMatchInStringFormat() + ": změna na " + match.getSeason().getName() + "\n";
+            text += "zápas s " + match.getName() + ", " + match.returnDateOfMatchInStringFormat() + ": změna na " + match.getSeason().getName() + "\n";
         }
         return new Notification(title, text);
+    }
+
+    public Notification prepareNotificationAboutChangedFinesInPlayerList(Match match, List<ReceivedFine> fines, List<Integer> finesNumbers, List<Player> players) {
+        StringBuilder notificationText = new StringBuilder();
+        StringBuilder notificationTitle = new StringBuilder("V zápase proti " + match.getOpponent() + " byly změněny pokuty u hráčů: ");
+        //pro notifikaci, ať to neprojíždí přes všechny hráče
+        for (int i = 0; i < fines.size(); i++) {
+            int count = finesNumbers.get(i);
+            if (count > 0) {
+                notificationText.append(fines.get(i).getName()).append(" navýšeno o ").append(count).append("\n");
+
+            }
+        }
+        for (Player player : players) {
+            notificationTitle.append(player.getName() + ", ");
+        }
+        return new Notification(notificationTitle.toString(), notificationText.toString());
     }
 
     public String getTitle() {

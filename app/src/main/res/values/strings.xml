@@ -1,17 +1,14 @@
 <resources>
     <string name="app_name">Trusí appka</string>
-    <string name="nav_piva">domů</string>
-    <string name="nav_plus">přidat</string>
-    <string name="nav_settings">nastavení</string>
-    <string name="nav_notification">oznámení</string>
     <string name="zobrazit_kalendar">kalendář</string>
     <string name="jmenoHrace">jméno hráče</string>
     <string name="uprava_hrace">upravit hráče</string>
     <string name="datum_format">dd/mm/yyyy</string>
     <string name="jeFanousek">fanoušek?</string>
+    <string name="domaci">Domácí zápas?</string>
     <string name="uprav_hrace">upravit</string>
     <string name="smaz_hrace">smazat hráče</string>
-    <string name="statistika">statistiky</string>
+    <string name="statistika">Statistiky</string>
     <string name="title_activity_login">Trusí appka</string>
     <string name="prompt_email">Email</string>
     <string name="password">Heslo</string>
@@ -22,4 +19,90 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="login">přihlašovací jméno</string>
+    <string name="vyber_sezonu">Vyber sezonu</string>
+    <string name="nav_fine">Pokuty</string>
+    <string name="nav_settings">Nastavení</string>
+    <string name="nav_notification">oznámení</string>
+
+    <!-- taby statistik -->
+    <string name="tab_beer_player">"Piva hráči"</string>
+    <string name="tab_beer_match">"Piva zápasy"</string>
+    <string name="tab_fine_player">Pokuty hráči</string>
+    <string name="tab_fine_match">Pokuty zápasy</string>
+
+    <!-- taby statistik -->
+    <string name="tab_table_beer">"Piva"</string>
+    <string name="tab_table_fine_match">"Pokuty zápasy"</string>
+    <string name="tab_table_fine_detail">Pokuty detail</string>
+
+    <!-- HINTY -->
+    <string name="hint_mandatory"><font color='#FF0000'>*</font></string>
+    <string name="hint_repayment_amount">v Kč</string>
+    <string name="hint_repayment_note">poznámka</string>
+    <string name="hint_fine_amount">v Kč</string>
+    <string name="hint_fine_name">název</string>
+    <string name="hint_match_opponent">soupeř</string>
+    <string name="hint_player_name">jméno</string>
+    <string name="hint_season_name">název</string>
+
+    <!-- POLOŽKY PLUS FRAGMENTŮ -->
+    <string name="repayment_amount"><font color='#FF0000'>*</font>Výše platby <font color='#FF0000'> *</font></string>
+    <string name="repayment_note">Poznámka</string>
+    <string name="season_end"><font color='#FF0000'>*</font>Konec sezony</string>
+    <string name="season_start"><font color='#FF0000'>*</font>Začátek sezony</string>
+    <string name="season_name"><font color='#FF0000'>*</font>Název sezony</string>
+    <string name="player_name"><font color='#FF0000'>*</font>Jméno hráče</string>
+    <string name="player_birthday"><font color='#FF0000'>*</font>Datum narození</string>
+    <string name="match_opponent"><font color='#FF0000'>*</font>Jméno soupeře</string>
+    <string name="match_date"><font color='#FF0000'>*</font>Datum zápasu</string>
+    <string name="match_players"><font color='#FF0000'>*</font>Vyber hráče</string>
+    <string name="fine_name"><font color='#FF0000'>*</font>Název pokuty</string>
+    <string name="fine_amount"><font color='#FF0000'>*</font>Výše pokuty</string>
+    <string name="fine_allplayers">Pro všechny hráče</string>
+    <string name="fine_nonplayers">Pro nehrající</string>
+
+    <!-- Tlačítka -->
+    <string name="repayment_commit">Přidat platbu</string>
+    <string name="commit">Potvrdit</string>
+    <string name="season_delete">Smazat sezonu</string>
+    <string name="player_delete">Smazat hráče</string>
+    <string name="match_delete">Smazat zápas</string>
+    <string name="fine_delete">Smazat pokutu</string>
+    <string name="match_pkfl_refuse">Ne, díky</string>
+    <string name="match_pkfl_commit">OK</string>
+
+    <!-- POLOŽKY NAVIGACE -->
+
+    <string name="nav_group_matches">ZÁPASY</string>
+    <string name="nav_group_players">HRÁČI</string>
+    <string name="nav_group_fines">POKUTY</string>
+    <string name="nav_group_beer">PIVA</string>
+    <string name="nav_group_settings">NASTAVENÍ</string>
+    <string name="nav_group_statistics">STATISTIKY</string>
+
+    <string name="nav_home">Přehled</string>
+    <string name="nav_match_plus">Přidat zápas</string>
+    <string name="nav_match_all">Seznam zápasů</string>
+    <string name="nav_match_pkfl">Seznam PKFL zápasů</string>
+    <string name="nav_player_plus">Přidat hráče</string>
+    <string name="nav_player_all">Seznam hráčů</string>
+    <string name="nav_player_repayment">Srovnání dluhu hráčů</string>
+    <string name="nav_fine_all">Přidat/upravit pokutu</string>
+    <string name="nav_fine_add">Přidat pokutu v zápase</string>
+    <string name="nav_beer_add">Přidat pivo v zápase</string>
+    <string name="nav_settings_user">Nastavení uživatele</string>
+    <string name="nav_settings_season">Nastavení sezon</string>
+    <string name="nav_settings_info">Informace o appce</string>
+    <string name="nav_statistics">Statistiky piv/pokut</string>
+    <string name="nav_statistics_export">Tabulka/Export statistik</string>
+    <string name="logout">Odhlásit</string>
+    <string name="version_info">verze appky</string>
+    <string name="test_db_players">test DB players</string>
+    <string name="test_db_matches">test DB matches</string>
+    <string name="test_db_notifications">test DB notifications</string>
+    <string name="test_db_users">test DB users</string>
+    <string name="test_db_all">test DB vše</string>
+    <string name="current_password">aktuální heslo</string>
+    <string name="new_password">nové heslo</string>
+    <string name="change_password">změň heslo</string>
 </resources>

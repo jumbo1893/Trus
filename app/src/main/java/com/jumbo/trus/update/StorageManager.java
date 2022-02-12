@@ -11,7 +11,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-
 import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
 public class StorageManager {

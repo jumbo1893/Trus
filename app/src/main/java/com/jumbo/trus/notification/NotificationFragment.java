@@ -17,9 +17,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.jumbo.trus.listener.OnListListener;
 import com.jumbo.trus.R;
 import com.jumbo.trus.SimpleDividerItemDecoration;
+import com.jumbo.trus.listener.OnListListener;
 
 import java.util.List;
 
@@ -55,7 +55,7 @@ public class NotificationFragment extends Fragment implements OnListListener {
                 adapter.notifyDataSetChanged(); //TODO notifyItemInserted
             }
         });
-        notificationViewModel.isUpdating().observe(this, new Observer<Boolean>() {
+        notificationViewModel.isUpdating().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
@@ -66,7 +66,7 @@ public class NotificationFragment extends Fragment implements OnListListener {
                 }
             }
         });
-        notificationViewModel.getAlert().observe(this, new Observer<String>() {
+        notificationViewModel.getAlert().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
                 //podmínka aby se upozornění nezobrazovalo vždy když se mění fragment

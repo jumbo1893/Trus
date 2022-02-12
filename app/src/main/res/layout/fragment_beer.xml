@@ -1,38 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraint_layout"
     android:layout_width="match_parent"
+    android:minHeight="500dp"
+    android:minWidth="300dp"
     android:layout_height="match_parent"
-    tools:context=".match.MatchFragment">
+    android:orientation="vertical"
+    android:background="@color/bila">
 
-    <Spinner
-        android:id="@+id/sp_seasons"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="5dp"/>
-
-    <androidx.recyclerview.widget.RecyclerView
+    <LinearLayout
+        android:id="@+id/match_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constrainedHeight="true"
-        app:layout_constraintTop_toBottomOf="@+id/sp_seasons"
-        android:layout_marginTop="40dp"
+        android:layout_height="60dp"
+        android:background="@color/colorPrimary"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical">
 
-        android:id="@+id/rc_matches"/>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textMatch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:errorIconDrawable="@null"
+            app:endIconMode="dropdown_menu"
+            app:endIconTint="@color/bila"
+            app:endIconDrawable="@drawable/ic_keyboard_arrow_down_white_24dp"
+            app:boxBackgroundColor="@color/colorPrimary">
 
-    <RelativeLayout
+            <AutoCompleteTextView
+                android:id="@+id/tvMatch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="@color/bila"
+                android:inputType="none"
+                android:textAlignment="center"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/progress_bar"
-            android:layout_centerInParent="true"
-            android:visibility="gone"/>
+            <com.jumbo.trus.layout.BeerLayout
+                android:id="@+id/beer_layout"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginTop="30dp"
+                app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
-    </RelativeLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_commit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:padding="20dp"
+                android:text="Vše uložit"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/rounded_button" />
+
+            <ImageButton
+                android:id="@+id/btn_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                style="?android:attr/borderlessButtonStyle"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ic_arrow_back_dark_black_24dp"/>
+
+            <ImageButton
+                android:id="@+id/btn_forward"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                style="?android:attr/borderlessButtonStyle"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ic_arrow_forward_dark_black_24dp"/>
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="nějakej hráč"
+                android:textAlignment="center"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:textColor="@color/cerna"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+
+            <ImageView
+                android:id="@+id/img_info"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:layout_constraintTop_toBottomOf="@id/beer_layout"
+                app:layout_constraintStart_toStartOf="@id/beer_layout"
+                android:layout_marginTop="30dp"
+                android:src="@drawable/ic_info_outline_black_24dp"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@id/img_info"
+                app:layout_constraintStart_toEndOf="@id/img_info"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginHorizontal="10dp"
+                android:maxLines="2"
+                android:text="Dlouhým podržením přepnete do módu čárkování tvrdýho a naopak"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/progress_bar"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+</LinearLayout>

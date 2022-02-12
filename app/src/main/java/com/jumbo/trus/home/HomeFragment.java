@@ -1,85 +1,152 @@
 package com.jumbo.trus.home;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.fragment.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.jumbo.trus.BuildConfig;
+import com.jumbo.trus.CustomUserFragment;
 import com.jumbo.trus.R;
-import com.jumbo.trus.user.LoginActivity;
+import com.jumbo.trus.listener.OnSwipeTouchListener;
+import com.jumbo.trus.match.Match;
 
-public class HomeFragment extends Fragment implements View.OnClickListener {
+public class HomeFragment extends CustomUserFragment implements View.OnClickListener {
 
     private static final String TAG = "HomeFragment";
 
-    private TextView tv_oslavenec,tv_random;
-    private Button btn_facts, btn_reload, btn_logout;
+    private TextView tvBirthday, tvRandomFact, tvPkflMatch;
+    private ImageView btnRandomFact;
+    private ProgressBar progressBar;
 
     private HomeViewModel homeViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        tv_oslavenec = view.findViewById(R.id.tv_oslavenec);
-        tv_random = view.findViewById(R.id.tv_random);
-        btn_facts = view.findViewById(R.id.btn_facts);
-        btn_reload = view.findViewById(R.id.btn_reload);
-        btn_logout = view.findViewById(R.id.btn_logout);
-        btn_reload.setOnClickListener(this);
-        btn_logout.setOnClickListener(this);
-        btn_facts.setOnClickListener(this);
-        homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
-        homeViewModel.init();
-        Log.d(TAG, "onCreateView: ");
-        homeViewModel.setRandomFact();
-        homeViewModel.getRandomFact().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                tv_random.setText(homeViewModel.getRandomFact().getValue());
-            }
-        });
-        homeViewModel.setPlayerBirthday();
-        homeViewModel.getPlayerBirthday().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                tv_oslavenec.setText(homeViewModel.getPlayerBirthday().getValue());
-            }
-        });
-
+        tvBirthday = view.findViewById(R.id.tvBirthday);
+        tvRandomFact = view.findViewById(R.id.tvRandomFact);
+        progressBar = view.findViewById(R.id.progress_bar);
+        tvPkflMatch = view.findViewById(R.id.tvPkflMatch);
+        btnRandomFact = view.findViewById(R.id.btnRandomFact);
+        btnRandomFact.setOnClickListener(this);
+        tvRandomFact.setOnClickListener(this);
+        showProgressBar();
+        btnRandomFact.setVisibility(View.GONE);
+        initSwipeListener(tvRandomFact);
         return view;
     }
 
-    private void logoutToLoginActivity() {
-        Intent intent = new Intent(getActivity(), LoginActivity.class);
-        intent.putExtra("logout", true);
-        startActivity(intent);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
+        homeViewModel.init();
+        homeViewModel.getRandomFact().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                tvRandomFact.setText(s);
+                btnRandomFact.setVisibility(View.VISIBLE);
+            }
+        });
+        homeViewModel.getPlayerBirthday().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                tvBirthday.setText(s);
+            }
+        });
+        homeViewModel.getAlert().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if (getViewLifecycleOwner().getLifecycle().getCurrentState() == Lifecycle.State.RESUMED) {
+                    Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        homeViewModel.getPkflMatch().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+               tvPkflMatch.setText(s);
+
+            }
+        });
+        homeViewModel.getLastMainMatch().observe(getViewLifecycleOwner(), new Observer<Match>() {
+            @Override
+            public void onChanged(Match match) {
+                if (sharedViewModel.getMainMatch().getValue() == null) {
+                    sharedViewModel.setMainMatch(match);
+                }
+                hideProgressBar();
+            }
+        });
+    }
+
+    @Override
+    public void onDestroyView() {
+        homeViewModel.removeReg();
+        super.onDestroyView();
+    }
+
+    private void initSwipeListener(View view) {
+        view.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+            public void onSwipeRight() {
+                Log.d(TAG, "onSwipeRight: ");
+               homeViewModel.setNextRandomFact(false);
+            }
+            public void onSwipeLeft() {
+                Log.d(TAG, "onSwipeLeft: ");
+                homeViewModel.setNextRandomFact(true);
+            }
+        });
+    }
+
+    private void startRefreshNavigation(final ImageView imageView) {
+        Animation anim = AnimationUtils.loadAnimation(requireActivity(), R.anim.rotate);
+        anim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                homeViewModel.randomlySetNewFact();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        imageView.startAnimation(anim);
+    }
+
+    private void showProgressBar() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgressBar() {
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_reload:
-                homeViewModel.setRandomFact();
-                homeViewModel.setPlayerBirthday();
+            case R.id.btnRandomFact:
+                startRefreshNavigation((ImageView) v);
                 break;
-            case R.id.btn_logout:
-                logoutToLoginActivity();
-                break;
-            case R.id.btn_facts:
-                homeViewModel.setRandomFacts();
-                Log.d(TAG, "onClick: " + homeViewModel.getRandomFacts().size());
-                FactDialog factDialog = new FactDialog(homeViewModel.getRandomFacts());
-                factDialog.addRandomFact("Verze aplikace je " + BuildConfig.VERSION_NAME + ", code: " + BuildConfig.VERSION_CODE);
-                factDialog.show(getParentFragmentManager(), "dialog");
         }
     }
 }

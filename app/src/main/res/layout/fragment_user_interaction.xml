@@ -9,108 +9,119 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context=".user.UserInteractionFragment">
+    tools:context=".user.interaction.UserInteractionFragment">
 
-    <EditText
-        android:id="@+id/et_old_password"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="24dp"
-        android:hint="aktuální heslo"
-        android:inputType="textPassword"
-        android:selectAllOnFocus="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:id="@+id/layout_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bila"
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/et_new_password"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="24dp"
-        android:hint="nový heslo"
-        android:inputType="textPassword"
-        android:selectAllOnFocus="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_old_password" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="20dp"
+            android:orientation="vertical">
 
-    <Button
-        android:id="@+id/btn_password_change"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginTop="20dp"
-        android:text="změň heslo"
-        app:layout_constraintEnd_toStartOf="@+id/sw_change_preferences"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_new_password"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="70dp">
 
-    <Switch
-        android:id="@+id/sw_change_preferences"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginStart="20dp"
-        android:text="Změna i v uložených heslech"
-        android:textSize="10sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btn_password_change"
-        app:layout_constraintTop_toTopOf="@+id/btn_password_change"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_password_change"
-        app:layout_constraintVertical_bias="0.2" />
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:textSize="16sp"
+                    android:textColor="@color/svetleCerna"
+                    android:text="@string/current_password"/>
 
-    <Button
-        android:id="@+id/btn_notification_color_change"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginTop="20dp"
-        android:textSize="12dp"
-        android:text="náhodná změna barvičky u notifikací"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_password_change"/>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textOldPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/current_password"
+                    app:errorIconDrawable="@null"
+                    app:endIconMode="clear_text"
+                    app:boxBackgroundColor="@color/bila">
 
-    <Button
-        android:id="@+id/btn_approve_new_users"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginTop="20dp"
-        android:textSize="12dp"
-        android:text="Schválení nově registrovaných"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_notification_color_change"/>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/fialova"
+                        android:inputType="textPassword"
+                        android:textSize="15sp"
+                        android:textAlignment="textEnd"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/btn_approve_forgotten_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginTop="20dp"
-        android:textSize="12dp"
-        android:text="Schválení resetování hesla zapomnětlivců"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_approve_new_users"/>
+            </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_admin_interaction"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginTop="20dp"
-        android:textSize="12dp"
-        android:text="Změny statusu uživatele(admin)"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_approve_forgotten_password"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="70dp">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:textSize="16sp"
+                    android:textColor="@color/svetleCerna"
+                    android:text="@string/new_password"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textNewPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/new_password"
+                    app:errorIconDrawable="@null"
+                    app:endIconMode="clear_text"
+                    app:boxBackgroundColor="@color/bila">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/fialova"
+                        android:inputType="textPassword"
+                        android:textSize="15sp"
+                        android:textAlignment="textEnd"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnChangePassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/change_password"
+                android:background="@drawable/rounded_button" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnChangeColor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Změň barvičku u notifikací"
+                android:backgroundTint="@color/zluta"/>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnApproveNewUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Schválení nově registrovaných"
+                android:background="@drawable/rounded_button"/>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnApprovePasswordReset"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Schválení resetu hesla zapomnětlivců"
+                android:background="@drawable/rounded_button"/>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnAdminInteraction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Změna stavu uživatelů"
+                android:background="@drawable/rounded_button"/>
+        </LinearLayout>
+
+    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -122,6 +133,5 @@
             android:id="@+id/progress_bar"
             android:layout_centerInParent="true"
             android:visibility="gone"/>
-
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

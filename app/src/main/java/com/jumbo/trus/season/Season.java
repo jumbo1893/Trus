@@ -16,13 +16,31 @@ public class Season extends Model {
         this.seasonEnd = seasonEnd;
     }
 
+    public Season(String name, long seasonStart, long seasonEnd, String id) {
+        super(name);
+        this.seasonStart = seasonStart;
+        this.seasonEnd = seasonEnd;
+        this.id = id;
+    }
+
+    public Season allSeason() {
+        return new Season("Všechny zápasy", 0, 0, "0");
+    }
+
+    public Season otherSeason() {
+        return new Season("Ostatní", 999999999, 999999999, "1");
+    }
+
+    public Season automaticSeason() {
+        return new Season("Automaticky přiřadit sezonu", 1, 1, "2");
+    }
+
     public Season(String name) {
         super(name);
     }
 
     public Season() {
     }
-
 
     public long getSeasonStart() {
         return seasonStart;
@@ -40,12 +58,12 @@ public class Season extends Model {
         this.seasonEnd = seasonEnd;
     }
 
-    public String getSeasonStartInStringFormat() {
+    public String returnSeasonStartInStringFormat() {
         Date date = new Date();
         return date.convertMillisToTextDate(seasonStart);
     }
 
-    public String getSeasonEndInStringFormat() {
+    public String returnSeasonEndInStringFormat() {
         Date date = new Date();
         return date.convertMillisToTextDate(seasonEnd);
     }
@@ -65,17 +83,12 @@ public class Season extends Model {
     }
 
     public String toStringForRecycleView() {
-        return name + ", " + getSeasonStartInStringFormat() + " - " + getSeasonEndInStringFormat();
+        return name + ", " + returnSeasonStartInStringFormat() + " - " + returnSeasonEndInStringFormat();
 
     }
 
     @Override
     public String toString() {
-        return "Season{" +
-                "id=" + id +
-                "seasonStart=" + seasonStart +
-                ", seasonEnd=" + seasonEnd +
-                ", name='" + name + '\'' +
-                '}';
+        return name;
     }
 }

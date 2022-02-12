@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/nav_plus"
+        android:icon="@drawable/ic_plus"
+        android:title="přidat"
+        android:checkable="true"
+        app:actionLayout="@layout/custom_plus_item_layout"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/nav_notification"
+        android:icon="@drawable/ic_notification"
+        android:title="Notifikace"
+        android:checkable="true"
+        app:actionLayout="@layout/custom_notification_item_layout"
+
+        app:showAsAction="always"/>
+
+</menu>

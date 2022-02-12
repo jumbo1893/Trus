@@ -1,16 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#F4A460</color>
+    <color name="colorPrimary">#000000</color>
     <color name="colorPrimaryDark">#8B4513</color>
     <color name="colorAccent">#F5EE29</color>
+    <color name="colorPrimaryRipple">#FF8303</color>
     <color name="tmaveSeda">#222222</color>
+    <color name="grey">#696969</color>
     <color name="zluta">#F5EE29</color>
     <color name="oranzova">#FF8303</color>
+    <color name="tmaveOranzova">#EE8303</color>
+    <color name="fialova">#452B6E</color>
     <color name="bila">#FFFFFF</color>
     <color name="hneda">#8B4513</color>
     <color name="cervena">#FF0000</color>
     <color name="seda">#CCCCCC</color>
     <color name="cerna">#000000</color>
+    <color name="ramecek">#60000000</color>
+    <color name="svetleCerna">#0E0D0D</color>
+
+    <color name="zluta_pruhledna">#80F5EE29</color>
+    <color name="cervena_pruhledna">#80FF0000</color>
+    <color name="zelena_pruhledna">#b399cc00</color>
 
 
 </resources>

@@ -11,8 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.jumbo.trus.listener.OnListListener;
 import com.jumbo.trus.R;
+import com.jumbo.trus.listener.OnListListener;
 
 import java.util.List;
 
@@ -44,10 +44,10 @@ public class PlayerRecycleViewAdapter extends RecyclerView.Adapter<PlayerRecycle
 
         holder.tv_title.setText(hraci.get(position).getName());
         if (hraci.get(position).isFan()) {
-            holder.tv_text.setText("Fanoušek, datum narození: " + hraci.get(position).getBirthdayInStringFormat());
+            holder.tv_text.setText("Fanoušek, datum narození: " + hraci.get(position).returnBirthdayInStringFormat());
         }
         else {
-            holder.tv_text.setText("Hráč, datum narození: " + hraci.get(position).getBirthdayInStringFormat());
+            holder.tv_text.setText("Hráč, datum narození: " + hraci.get(position).returnBirthdayInStringFormat());
         }
     }
 

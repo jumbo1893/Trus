@@ -51,10 +51,12 @@ public class ReceivedFine extends Model {
         }
     }
 
+
+
     /**
      * @return vrací celkový částku jakou hráč zaplatil za všechny uložené pokuty tohoto druhu
      */
-    public int getAmountOfAllFines() {
+    public int returnAmountOfAllFines() {
         return count*fine.getAmount();
     }
 

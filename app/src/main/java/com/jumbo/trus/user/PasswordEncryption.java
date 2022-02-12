@@ -6,7 +6,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class PasswordEncryption {
 
-    PasswordEncryption() {
+    public PasswordEncryption() {
     }
 
     public String hashPassword (String password) throws NoSuchAlgorithmException {

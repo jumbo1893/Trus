@@ -62,7 +62,7 @@ public class ForceUpdateChecker {
                         if (remoteConfig.getBoolean(KEY_UPDATE_REQUIRED)) {
                             String currentVersion = remoteConfig.getString(KEY_CURRENT_VERSION);
                             String appVersion = getAppVersion(context);
-                            if (!TextUtils.equals(currentVersion, appVersion)
+                            if ((splitVersionNumber(currentVersion) > splitVersionNumber(appVersion))
                                     && onUpdateNeededListener != null) {
                                 onUpdateNeededListener.onUpdateNeeded(updateUrl, currentVersion, true);
                                 return;
@@ -77,7 +77,6 @@ public class ForceUpdateChecker {
 
     private String getAppVersion(Context context) {
         String result = "";
-
         try {
             result = context.getPackageManager()
                     .getPackageInfo(context.getPackageName(), 0)
@@ -88,6 +87,19 @@ public class ForceUpdateChecker {
         }
 
         return result;
+    }
+
+    private int splitVersionNumber(String version) {
+        int versionNumber = 0;
+        if (version.contains(".")) {
+            String[] parts = version.split("\\.");
+            versionNumber += (Integer.parseInt(parts[0]) * 10);
+            if (parts.length > 2) {
+                versionNumber += Integer.parseInt(parts[1]);
+            }
+            return versionNumber;
+        }
+        else return 0;
     }
 
     public static class Builder {

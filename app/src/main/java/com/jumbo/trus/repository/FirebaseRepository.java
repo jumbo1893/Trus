@@ -11,18 +11,21 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.jumbo.trus.listener.ChangeListener;
 import com.jumbo.trus.Flag;
 import com.jumbo.trus.Model;
-import com.jumbo.trus.listener.ItemLoadedListener;
-import com.jumbo.trus.listener.NotificationListener;
 import com.jumbo.trus.fine.Fine;
+import com.jumbo.trus.listener.ChangeListener;
+import com.jumbo.trus.listener.ItemLoadedListener;
+import com.jumbo.trus.listener.ModelLoadedListener;
+import com.jumbo.trus.listener.NotificationListener;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.player.Player;
@@ -46,46 +49,111 @@ public class FirebaseRepository {
     private CollectionReference collectionReference;
     private ChangeListener changeListener;
     private ItemLoadedListener itemLoadedListener;
+    private ModelLoadedListener modelLoadedListener;
     private NotificationListener notificationListener;
     private ArrayList<Model> modelsDataSet = new ArrayList<>();
+    private ListenerRegistration matchesListener;
+    private ListenerRegistration matchListener;
+
+    private boolean allSeasons = false;
+    private boolean otherSeason = false;
+
 
     public FirebaseRepository(ChangeListener changeListener) {
         this.changeListener = changeListener;
-        db = FirebaseFirestore.getInstance();
+
+    }
+
+    public FirebaseRepository(ChangeListener changeListener, ItemLoadedListener itemLoadedListener) {
+        this.changeListener = changeListener;
+        this.itemLoadedListener = itemLoadedListener;
+        if (db == null) {
+            db = FirebaseFirestore.getInstance();
+        }
     }
 
     public FirebaseRepository(String keyword, ChangeListener changeListener) {
-        db = FirebaseFirestore.getInstance();
+        if (db == null) {
+            db = FirebaseFirestore.getInstance();
+        }
         collectionReference = db.collection(keyword);
         this.changeListener = changeListener;
     }
 
+    public FirebaseRepository(String keyword, ChangeListener changeListener, ModelLoadedListener modelLoadedListener) {
+        if (db == null) {
+            db = FirebaseFirestore.getInstance();
+        }
+        collectionReference = db.collection(keyword);
+        this.changeListener = changeListener;
+        this.modelLoadedListener = modelLoadedListener;
+    }
+
+    public FirebaseRepository(String keyword, ChangeListener changeListener, boolean allSeasons, boolean otherSeason) {
+        if (db == null) {
+            db = FirebaseFirestore.getInstance();
+        }
+        collectionReference = db.collection(keyword);
+        this.changeListener = changeListener;
+        this.allSeasons = allSeasons;
+        this.otherSeason = otherSeason;
+    }
+
+    public FirebaseRepository(String keyword, ChangeListener changeListener, boolean allSeasons, boolean otherSeason, ModelLoadedListener modelLoadedListener) {
+        if (db == null) {
+            db = FirebaseFirestore.getInstance();
+        }
+        collectionReference = db.collection(keyword);
+        this.changeListener = changeListener;
+        this.modelLoadedListener = modelLoadedListener;
+        this.allSeasons = allSeasons;
+        this.otherSeason = otherSeason;
+    }
+
     public FirebaseRepository(String keyword, NotificationListener notificationListener) {
-        db = FirebaseFirestore.getInstance();
+        if (db == null) {
+            db = FirebaseFirestore.getInstance();
+        }
         collectionReference = db.collection(keyword);
         this.notificationListener = notificationListener;
     }
 
     public FirebaseRepository(ItemLoadedListener itemLoadedListener) {
-        db = FirebaseFirestore.getInstance();
+        if (db == null) {
+            db = FirebaseFirestore.getInstance();
+        }
         this.itemLoadedListener = itemLoadedListener;
     }
 
+    public void removeListener() {
+        if (matchesListener != null) {
+            matchesListener.remove();
+        }
+        if (matchListener != null) {
+            matchListener.remove();
+        }
+    }
+
     public void insertNewModel(final Model model) {
-        DocumentReference newPlayerRef = collectionReference.document();
+        final DocumentReference newPlayerRef = collectionReference.document();
 
         newPlayerRef.set(model).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Log.d(TAG, "onComplete: " + task.isSuccessful());
                 if (task.isSuccessful()) {
+                    model.setId(newPlayerRef.getId());
+                    Log.d(TAG, "onComplete: " + newPlayerRef.getId());
                     changeListener.itemAdded(model);
-                }
-                else {
+                } else {
                     changeListener.alertSent("Chyba při přidání " + model.getClass().getSimpleName() + " " + model.getName() + " do db");
                 }
             }
         });
+    }
+
+    public void setItemLoadedListener(ItemLoadedListener itemLoadedListener) {
+        this.itemLoadedListener = itemLoadedListener;
     }
 
     public void editModel(final Model model) {
@@ -97,8 +165,7 @@ public class FirebaseRepository {
                 Log.d(TAG, "onComplete: " + task.isSuccessful());
                 if (task.isSuccessful()) {
                     changeListener.itemChanged(model);
-                }
-                else {
+                } else {
                     changeListener.alertSent("Chyba při přidání " + model.getClass().getSimpleName() + " " + model.getName() + " do db");
                 }
             }
@@ -110,7 +177,7 @@ public class FirebaseRepository {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d(TAG,  model.getId() + " úspěšně smazán z db ");
+                        Log.d(TAG, model.getId() + " úspěšně smazán z db ");
                         changeListener.itemDeleted(model);
                     }
                 })
@@ -135,13 +202,20 @@ public class FirebaseRepository {
                     return;
                 }
                 modelsDataSet.clear();
-                for(QueryDocumentSnapshot documentSnapshot : value) {
+                for (QueryDocumentSnapshot documentSnapshot : value) {
                     Season season = documentSnapshot.toObject(Season.class);
                     season.setId(documentSnapshot.getId());
                     modelsDataSet.add(season);
 
                 }
-
+                if (allSeasons) {
+                    Season all = new Season().allSeason();
+                    modelsDataSet.add(0, all);
+                }
+                if (otherSeason) {
+                    Season other = new Season().otherSeason();
+                    modelsDataSet.add(other);
+                }
                 Log.d(TAG, "Automaticky načten seznam sezon z db ");
                 changeListener.itemListLoaded(modelsDataSet, Flag.SEASON);
             }
@@ -159,7 +233,7 @@ public class FirebaseRepository {
                     return;
                 }
                 modelsDataSet.clear();
-                for(QueryDocumentSnapshot documentSnapshot : value) {
+                for (QueryDocumentSnapshot documentSnapshot : value) {
                     Fine fine = documentSnapshot.toObject(Fine.class);
                     fine.setId(documentSnapshot.getId());
                     modelsDataSet.add(fine);
@@ -183,7 +257,7 @@ public class FirebaseRepository {
                     return;
                 }
                 modelsDataSet.clear();
-                for(QueryDocumentSnapshot documentSnapshot : value) {
+                for (QueryDocumentSnapshot documentSnapshot : value) {
                     Player player = documentSnapshot.toObject(Player.class);
                     player.setId(documentSnapshot.getId());
                     modelsDataSet.add(player);
@@ -197,8 +271,8 @@ public class FirebaseRepository {
 
     public void loadMatchesFromRepository() {
         modelsDataSet = new ArrayList<>();
-        CollectionReference collectionReference = db.collection(MATCH_TABLE);
-        collectionReference.orderBy("dateOfMatch", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        final CollectionReference collectionReference = db.collection(MATCH_TABLE);
+        matchesListener = collectionReference.orderBy("dateOfMatch", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error != null) {
@@ -206,7 +280,7 @@ public class FirebaseRepository {
                     return;
                 }
                 modelsDataSet.clear();
-                for(QueryDocumentSnapshot documentSnapshot : value) {
+                for (QueryDocumentSnapshot documentSnapshot : value) {
                     Match match = documentSnapshot.toObject(Match.class);
                     match.setId(documentSnapshot.getId());
                     modelsDataSet.add(match);
@@ -214,94 +288,113 @@ public class FirebaseRepository {
                 }
                 Log.d(TAG, "Automaticky načten seznam zápasů z db ");
                 changeListener.itemListLoaded(modelsDataSet, Flag.MATCH);
+            }
+        });
+    }
+
+    public void loadMatchFromRepository(String id) {
+        DocumentReference document = db.collection(MATCH_TABLE).document(id);
+        matchListener = document.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.e(TAG, "Listen failed.", error);
+                    return;
+                }
+
+                if (value != null && value.exists()) {
+                    Log.d(TAG, "onEvent: testtttt " + value.toObject(Match.class));
+                    modelLoadedListener.itemLoaded(value.toObject(Match.class));
+                } else {
+                    Log.w(TAG, "Current data: null");
+                }
 
             }
         });
     }
 
-    public void loadUsersFromRepository() {
-        modelsDataSet = new ArrayList<>();
-        CollectionReference collectionReference = db.collection(USER_TABLE);
-        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.e(TAG, "onGetMatchesEvent: nastala chyba při načítání uživatelů z db", error);
-                    return;
-                }
-                modelsDataSet.clear();
-                for(QueryDocumentSnapshot documentSnapshot : value) {
-                    User user = documentSnapshot.toObject(User.class);
-                    user.setId(documentSnapshot.getId());
-                    modelsDataSet.add(user);
+        public void loadUsersFromRepository () {
+            modelsDataSet = new ArrayList<>();
+            CollectionReference collectionReference = db.collection(USER_TABLE);
+            collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                    if (error != null) {
+                        Log.e(TAG, "onGetMatchesEvent: nastala chyba při načítání uživatelů z db", error);
+                        return;
+                    }
+                    modelsDataSet.clear();
+                    for (QueryDocumentSnapshot documentSnapshot : value) {
+                        User user = documentSnapshot.toObject(User.class);
+                        user.setId(documentSnapshot.getId());
+                        modelsDataSet.add(user);
+
+                    }
+                    Log.d(TAG, "Automaticky načten seznam uživatelů z db ");
+                    changeListener.itemListLoaded(modelsDataSet, Flag.USER);
 
                 }
-                Log.d(TAG, "Automaticky načten seznam uživatelů z db ");
-                changeListener.itemListLoaded(modelsDataSet, Flag.USER);
+            });
+        }
 
-            }
-        });
-    }
+        public void loadNotificationsFromRepository () {
+            modelsDataSet = new ArrayList<>();
+            CollectionReference crNotification = db.collection(NOTIFICATION_TABLE);
+            crNotification.orderBy("timestamp", Query.Direction.DESCENDING).limit(50).addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                    if (error != null) {
+                        Log.e(TAG, "onGetPlayersEvent: nastala chyba při načítání notifikací z db", error);
+                        return;
+                    }
+                    modelsDataSet.clear();
+                    for (QueryDocumentSnapshot documentSnapshot : value) {
+                        Notification notification = documentSnapshot.toObject(Notification.class);
+                        notification.setId(documentSnapshot.getId());
+                        modelsDataSet.add(notification);
 
-    public void loadNotificationsFromRepository() {
-        modelsDataSet = new ArrayList<>();
-        CollectionReference crNotification = db.collection(NOTIFICATION_TABLE);
-        crNotification.orderBy("timestamp", Query.Direction.DESCENDING).limit(50).addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.e(TAG, "onGetPlayersEvent: nastala chyba při načítání notifikací z db", error);
-                    return;
+                    }
+                    Log.d(TAG, "Automaticky načten seznam notifikaci z db ");
+                    notificationListener.notificationListLoaded(modelsDataSet);
+
                 }
-                modelsDataSet.clear();
-                for(QueryDocumentSnapshot documentSnapshot : value) {
-                    Notification notification = documentSnapshot.toObject(Notification.class);
-                    notification.setId(documentSnapshot.getId());
-                    modelsDataSet.add(notification);
+            });
+        }
 
-                }
-                Log.d(TAG, "Automaticky načten seznam notifikaci z db ");
-                notificationListener.notificationListLoaded(modelsDataSet);
-
-            }
-        });
-    }
-
-    public void loadPkflUrlFromRepository() {
-        CollectionReference collectionReference = db.collection(PKFL_TABLE);
-        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.e(TAG, "onGetMatchesEvent: nastala chyba při načítání pkfl věcí z db", error);
-                    return;
-                }
-                for(QueryDocumentSnapshot documentSnapshot : value) {
-                    if (documentSnapshot.getId().equals("url")) {
-                        String url = (String) documentSnapshot.get("URL");
-                        itemLoadedListener.itemLoaded(url);
-                        break;
+        public void loadPkflUrlFromRepository () {
+            CollectionReference collectionReference = db.collection(PKFL_TABLE);
+            collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                    if (error != null) {
+                        Log.e(TAG, "onGetMatchesEvent: nastala chyba při načítání pkfl věcí z db", error);
+                        return;
+                    }
+                    for (QueryDocumentSnapshot documentSnapshot : value) {
+                        if (documentSnapshot.getId().equals("url")) {
+                            String url = (String) documentSnapshot.get("URL");
+                            itemLoadedListener.itemLoaded(url);
+                            break;
+                        }
                     }
                 }
-            }
-        });
-    }
+            });
+        }
 
-    public void addNotification(final Notification notification) {
-        Log.d(TAG, "addNotification: " + notification);
-        CollectionReference crNotification = db.collection(NOTIFICATION_TABLE);
-        DocumentReference newPlayerRef = crNotification.document();
+        public void addNotification ( final Notification notification){
+            Log.d(TAG, "addNotification: " + notification);
+            CollectionReference crNotification = db.collection(NOTIFICATION_TABLE);
+            DocumentReference newPlayerRef = crNotification.document();
 
-        newPlayerRef.set(notification).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Log.d(TAG, "onComplete: " + task.isSuccessful());
-                if (task.isSuccessful()) {
+            newPlayerRef.set(notification).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Log.d(TAG, "onComplete: " + task.isSuccessful());
+                    if (task.isSuccessful()) {
+                    } else {
+                        changeListener.alertSent("Chyba při přidání notifikace " + notification + " do db");
+                    }
                 }
-                else {
-                    changeListener.alertSent("Chyba při přidání notifikace " + notification + " do db");
-                }
-            }
-        });
+            });
+        }
     }
-}

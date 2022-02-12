@@ -1,102 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="331dp"
-        android:layout_height="76dp"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="5dp"
-        android:background="@drawable/nazev" />
-
-    <Button
-        android:id="@+id/btn_facts"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="15dp"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="5dp"
-        android:layout_below="@+id/imageView2"
-        android:text="zajímavosti" />
-
-    <Button
-        android:id="@+id/btn_reload"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btn_facts"
-        android:layout_alignStart="@+id/btn_facts"
-        android:layout_alignLeft="@+id/btn_facts"
-        android:layout_alignEnd="@+id/btn_facts"
-        android:layout_alignRight="@+id/btn_facts"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="5dp"
-        android:text="obnovit text" />
-
-    <Button
-        android:id="@+id/btn_logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btn_reload"
-        android:layout_alignStart="@+id/btn_reload"
-        android:layout_alignLeft="@+id/btn_reload"
-        android:layout_alignEnd="@+id/btn_reload"
-        android:layout_alignRight="@+id/btn_reload"
-        android:layout_marginTop="20dp"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="5dp"
-        android:text="Odhlásit" />
-
-    <TextView
-        android:id="@+id/tv_oslavenec"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btn_logout"
-        android:layout_alignStart="@+id/btn_logout"
-        android:layout_alignLeft="@+id/btn_logout"
-        android:layout_alignEnd="@+id/btn_logout"
-        android:layout_alignRight="@+id/btn_logout"
-        android:layout_marginTop="10dp"
-        android:text="narozeniny"/>
-
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_oslavenec"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentBottom="false"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:clipToPadding="true"
-        android:fillViewport="false">
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_random"
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="331dp"
+            android:layout_height="76dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/nazev"
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="56dp"
-            android:text="tady bude náhodná zajímavost"
-            android:textAlignment="center"
-            android:textSize="14sp" />
+            android:layout_gravity="center"
+            android:layout_margin="20dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/tv_backround"
+            android:orientation="vertical"
+            android:padding="5dp">
 
-    </ScrollView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Příští zápas Trusu:"
+                    android:textColor="@color/svetleCerna"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvPkflMatch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:inputType="none"
+                android:text="načítám..."
+                android:textAlignment="center"
+                android:textSize="13sp"
+                app:layout_constrainedWidth="true" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="10dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:src="@drawable/baseline_cake_black_36"
+                android:tint="@color/oranzova" />
+
+            <TextView
+                android:id="@+id/tvBirthday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="5dp"
+                android:text="načítám..."
+                android:textAlignment="center"
+                android:textColor="@color/svetleCerna" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="20dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/tv_backround"
+            android:orientation="vertical"
+            android:paddingVertical="5dp"
+            android:paddingStart="24dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingEnd="24dp"
+                    android:text="Náhodná zajímavost:"
+                    android:textColor="@color/svetleCerna"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ScrollView
+                    android:id="@+id/scrollView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintEnd_toStartOf="@id/btnRandomFact"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/tvRandomFact"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:inputType="none"
+                    android:text="načítám..."
+                    android:textSize="13sp" />
+                </ScrollView>
+                <ImageView
+                    android:id="@+id/btnRandomFact"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_refresh_black_24dp"
+                    android:tint="@color/oranzova"
+                    app:layout_constraintBottom_toBottomOf="@id/scrollView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/scrollView" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
 </RelativeLayout>

@@ -1,5 +1,7 @@
 package com.jumbo.trus.match;
 
+import android.util.Log;
+
 import com.jumbo.trus.Date;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.fine.Fine;
@@ -9,6 +11,7 @@ import com.jumbo.trus.season.Season;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Match extends Model {
 
@@ -36,6 +39,24 @@ public class Match extends Model {
         this.homeMatch = homeMatch;
         calculateSeason(seasonList);
         this.playerList = playerList;
+    }
+
+    public Match(String opponent, long dateOfMatch, boolean homeMatch, List<Season> seasonList) {
+        super(opponent);
+        this.opponent = opponent;
+        this.dateOfMatch = dateOfMatch;
+        this.homeMatch = homeMatch;
+        calculateSeason(seasonList);
+        this.playerList = new ArrayList<>();
+    }
+
+    public Match(String opponent, long dateOfMatch, boolean homeMatch, Season season) {
+        super(opponent);
+        this.opponent = opponent;
+        this.dateOfMatch = dateOfMatch;
+        this.homeMatch = homeMatch;
+        this.season = season;
+        this.playerList = new ArrayList<>();
     }
 
     public Match() {
@@ -115,7 +136,7 @@ public class Match extends Model {
         return newPlayerList;
     }
 
-    public String getDateOfMatchInStringFormat() {
+    public String returnDateOfMatchInStringFormat() {
         Date date = new Date();
         return date.convertMillisToTextDate(dateOfMatch);
     }
@@ -130,7 +151,7 @@ public class Match extends Model {
                 return;
             }
         }
-        season = seasonList.get(seasonList.size()-1);
+        season = new Season().otherSeason();
     }
 
     public void setPlayerList(List<Player> playerList) {
@@ -174,6 +195,19 @@ public class Match extends Model {
         }
         return liquorNumber;
     }
+
+    /**
+     * @return počet piv, která se vypila v zápase
+     */
+    public int returnNumberOfBeersAndLiquorsInMatch() {
+        int boozeNumber = 0;
+        for (Player player : returnPlayerListOnlyWithParticipants()) {
+            boozeNumber += player.getNumberOfBeers();
+            boozeNumber += player.getNumberOfLiquors();
+        }
+        return boozeNumber;
+    }
+
     /**
      * @return počet účastníků zápasu
      */
@@ -298,7 +332,15 @@ public class Match extends Model {
         for (Player player : players) {
             playerList.remove(player);
             playerList.add(player);
+        }
+    }
 
+    public void mergePlayerListsWithoutReplace(List<Player> players) {
+        for (Player player : players) {
+            if (!playerList.contains(player)) {
+                player.setMatchParticipant(false);
+                playerList.add(player);
+            }
         }
     }
 
@@ -317,10 +359,7 @@ public class Match extends Model {
         if (!playerList.contains(player)) {
             return false;
         }
-        if (playerList.get(playerList.indexOf(player)).returnNumberOfAllReceviedFines() > 0) {
-            return true;
-        }
-        return false;
+        return playerList.get(playerList.indexOf(player)).returnNumberOfAllReceviedFines() > 0;
     }
 
     /**
@@ -331,6 +370,24 @@ public class Match extends Model {
         for (Player playerInMatch : playerList) {
             if (playerInMatch.equals(player)) {
                 return playerInMatch.getNumberOfBeers()+playerInMatch.getNumberOfLiquors();
+            }
+        }
+        return 0;
+    }
+
+    public int returnNumberOfBeersForPlayer(Player player) {
+        for (Player playerInMatch : playerList) {
+            if (playerInMatch.equals(player)) {
+                return playerInMatch.getNumberOfBeers();
+            }
+        }
+        return 0;
+    }
+
+    public int returnNumberOfLiquorsForPlayer(Player player) {
+        for (Player playerInMatch : playerList) {
+            if (playerInMatch.equals(player)) {
+                return playerInMatch.getNumberOfLiquors();
             }
         }
         return 0;
@@ -349,6 +406,15 @@ public class Match extends Model {
         return 0;
     }
 
+    public Player returnPlayerFromMatch(Player player) {
+        for (Player matchPlayer : playerList) {
+            if (player.equals(matchPlayer)) {
+                return matchPlayer;
+            }
+        }
+        return null;
+    }
+
     public String toStringNameWithOpponent() {
         if (homeMatch) {
             return "Liščí trus - " + opponent;
@@ -356,12 +422,124 @@ public class Match extends Model {
         return opponent + " - Liščí Trus";
     }
 
+    public String compareIfMatchWasChanged(List<Integer> beerCompensation,  List<Integer> liquorCompensation, Match match) {
+        Log.d(TAG, "compareIfMatchWasChanged: ");
+        if (!equalsForPlayerList(match.getPlayerList())) {
+            Log.d(TAG, "compareIfMatchWasChanged: hráči");
+            return "Byla provedena změna v seznamu hráčů, musím to reloadnout";
+        }
+        if (!equalsBeerAndLiquorCompensation(beerCompensation, liquorCompensation)) {
+            Log.d(TAG, "compareIfMatchWasChanged: piva");
+            return "Někdo právě načáral nový piva v aktuálně zobrazeném zápase, musím to reloadnout";
+        }
+        else if (!equalsForMatchDetails(match)) {
+            Log.d(TAG, "compareIfMatchWasChanged: mač");
+            return "Nějakej inteligent právě změnil aktuálně zobrazený zápas, musím to reloadnout";
+        }
+        return null;
+    }
+
+    public void createListOfPlayers(List<Player> playerList, List<Player> allPlayerList) {//nový, původní
+        this.playerList.clear();
+        for (Player player : allPlayerList) {
+            if (playerList.contains(player)) {
+                player.setMatchParticipant(true);
+            } else {
+                player.setMatchParticipant(false);
+            }
+            this.playerList.add(player);
+        }
+        Log.d(TAG, "createListOfPlayers: " + this.playerList);
+    }
+
+    public void createListOfPlayersWithOriginalPlayers(List<Player> playerList, List<Player> allPlayerList) {//nový, původní
+
+        for (Player player : allPlayerList) {
+            setPlayerMatchParticipantByList(player, playerList.contains(player));
+        }
+        Log.d(TAG, "createListOfPlayers: " + this.playerList);
+    }
+
+    private void setPlayerMatchParticipantByList(Player player, boolean participant) {
+        for (Player currentPlayer : this.playerList) {
+            if (player.equals(currentPlayer)) {
+                currentPlayer.setMatchParticipant(participant);
+                return;
+            }
+        }
+        player.setMatchParticipant(participant);
+        this.playerList.add(player);
+    }
+
+    /**
+     * Funkce porovnává počáteční stavy piv. Pomůže rozpoznat, jestli v mezičase kdy má uživatel otevřený čárky nečárkoval někdo jinej
+     * @param beerCompensation původní čárky piva
+     * @param liquorCompensation původní čárky chlastu
+     * @return true pokud se počáteční stavy piv neliší, false pokud se liší
+     */
+    private boolean equalsBeerAndLiquorCompensation(List<Integer> beerCompensation,  List<Integer> liquorCompensation) {
+        List<Integer> compareBeerCompensation = new ArrayList<>();
+        List<Integer> compareLiquorCompensation = new ArrayList<>();
+        for (Player player : returnPlayerListOnlyWithParticipants()) {
+            compareBeerCompensation.add(player.getNumberOfBeers());
+            compareLiquorCompensation.add(player.getNumberOfLiquors());
+        }
+        Log.d(TAG, "equalsBeerAndLiquorCompensation: původní kompenzace \n" + beerCompensation + " nový pivka \n" + compareBeerCompensation);
+        return compareBeerCompensation.equals(beerCompensation) && compareLiquorCompensation.equals(liquorCompensation);
+    }
+
+    /**
+     * Funkce porovnává počáteční pokut. Pomůže rozpoznat, jestli v mezičase kdy má uživatel otevřenou editaci zápasu neudělal změny někdo jinej
+     * @param fineCompensation původní pokuty
+     * @return true pokud se počáteční stavy pokut neliší, false pokud se liší
+     */
+    private boolean equalsFineCompensation(List<List<Integer>> fineCompensation) {
+
+        for (int i = 0; i < returnPlayerListWithoutFans().size(); i++) {
+            if (!returnPlayerListWithoutFans().get(i).compareNumberOfReceivedFines(fineCompensation.get(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Funkce porovnává porovnává 2 zápasy dle detailů co se dají navolit při úpravě zápasu
+     * @param match zápas k porovnání
+     * @return true pokud se počáteční stavy neliší, false pokud se liší
+     */
+    private boolean equalsForMatchDetails(Match match) {
+        return (opponent.equals(match.getOpponent()) && dateOfMatch == match.getDateOfMatch() && homeMatch == match.isHomeMatch() && season.equals(match.getSeason()));
+    }
+
+    private boolean equalsForPlayerList(List<Player> playerList) {
+        Log.d(TAG, "equalsForPlayerList: ");
+        boolean result = true;
+        for (Player player : playerList) {
+            if (this.playerList.contains(player)) {
+                if (returnPlayerFromMatch(player).isMatchParticipant() != player.isMatchParticipant()) {
+                    result = false;
+                    break;
+                }
+            }
+            else {
+                this.playerList.add(player);
+                result = false;
+            }
+        }
+        return result;
+    }
+
+
+    public boolean equalsByOpponentName (Match match) {
+        if (this == match) return true;
+        if (match == null || getClass() != match.getClass()) return false;
+        String opponent = match.getOpponent();
+        return Objects.equals(this.opponent, opponent);
+    }
+
     @Override
     public String toString() {
-        return "Match{" +
-                "opponent='" + opponent + '\'' +
-                ", dateOfMatch=" + dateOfMatch +
-                ", homeMatch=" + homeMatch +
-                '}';
+        return toStringNameWithOpponent();
     }
 }

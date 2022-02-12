@@ -76,7 +76,7 @@ public class Player extends Model {
         age = date.calculateAge(dateOfBirth);
     }
 
-    public String getBirthdayInStringFormat() {
+    public String returnBirthdayInStringFormat() {
         Date date = new Date();
         return date.convertMillisToTextDate(dateOfBirth);
     }
@@ -194,12 +194,32 @@ public class Player extends Model {
                 return true;
             }
         }
-        return false;
+        return receivedFines.add(new ReceivedFine(fine, count));
+    }
+
+    public void setNewFineCountsToAllReceivedFines(List<Integer> finesNumber) {
+        Log.d(TAG, "setNewFineCountsToAllReceivedFines: " + finesNumber.size() + receivedFines.size());
+        for (int i = 0; i < receivedFines.size(); i++) {
+            receivedFines.get(i).setCount(finesNumber.get(i));
+        }
+    }
+
+    public boolean compareNumberOfReceivedFines(List<Integer> finesNumber) {
+        return finesNumber.equals(returnNumberOfFines());
+    }
+
+    public List<Integer> returnNumberOfFines() {
+        List<Integer> finesNumbers = new ArrayList<>();
+        for (ReceivedFine receivedFine : getReceivedFines()) {
+            finesNumbers.add(receivedFine.getCount());
+        }
+        return finesNumbers;
     }
 
     /**
      * metoda vezme dostupné pokuty a přidá je již k existujícím pokutám co má hráč
      * Pokud jsou pokuty stejné, tak zůstane ta co má hráč (včetně výše, atd.)
+     *
      * @param fines všechny dostupné pokuty
      */
     public void mergeFineLists(List<Fine> fines) {
@@ -213,6 +233,7 @@ public class Player extends Model {
 
     /**
      * vypočítá do parametru numberOfBeersInMatches celkový počet piv v zápasech
+     *
      * @param matchList seznam zápasů, ze kterých se to počítá
      */
     public void calculateAllBeersNumber(List<Match> matchList) {
@@ -230,6 +251,7 @@ public class Player extends Model {
 
     /**
      * vypočítá do parametru numberOfLiquorsInMatches celkový počet tvrdýho v zápasech
+     *
      * @param matchList seznam zápasů, ze kterých se to počítá
      */
     public void calculateAllLiquorsNumber(List<Match> matchList) {
@@ -246,6 +268,7 @@ public class Player extends Model {
 
     /**
      * vypočítá do parametru numberOfFinesInMatches a amountOfFinesInMatches celkový počet pokut a částku v zápasech
+     *
      * @param matchList seznam zápasů, ze kterých se to počítá
      */
     public void calculateAllFinesNumber(List<Match> matchList) {
@@ -264,18 +287,20 @@ public class Player extends Model {
 
     /**
      * použití pro jeden zápas
+     *
      * @return celkovou částku všech udělených pokut
      */
     public int returnAmountOfAllReceviedFines() {
         int amount = 0;
         for (ReceivedFine receivedFine : receivedFines) {
-            amount += receivedFine.getAmountOfAllFines();
+            amount += receivedFine.returnAmountOfAllFines();
         }
         return amount;
     }
 
     /**
      * použití pro jeden zápas
+     *
      * @return počet všech udělených pokut hráči
      */
     public int returnNumberOfAllReceviedFines() {
@@ -286,37 +311,40 @@ public class Player extends Model {
         return fineCount;
     }
 
-    public int calculateDaysToBirthday () {
+    public int calculateDaysToBirthday() {
         Date date = new Date();
         return date.calculateDaysToBirthday(dateOfBirth);
     }
 
     /**
      * použití pro jeden zápas, nutné použít na hráče co je v zápase
+     *
      * @return počet pokut udělených hráči
      */
     public int returnNumberOfReceviedFine(ReceivedFine fine) {
         for (ReceivedFine receivedFine : receivedFines) {
             if (fine.equals(receivedFine))
-            return receivedFine.getCount();
+                return receivedFine.getCount();
         }
         return 0;
     }
 
     /**
      * použití pro jeden zápas, nutné použít na hráče co je v zápase
+     *
      * @return částku, která tato pokuta stála hráče v zápase
      */
     public int returnAmountOfReceviedFine(ReceivedFine fine) {
         for (ReceivedFine receivedFine : receivedFines) {
             if (fine.equals(receivedFine))
-                return receivedFine.getAmountOfAllFines();
+                return receivedFine.returnAmountOfAllFines();
         }
         return 0;
     }
 
     /**
      * použití pro jeden zápas, nutné použít na hráče co je v zápase
+     *
      * @return počet pokut tohoto typu, které padly v zápase
      */
     public int returnNumberOfReceviedFine(Fine fine) {
@@ -329,12 +357,13 @@ public class Player extends Model {
 
     /**
      * použití pro jeden zápas, nutné použít na hráče co je v zápase
+     *
      * @return částka za pokuty tohoto typu, které padly v zápase
      */
     public int returnAmountOfReceviedFine(Fine fine) {
         for (ReceivedFine receivedFine : receivedFines) {
             if (fine.equals(receivedFine))
-                return receivedFine.getAmountOfAllFines();
+                return receivedFine.returnAmountOfAllFines();
         }
         return 0;
     }
@@ -350,9 +379,35 @@ public class Player extends Model {
     }
 
     /**
+     * použití pro jeden zápas, nutné použít na hráče co je v zápase
+     *
+     * @return Text pro každou pokutu včetně počtu, názvu a ceny
+     */
+    public List<String> returnListOfFineInStringList() {
+        List<String> returnText = new ArrayList<>();
+        for (ReceivedFine receivedFine : returnReceivedFineWithCount()) {
+            StringBuilder text = new StringBuilder(receivedFine.getCount() + " ");
+
+            if (receivedFine.getCount() == 1) {
+                text.append("pokuta ");
+            }
+            else if (receivedFine.getCount() < 5) {
+                text.append("pokuty ");
+            }
+            else {
+                text.append("pokut ");
+            }
+            text.append(receivedFine.getFine().getName()).append(" v celkové částce ").append(receivedFine.getFine().getAmount() * receivedFine.getCount() + " Kč");
+            returnText.add(text.toString());
+        }
+        return returnText;
+    }
+
+    /**
      * vrátí částku, kterou hráč zaplatil na této konkrétní pokutě v konkrétních zápasech
+     *
      * @param matchList seznam zápasů, ze kterých se to počítá
-     * @param fine pokuta kterou zjišťujem
+     * @param fine      pokuta kterou zjišťujem
      */
     public int returnFineNumber(List<Match> matchList, Fine fine) {
         int fineNumber = 0;
@@ -366,14 +421,11 @@ public class Player extends Model {
         return fineNumber;
     }
 
+
+
+
     @Override
     public String toString() {
-        return "Hrac{" +
-                "jmeno='" + name + '\'' +
-                ", vek=" + age +
-                ", fanousek=" + fan +
-                ", datumNarozeni=" + getBirthdayInStringFormat() +
-                ", pocet piv=" + numberOfBeers +
-                '}';
+        return name;
     }
 }

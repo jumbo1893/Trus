@@ -1,9 +1,6 @@
 package com.jumbo.trus.comparator;
 
-import com.jumbo.trus.Model;
-import com.jumbo.trus.match.Match;
 import com.jumbo.trus.pkfl.PkflMatch;
-import com.jumbo.trus.player.Player;
 
 import java.util.Comparator;
 
