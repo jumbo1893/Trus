@@ -11,6 +11,7 @@ import com.jumbo.trus.INotificationSender;
 import com.jumbo.trus.Model;
 import com.jumbo.trus.listener.ChangeListener;
 import com.jumbo.trus.listener.ItemLoadedListener;
+import com.jumbo.trus.listener.ModelLoadedListener;
 import com.jumbo.trus.match.Match;
 import com.jumbo.trus.match.MatchViewModelHelper;
 import com.jumbo.trus.notification.Notification;
@@ -29,7 +30,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-public class MatchPlusViewModel extends MatchViewModelHelper implements ItemLoadedListener, ChangeListener, INotificationSender {
+public class MatchPlusViewModel extends MatchViewModelHelper implements ItemLoadedListener, ChangeListener, INotificationSender, ModelLoadedListener {
 
     private static final String TAG = "MatchViewModel";
 
@@ -190,5 +191,10 @@ public class MatchPlusViewModel extends MatchViewModelHelper implements ItemLoad
     @Override
     public void itemLoaded(String url) {
         loadMatchesFromPkfl(url);
+    }
+
+    @Override
+    public void itemLoaded(Model model) {
+
     }
 }

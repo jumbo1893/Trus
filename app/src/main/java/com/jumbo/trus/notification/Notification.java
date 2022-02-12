@@ -17,6 +17,7 @@ public class Notification extends Model {
     private long timestamp;
 
     public Notification(String title, String text, User user) {
+        super(title);
         this.title = title;
         this.text = text;
         this.user = user;
@@ -24,12 +25,14 @@ public class Notification extends Model {
     }
 
     public Notification(String title, String text) {
+        super(title);
         this.title = title;
         this.text = text;
         timestamp = System.currentTimeMillis();
     }
 
     public Notification(String title, User user) {
+        super(title);
         this.title = title;
         this.user = user;
         timestamp = System.currentTimeMillis();

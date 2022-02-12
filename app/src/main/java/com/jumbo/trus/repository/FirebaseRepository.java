@@ -135,13 +135,15 @@ public class FirebaseRepository {
     }
 
     public void insertNewModel(final Model model) {
-        DocumentReference newPlayerRef = collectionReference.document();
+        final DocumentReference newPlayerRef = collectionReference.document();
 
         newPlayerRef.set(model).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Log.d(TAG, "onComplete: " + task.isSuccessful());
                 if (task.isSuccessful()) {
+                    model.setId(newPlayerRef.getId());
+                    Log.d(TAG, "onComplete: " + newPlayerRef.getId());
                     changeListener.itemAdded(model);
                 } else {
                     changeListener.alertSent("Chyba při přidání " + model.getClass().getSimpleName() + " " + model.getName() + " do db");
