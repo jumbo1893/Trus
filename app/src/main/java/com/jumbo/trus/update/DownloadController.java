@@ -1,5 +1,6 @@
 package com.jumbo.trus.update;
 
+import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
@@ -36,14 +37,16 @@ public final class DownloadController {
     private static final String APP_INSTALL_PATH = "\"application/vnd.android.package-archive\"";
     private static final String TAG = "DownloadController";
 
-    FirebaseStorage storage;
-    StorageReference storageRef;
+    private FirebaseStorage storage;
+    private StorageReference storageRef;
+    private FinishActivityCallback finishActivityCallback;
 
-    public DownloadController(String filename, Context context) {
+    public DownloadController(String filename, Context context, FinishActivityCallback finishActivityCallback) {
         this.filename = filename;
         this.context = context;
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
+        this.finishActivityCallback = finishActivityCallback;
     }
     public final void enqueueDownload() {
         StorageReference storageReference = storageRef.child(filename);
@@ -96,7 +99,7 @@ public final class DownloadController {
                 openFileIntent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
                 openFileIntent.setData(contentUri);
                 context.startActivity(openFileIntent);context.unregisterReceiver(this);
-                //finish();
+                finishActivityCallback.finishActivity();
             }
         };
         context.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));

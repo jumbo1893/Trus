@@ -32,12 +32,13 @@ import com.jumbo.trus.MainActivity;
 import com.jumbo.trus.R;
 import com.jumbo.trus.update.CheckPermissionsCompat;
 import com.jumbo.trus.update.DownloadController;
+import com.jumbo.trus.update.FinishActivityCallback;
 import com.jumbo.trus.update.ForceUpdateChecker;
 import com.jumbo.trus.user.User;
 
 import java.util.Objects;
 
-public class LoginActivity extends CheckPermissionsCompat implements View.OnClickListener, TextWatcher, ForceUpdateChecker.OnUpdateNeededListener {
+public class LoginActivity extends CheckPermissionsCompat implements View.OnClickListener, TextWatcher, ForceUpdateChecker.OnUpdateNeededListener, FinishActivityCallback {
 
     private static final String TAG = "LoginActivity";
     private static final int PERMISSION_REQUEST_STORAGE = 0;
@@ -296,7 +297,7 @@ public class LoginActivity extends CheckPermissionsCompat implements View.OnClic
 
     private void redirectStore(String updateUrl) {
         Log.d(TAG, "redirectStore: " + updateUrl);
-        downloadController = new DownloadController(updateUrl, this);
+        downloadController = new DownloadController(updateUrl, this, this);
         checkStoragePermission();
         //StorageManager storageManager = new StorageManager(this, updateUrl);
         //storageManager.downloadNewApp();
@@ -344,5 +345,10 @@ public class LoginActivity extends CheckPermissionsCompat implements View.OnClic
         } else {
             requestPermissionsCompat(permissionsArray, PERMISSION_REQUEST_STORAGE);
         }
+    }
+
+    @Override
+    public void finishActivity() {
+       finishAndRemoveTask();
     }
 }
