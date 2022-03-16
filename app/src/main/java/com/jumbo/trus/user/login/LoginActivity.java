@@ -1,10 +1,15 @@
 package com.jumbo.trus.user.login;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -15,7 +20,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -23,25 +30,28 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.textfield.TextInputLayout;
 import com.jumbo.trus.MainActivity;
 import com.jumbo.trus.R;
+import com.jumbo.trus.update.CheckPermissionsCompat;
+import com.jumbo.trus.update.DownloadController;
 import com.jumbo.trus.update.ForceUpdateChecker;
-import com.jumbo.trus.update.StorageManager;
 import com.jumbo.trus.user.User;
 
 import java.util.Objects;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher, ForceUpdateChecker.OnUpdateNeededListener {
+public class LoginActivity extends CheckPermissionsCompat implements View.OnClickListener, TextWatcher, ForceUpdateChecker.OnUpdateNeededListener {
 
     private static final String TAG = "LoginActivity";
+    private static final int PERMISSION_REQUEST_STORAGE = 0;
 
     private TextInputLayout textLogin, textPassword;
     private TextView tv_help;
     private Button btnLogin, btn_register, btn_password_forgotten;
     private Switch sw_remember;
-    private ProgressBar progress_bar;
+    private ProgressBar progress_bar, download_bar;
 
     private boolean logout;
     private boolean forceUpdate = false;
     private boolean usersLoaded = false;
+    private DownloadController downloadController;
 
     private LoginViewModel loginViewModel;
 
@@ -59,6 +69,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
         loginViewModel.init();
         textLogin = findViewById(R.id.textLogin);
+        download_bar = findViewById(R.id.download_bar);
         textPassword = findViewById(R.id.textPassword);
         tv_help = findViewById(R.id.tv_help);
         btnLogin = findViewById(R.id.btnLogin);
@@ -163,6 +174,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
             }
         });
+        checkAndroidPermissions();
+    }
+
+    private void checkAndroidPermissions() {
+        //installtion permission
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if(!getPackageManager().canRequestPackageInstalls()){
+                startActivityForResult(new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES)
+                        .setData(Uri.parse(String.format("package:%s", getPackageName()))), 1);
+            }
+        }
+//Storage Permission
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }
     }
 
     private void showProgressBar() {
@@ -262,8 +294,55 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private void redirectStore(String fileName) {
-        StorageManager storageManager = new StorageManager(this, fileName);
-        storageManager.downloadNewApp();
+    private void redirectStore(String updateUrl) {
+        Log.d(TAG, "redirectStore: " + updateUrl);
+        downloadController = new DownloadController(updateUrl, this);
+        checkStoragePermission();
+        //StorageManager storageManager = new StorageManager(this, updateUrl);
+        //storageManager.downloadNewApp();
+        //InstallAPK downloadAndInstall = new InstallAPK();
+        //downloadAndInstall.setContext(this, download_bar);
+        //downloadAndInstall.downloadNewApp(fileName);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_STORAGE) {
+            // Request for camera permission.
+
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // start downloading
+                downloadController.enqueueDownload();
+            } else {
+                // Permission request was denied.
+                Toast.makeText(this, "Storage permission request was denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void checkStoragePermission() {
+        Log.d(TAG, "checkStoragePermission: ");
+        // Check if the storage permission has been granted
+        if (checkSelfPermissionCompat(Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED)) {
+            Log.d(TAG, "checkStoragePermission: " + 1);
+            // start downloading
+            downloadController.enqueueDownload();
+        } else {
+            // Permission is missing and must be requested.
+            requestStoragePermission();
+        }
+    }
+
+    private void requestStoragePermission() {
+        String[] permissionsArray = new String[1];
+        permissionsArray[0] = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        if (shouldShowRequestPermissionRationaleCompat(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            Toast.makeText(this, "Storage access is required to downloading the file", Toast.LENGTH_SHORT).show();
+            requestPermissionsCompat(permissionsArray, PERMISSION_REQUEST_STORAGE);
+
+        } else {
+            requestPermissionsCompat(permissionsArray, PERMISSION_REQUEST_STORAGE);
+        }
     }
 }
