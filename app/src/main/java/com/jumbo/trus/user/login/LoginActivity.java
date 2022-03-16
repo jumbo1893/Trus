@@ -349,6 +349,6 @@ public class LoginActivity extends CheckPermissionsCompat implements View.OnClic
 
     @Override
     public void finishActivity() {
-       finishAndRemoveTask();
+       finish();
     }
 }
