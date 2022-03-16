@@ -339,7 +339,7 @@ public class LoginActivity extends CheckPermissionsCompat implements View.OnClic
         String[] permissionsArray = new String[1];
         permissionsArray[0] = Manifest.permission.WRITE_EXTERNAL_STORAGE;
         if (shouldShowRequestPermissionRationaleCompat(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            Toast.makeText(this, "Storage access is required to downloading the file", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Je požadován přístup k externímu úložišti", Toast.LENGTH_SHORT).show();
             requestPermissionsCompat(permissionsArray, PERMISSION_REQUEST_STORAGE);
 
         } else {
