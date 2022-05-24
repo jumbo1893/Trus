@@ -151,6 +151,7 @@ public class MatchPlusViewModel extends MatchViewModelHelper implements ItemLoad
     @Override
     public void itemAdded(Model model) {
         setMatchAsAdded((Match) model);
+        Log.d(TAG, "itemAdded: " + model.getId());
         newMainMatch.setValue((Match) model);
         closeFragment.setValue(true);
     }

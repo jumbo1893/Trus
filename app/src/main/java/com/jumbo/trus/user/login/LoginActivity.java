@@ -51,7 +51,6 @@ public class LoginActivity extends CheckPermissionsCompat implements View.OnClic
 
     private boolean logout;
     private boolean forceUpdate = false;
-    private boolean usersLoaded = false;
     private DownloadController downloadController;
 
     private LoginViewModel loginViewModel;
@@ -175,7 +174,7 @@ public class LoginActivity extends CheckPermissionsCompat implements View.OnClic
                 }
             }
         });
-        checkAndroidPermissions();
+
     }
 
     private void checkAndroidPermissions() {
@@ -272,6 +271,7 @@ public class LoginActivity extends CheckPermissionsCompat implements View.OnClic
         forceUpdate = update;
         Log.d(TAG, "onUpdateNeeded: " + update);
         if (update) {
+            checkAndroidPermissions();
             AlertDialog dialog = new AlertDialog.Builder(this)
                     .setTitle("Aktualizace aplikace")
                     .setMessage("Prosím, stáhněte si novou verzi aplikace " + appVersion + " pro správnou trusí funkčnost")

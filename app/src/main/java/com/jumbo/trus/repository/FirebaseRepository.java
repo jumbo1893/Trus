@@ -38,11 +38,11 @@ public class FirebaseRepository {
 
     private static final String TAG = "FirebaseRepository";
     public static final String SEASON_TABLE = "season";
-    public static final String PLAYER_TABLE = "player";
+    public static final String PLAYER_TABLE = "player_test";
     public static final String FINE_TABLE = "fine";
-    public static final String MATCH_TABLE = "match";
-    public static final String USER_TABLE = "user";
-    public static final String NOTIFICATION_TABLE = "notification";
+    public static final String MATCH_TABLE = "match_test";
+    public static final String USER_TABLE = "user_test";
+    public static final String NOTIFICATION_TABLE = "notification_test";
     public static final String PKFL_TABLE = "pkfl";
 
     private FirebaseFirestore db;
@@ -303,8 +303,9 @@ public class FirebaseRepository {
                 }
 
                 if (value != null && value.exists()) {
-                    Log.d(TAG, "onEvent: testtttt " + value.toObject(Match.class));
-                    modelLoadedListener.itemLoaded(value.toObject(Match.class));
+                    Match match = value.toObject(Match.class);
+                    match.setId(value.getId());
+                    modelLoadedListener.itemLoaded(match);
                 } else {
                     Log.w(TAG, "Current data: null");
                 }

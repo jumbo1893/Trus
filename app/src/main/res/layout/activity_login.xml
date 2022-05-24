@@ -50,6 +50,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_help">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_textLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="textEnd"
@@ -70,6 +71,7 @@
         app:layout_constraintTop_toBottomOf="@id/textLogin">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_textPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="textEnd"
