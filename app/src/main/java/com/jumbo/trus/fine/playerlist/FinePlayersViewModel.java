@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 public class FinePlayersViewModel extends BaseViewModel implements ChangeListener {
 
@@ -34,7 +35,6 @@ public class FinePlayersViewModel extends BaseViewModel implements ChangeListene
     private MutableLiveData<String> titleText = new MutableLiveData<>();
 
     private FirebaseRepository firebaseRepository;
-
 
 
     public void init() {
@@ -103,13 +103,39 @@ public class FinePlayersViewModel extends BaseViewModel implements ChangeListene
     }
 
     public void checkNonPlayers() {
-        List<Boolean> checkedPlayers = new ArrayList();
-        if (players.getValue() != null) {
-            for (int i = 0; i < players.getValue().size(); i++) {
-               checkedPlayers.add(!players.getValue().get(i).isMatchParticipant());
+        if (checkedPlayers.getValue() == null || checkedPlayers.getValue().isEmpty()) {
+            List<Boolean> checkedPlayers = new ArrayList();
+            if (players.getValue() != null) {
+                for (int i = 0; i < players.getValue().size(); i++) {
+                    checkedPlayers.add(!players.getValue().get(i).isMatchParticipant());
+                }
             }
+            this.checkedPlayers.setValue(checkedPlayers);
+        } else {
+            invertCheckedPlayers();
+        }
+    }
+
+    private void invertCheckedPlayers() {
+        List<Boolean> checkedPlayers = new ArrayList();
+        for (Boolean bool : Objects.requireNonNull(this.checkedPlayers.getValue())) {
+            checkedPlayers.add(!bool);
+
         }
         this.checkedPlayers.setValue(checkedPlayers);
+    }
+
+    public void uncheckPlayers() {
+        if (checkedPlayers.getValue() != null) {
+            checkedPlayers.getValue().clear();
+        }
+        /*List<Boolean> checkedPlayers = new ArrayList();
+        if (players.getValue() != null) {
+            for (int i = 0; i < players.getValue().size(); i++) {
+                checkedPlayers.add(false);
+            }
+        }
+        this.checkedPlayers.setValue(checkedPlayers);*/
     }
 
     private void setTitleText(Match match) {
@@ -167,8 +193,7 @@ public class FinePlayersViewModel extends BaseViewModel implements ChangeListene
             });
             useSeasonsFilter(list);
             setPickedMatch(pickedMatch);
-        }
-        else if (flag.equals(Flag.PLAYER)) {
+        } else if (flag.equals(Flag.PLAYER)) {
             allPlayerList = list;
             updatePlayerList();
             setPlayerList(pickedMatch);

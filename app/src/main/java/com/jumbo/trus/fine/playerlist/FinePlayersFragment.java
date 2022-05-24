@@ -250,6 +250,7 @@ public class FinePlayersFragment extends CustomUserFragment implements View.OnCl
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_cancel_multi_selection: {
+                finePlayersViewModel.uncheckPlayers();
                 adapter.showCheckboxes(false);
                 adapter.notifyDataSetChanged();
                 onMultiCheckClick(false);
@@ -306,5 +307,11 @@ public class FinePlayersFragment extends CustomUserFragment implements View.OnCl
         Log.d(TAG, "onItemLongClick: ");
         adapter.showCheckbox(position, true);
         onMultiCheckClick(true);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        finePlayersViewModel.uncheckPlayers();
     }
 }

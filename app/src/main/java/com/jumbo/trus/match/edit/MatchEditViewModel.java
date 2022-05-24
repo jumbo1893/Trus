@@ -83,6 +83,7 @@ public class MatchEditViewModel extends MatchViewModelHelper implements ChangeLi
         } catch (DateTimeException e) {
             Log.e(TAG, "editMatchInRepository: toto by nemělo nastat, ošetřeno validací", e);
             alert.setValue("Datum musí být ve formátu " + Date.DATE_PATTERN);
+            isUpdating.setValue(false);
             return;
         }
         changeAlertLocked = true;
@@ -97,6 +98,7 @@ public class MatchEditViewModel extends MatchViewModelHelper implements ChangeLi
         } catch (Exception e) {
             Log.e(TAG, "removeMatchFromRepository: chyba při mazání zápasu", e);
             alert.setValue("Chyba při posílání požadavku do DB");
+            isUpdating.setValue(false);
             return;
         }
         changeAlertLocked = true;
