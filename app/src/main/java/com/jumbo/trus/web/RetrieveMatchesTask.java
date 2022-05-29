@@ -1,5 +1,7 @@
 package com.jumbo.trus.web;
 
+import android.util.Log;
+
 import com.jumbo.trus.pkfl.PkflMatch;
 
 import org.jsoup.Jsoup;
@@ -17,6 +19,8 @@ public class RetrieveMatchesTask implements Callable<List<PkflMatch>> {
     private final String url;
     private static final String TAG = "RetreiveMatchesTask";
 
+    private static String BASE_URL = "https://pkfl.cz";
+
     public RetrieveMatchesTask(String url) {
         this.url = url;
     }
@@ -32,6 +36,7 @@ public class RetrieveMatchesTask implements Callable<List<PkflMatch>> {
             for (Element tr : trs) {
                 Elements tds = tr.select("td");
                 if (tds.size() > 8) {
+
                     returnMatches.add(returnPkflMatch(tds));
                 }
             }
@@ -45,7 +50,7 @@ public class RetrieveMatchesTask implements Callable<List<PkflMatch>> {
         PkflMatch pkflMatch = null;
         try {
             pkflMatch = new PkflMatch(tds.get(0).text(), tds.get(1).text(), tds.get(4).text(), tds.get(5).text(), Integer.parseInt(tds.get(2).text()),
-                    tds.get(3).text(), tds.get(6).text(), tds.get(7).text(), tds.get(8).text());
+                    tds.get(3).text(), tds.get(6).text(), tds.get(7).text(), tds.get(8).text(), BASE_URL + tds.get(8).select("a[href]").attr("href"));
         } catch (Exception e) {
             e.printStackTrace();
         }

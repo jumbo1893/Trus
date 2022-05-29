@@ -14,9 +14,17 @@
             <item android:id="@+id/nav_match_all"
                 android:icon="@drawable/soccer_field"
                 android:title="@string/nav_match_all"/>
+        </menu>
+    </item>
+
+    <item android:title="@string/nav_group_pkfl">
+        <menu>
             <item android:id="@+id/nav_match_pkfl"
                 android:icon="@drawable/baseline_sports_soccer_24"
                 android:title="@string/nav_match_pkfl"/>
+            <item android:id="@+id/nav_pkfl_stats"
+                android:icon="@drawable/ic_equalizer_black_24dp"
+                android:title="@string/nav_pkfl_stats"/>
         </menu>
     </item>
 

@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface ICheckedPlayers {
     void setCheckedPlayers(List<Player> player);
+    void setCheckedFans(List<Player> fans);
 }

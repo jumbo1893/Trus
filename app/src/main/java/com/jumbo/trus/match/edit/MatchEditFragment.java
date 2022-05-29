@@ -79,6 +79,13 @@ public class MatchEditFragment extends MatchHelperFragment implements IFragment 
             }
         });
 
+        matchEditViewModel.getCheckedFans().observe(getViewLifecycleOwner(), new Observer<List<Player>>() {
+            @Override
+            public void onChanged(List<Player> players) {
+                setFansToTextView(players);
+            }
+        });
+
         matchEditViewModel.getMatch().observe(getViewLifecycleOwner(), new Observer<Match>() {
             @Override
             public void onChanged(Match match) {
@@ -104,14 +111,29 @@ public class MatchEditFragment extends MatchHelperFragment implements IFragment 
         textPlayers.setEndIconOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                displayPlayersDialog(matchEditViewModel.getCheckedPlayers().getValue(), matchEditViewModel.getPlayers().getValue(), matchEditViewModel);
+                displayPlayersDialog(matchEditViewModel.getCheckedPlayers().getValue(), matchEditViewModel.getPlayers().getValue(), matchEditViewModel, true);
             }
         });
         tvPlayers.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (b) {
-                    displayPlayersDialog(matchEditViewModel.getCheckedPlayers().getValue(), matchEditViewModel.getPlayers().getValue(), matchEditViewModel);
+                    displayPlayersDialog(matchEditViewModel.getCheckedPlayers().getValue(), matchEditViewModel.getPlayers().getValue(), matchEditViewModel, true);
+
+                }
+            }
+        });
+        textFans.setEndIconOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                displayPlayersDialog(matchEditViewModel.getCheckedFans().getValue(), matchEditViewModel.getFans().getValue(), matchEditViewModel, false);
+            }
+        });
+        tvFans.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b) {
+                    displayPlayersDialog(matchEditViewModel.getCheckedFans().getValue(), matchEditViewModel.getFans().getValue(), matchEditViewModel, false);
 
                 }
             }

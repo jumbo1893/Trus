@@ -36,6 +36,7 @@ public class MatchPlusViewModel extends MatchViewModelHelper implements ItemLoad
 
     private MutableLiveData<List<Season>> seasons;
     private MutableLiveData<List<Player>> players;
+    private MutableLiveData<List<Player>> fans = new MutableLiveData<>();
 
     private MutableLiveData<PkflMatch> pkflMatch;
     private FirebaseRepository firebaseRepository;
@@ -74,7 +75,8 @@ public class MatchPlusViewModel extends MatchViewModelHelper implements ItemLoad
             } else {
                 match = new Match(opponent, millis, homeMatch, checkedSeason);
             }
-            match.createListOfPlayers(checkedPlayers.getValue(), Objects.requireNonNull(players.getValue()));
+
+            match.createListOfPlayers(mergeArrayLists(checkedPlayers.getValue(), checkedFans.getValue()), mergeArrayLists(players.getValue(), fans.getValue()));
             firebaseRepository.insertNewModel(match);
         } catch (DateTimeException e) {
             Log.e(TAG, "addMatchToRepository: toto by nemělo nastat, ošetřeno validací", e);
@@ -94,6 +96,10 @@ public class MatchPlusViewModel extends MatchViewModelHelper implements ItemLoad
 
     public LiveData<List<Player>> getPlayers() {
         return players;
+    }
+
+    public LiveData<List<Player>> getFans() {
+        return fans;
     }
 
     public LiveData<List<Season>> getSeasons() {
@@ -148,6 +154,27 @@ public class MatchPlusViewModel extends MatchViewModelHelper implements ItemLoad
         }
     }
 
+    private void filterPlayersAndFans(List<Player> list) {
+        Collections.sort(list, new Comparator<Player>() {
+            @Override
+            public int compare(Player o1, Player o2) {
+                return o1.getName().compareToIgnoreCase(o2.getName());
+            }
+        });
+        List<Player> fansList = new ArrayList<>();
+        List<Player> playerList = new ArrayList<>();
+        for (Player player : list) {
+            if (player.isFan()) {
+                fansList.add(player);
+            }
+            else {
+                playerList.add(player);
+            }
+        }
+        players.setValue(playerList);
+        fans.setValue(fansList);
+    }
+
     @Override
     public void itemAdded(Model model) {
         setMatchAsAdded((Match) model);
@@ -169,13 +196,7 @@ public class MatchPlusViewModel extends MatchViewModelHelper implements ItemLoad
         isUpdating.setValue(true);
         List list = new ArrayList(models);
         if (flag.equals(Flag.PLAYER)) {
-            Collections.sort(list, new Comparator<Player>() {
-                @Override
-                public int compare(Player o1, Player o2) {
-                    return o1.getName().compareToIgnoreCase(o2.getName());
-                }
-            });
-            players.setValue(list);
+            filterPlayersAndFans(list);
         }
         else if (flag.equals(Flag.SEASON)) {
             list.add(0, new Season().automaticSeason());

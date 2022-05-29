@@ -33,8 +33,8 @@ public class MatchHelperFragment extends CustomAddFragment {
     private static final String TAG = "MatchHelperFragment";
 
     protected LinearLayout info_toolbar;
-    protected TextInputLayout textCalendar, textOpponent, textSeason, textPlayers;
-    protected AutoCompleteTextView tvSeason, tvPlayers, tvCalendar;
+    protected TextInputLayout textCalendar, textOpponent, textSeason, textPlayers, textFans;
+    protected AutoCompleteTextView tvSeason, tvPlayers, tvCalendar, tvFans;
     private ProgressBar progress_bar;
     protected AppCompatButton btnCommit, btnDelete;
     protected Switch swHome;
@@ -61,8 +61,10 @@ public class MatchHelperFragment extends CustomAddFragment {
         tvCalendar = view.findViewById(R.id.tvCalendar);
         textSeason = view.findViewById(R.id.textSeason);
         textPlayers = view.findViewById(R.id.textPlayers);
+        textFans = view.findViewById(R.id.textFans);
         tvSeason = view.findViewById(R.id.tvSeason);
         tvPlayers = view.findViewById(R.id.tvPlayers);
+        tvFans = view.findViewById(R.id.tvFans);
         nameValidator = new TextFieldValidator(textOpponent);
         dateValidator = new TextFieldValidator(textCalendar);
         listValidator = new TextFieldValidator(textPlayers);
@@ -72,7 +74,7 @@ public class MatchHelperFragment extends CustomAddFragment {
         btnCommit.setOnClickListener(this);
         btnDelete.setOnClickListener(this);
         nullValidationsErrors(textOpponent, textPlayers, textCalendar);
-        setEditTextBold(textOpponent.getEditText(), textCalendar.getEditText(), textPlayers.getEditText(), textSeason.getEditText());
+        setEditTextBold(textOpponent.getEditText(), textCalendar.getEditText(), textPlayers.getEditText(), textSeason.getEditText(), textFans.getEditText());
         textCalendar.setEndIconOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -118,7 +120,7 @@ public class MatchHelperFragment extends CustomAddFragment {
         }
     }
 
-    protected void displayPlayersDialog(final List<Player> currentPlayers, final List<Player> allPlayers, final ICheckedPlayers iCheckedPlayers) {
+    protected void displayPlayersDialog(final List<Player> currentPlayers, final List<Player> allPlayers, final ICheckedPlayers iCheckedPlayers, final boolean player) {
         final List<Player> checkedPlayers;
         if (currentPlayers != null) {
             checkedPlayers = new ArrayList<>(currentPlayers);
@@ -142,7 +144,13 @@ public class MatchHelperFragment extends CustomAddFragment {
                 .setPositiveButton("Vybrat hráče", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        iCheckedPlayers.setCheckedPlayers(checkedPlayers);
+                        if (player) {
+                            iCheckedPlayers.setCheckedPlayers(checkedPlayers);
+                        }
+                        else {
+                            iCheckedPlayers.setCheckedFans(checkedPlayers);
+                        }
+
                         dialog.dismiss();
                     }
                 })
@@ -155,7 +163,12 @@ public class MatchHelperFragment extends CustomAddFragment {
                 .setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialogInterface) {
-                        setPlayersToTextView(checkedPlayers);
+                        if (player) {
+                            setPlayersToTextView(checkedPlayers);
+                        }
+                        else {
+                            setFansToTextView(checkedPlayers);
+                        }
                     }
                 })
                 .create().show();
@@ -163,6 +176,10 @@ public class MatchHelperFragment extends CustomAddFragment {
 
     protected void setPlayersToTextView(List<Player> selectedPlayers) {
         tvPlayers.setText(returnPlayerNamesForTextView(selectedPlayers));
+    }
+
+    protected void setFansToTextView(List<Player> selectedFans) {
+        tvFans.setText(returnPlayerNamesForTextView(selectedFans));
     }
 
     protected String[] getPlayerNames(List<Player> players) {

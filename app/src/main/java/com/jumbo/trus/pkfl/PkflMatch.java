@@ -17,8 +17,10 @@ public class PkflMatch extends Model {
     private String referee;
     private String result;
     private boolean homeMatch;
+    private String urlResult;
+    private PkflMatchDetail pkflMatchDetail;
 
-    public PkflMatch(String dateText, String time, String homeTeam, String awayTeam, int round, String league, String stadium, String referee, String result) {
+    public PkflMatch(String dateText, String time, String homeTeam, String awayTeam, int round, String league, String stadium, String referee, String result, String urlResult) {
         Date date = new Date();
         this.date = date.convertPkflTextDateToMillis(dateText+ " " + time);
         Log.d(TAG, "PkflMatch: " + getDate());
@@ -35,6 +37,7 @@ public class PkflMatch extends Model {
         this.stadium = stadium;
         this.referee = referee;
         this.result = result;
+        this.urlResult = urlResult;
     }
 
     public long getDate() {
@@ -71,6 +74,18 @@ public class PkflMatch extends Model {
 
     public boolean isHomeMatch() {
         return homeMatch;
+    }
+
+    public String getUrlResult() {
+        return urlResult;
+    }
+
+    public PkflMatchDetail getPkflMatchDetail() {
+        return pkflMatchDetail;
+    }
+
+    public void setPkflMatchDetail(PkflMatchDetail pkflMatchDetail) {
+        this.pkflMatchDetail = pkflMatchDetail;
     }
 
     public String toStringNameWithOpponent() {

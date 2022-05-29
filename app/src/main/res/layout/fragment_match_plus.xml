@@ -3,265 +3,306 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/seda">
+    android:background="@color/bila"
+    android:isScrollContainer="true"
+    app:layout_constraintBottom_toBottomOf="parent">
 
-    <LinearLayout
-        android:id="@+id/layout_parent"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/bila"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/info_toolbar"
+            android:id="@+id/layout_parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/second_toolbar_back">
+            android:background="@color/bila"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/info_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/second_toolbar_back">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="60dp"
+                    android:layout_marginEnd="60dp"
+                    android:background="@drawable/tv_backround"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_interest"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:text="Liščí Trus - soupeř"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/black" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/btn_refuse"
+                            style="?android:attr/borderlessButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/match_pkfl_refuse"
+                            android:textColor="@color/cervena" />
+
+                        <Button
+                            android:id="@+id/btn_commit"
+                            style="?android:attr/borderlessButtonStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/match_pkfl_commit"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/cervena" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/tv_backround"
-                android:layout_marginStart="60dp"
-                android:layout_marginEnd="60dp"
-                android:layout_gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_interest"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:textColor="@android:color/black"
-                    android:textAlignment="center"
-                    android:text="Liščí Trus - soupeř"/>
+                android:orientation="vertical"
+                android:padding="20dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:minHeight="70dp">
 
-                    <Button
-                        android:id="@+id/btn_refuse"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/cervena"
-                        style="?android:attr/borderlessButtonStyle"
-                        android:text="@string/match_pkfl_refuse" />
-                    <Button
-                        android:id="@+id/btn_commit"
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:text="@string/match_opponent"
+                        android:textColor="@color/svetleCerna"
+                        android:textSize="16sp" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/textOpponent"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAlignment="textEnd"
-                        android:textColor="@color/cervena"
-                        style="?android:attr/borderlessButtonStyle"
-                        android:text="@string/match_pkfl_commit" />
+                        android:layout_height="match_parent"
+                        android:hint="@string/hint_match_opponent"
+                        app:boxBackgroundColor="@color/bila"
+                        app:endIconMode="clear_text"
+                        app:errorIconDrawable="@null">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/fialova"
+                            android:textSize="15sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
                 </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="20dp"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="70dp">
-
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="match_parent"
-                    android:textSize="16sp"
-                    android:textColor="@color/svetleCerna"
-                    android:text="@string/match_opponent"/>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textOpponent"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:hint="@string/hint_match_opponent"
-                    app:errorIconDrawable="@null"
-                    app:endIconMode="clear_text"
-                    app:boxBackgroundColor="@color/bila">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/fialova"
-                        android:textSize="15sp"
-                        android:textAlignment="textEnd"/>
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="70dp">
-
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="match_parent"
-                    android:textSize="16sp"
-                    android:textColor="@color/svetleCerna"
-                    android:text="@string/match_date"/>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textCalendar"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:endIconMode="custom"
-                    app:errorIconDrawable="@null"
-                    app:endIconDrawable="@drawable/ic_date_range_black_24dp"
-                    app:endIconTint="@color/oranzova"
-                    app:boxBackgroundColor="@color/bila">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/tvCalendar"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="15sp"
-                        android:textColor="@color/fialova"
-                        android:inputType="none"
-                        android:textAlignment="textEnd"
-                        />
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:orientation="horizontal"
-                android:minHeight="70dp"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:layout_width="100dp"
-
-                    android:text="@string/domaci"
-                    android:textSize="16sp"
-                    android:textColor="@color/svetleCerna"
-                    android:layout_height="match_parent" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:minHeight="70dp">
 
-                    <Switch
-                        android:id="@+id/swHome"
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:text="@string/match_date"
+                        android:textColor="@color/svetleCerna"
+                        android:textSize="16sp" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/textCalendar"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center_vertical"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/ramecek"
-                        android:gravity="bottom" />
+                        android:layout_height="match_parent"
+                        app:boxBackgroundColor="@color/bila"
+                        app:endIconDrawable="@drawable/ic_date_range_black_24dp"
+                        app:endIconMode="custom"
+                        app:endIconTint="@color/oranzova"
+                        app:errorIconDrawable="@null">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/tvCalendar"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/fialova"
+                            android:textSize="15sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
                 </LinearLayout>
 
-            </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="70dp">
-
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="match_parent"
-                    android:textSize="16sp"
-                    android:textColor="@color/svetleCerna"
-                    android:text="@string/vyber_sezonu"/>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textSeason"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:endIconMode="dropdown_menu"
-                    app:errorIconDrawable="@null"
-                    app:endIconTint="@color/oranzova"
-                    app:endIconDrawable="@drawable/ic_keyboard_arrow_right_black_24dp"
-                    app:boxBackgroundColor="@color/bila">
+                    android:layout_height="wrap_content"
+                    android:minHeight="70dp"
+                    android:orientation="horizontal">
 
-                    <AutoCompleteTextView
-                        android:id="@+id/tvSeason"
+                    <TextView
+                        android:layout_width="100dp"
+
+                        android:layout_height="match_parent"
+                        android:text="@string/domaci"
+                        android:textColor="@color/svetleCerna"
+                        android:textSize="16sp" />
+
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="15sp"
-                        android:textColor="@color/fialova"
-                        android:inputType="none"
-                        android:textAlignment="textEnd"
-                        />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
 
-            </LinearLayout>
+                        <Switch
+                            android:id="@+id/swHome"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center_vertical" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="70dp">
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/ramecek"
+                            android:gravity="bottom" />
+                    </LinearLayout>
 
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="match_parent"
-                    android:textSize="16sp"
-                    android:textColor="@color/svetleCerna"
-                    android:text="@string/match_players"/>
+                </LinearLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textPlayers"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:errorIconDrawable="@null"
-                    app:endIconTint="@color/oranzova"
-                    app:endIconMode="custom"
-                    app:endIconDrawable="@drawable/ic_keyboard_arrow_right_black_24dp"
-                    app:boxBackgroundColor="@color/bila">
+                    android:layout_height="wrap_content"
+                    android:minHeight="70dp">
 
-                    <AutoCompleteTextView
-                        android:id="@+id/tvPlayers"
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:text="@string/vyber_sezonu"
+                        android:textColor="@color/svetleCerna"
+                        android:textSize="16sp" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/textSeason"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="15sp"
-                        android:textColor="@color/fialova"
-                        android:inputType="none"
-                        android:textAlignment="textEnd"
-                        />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_height="match_parent"
+                        app:boxBackgroundColor="@color/bila"
+                        app:endIconDrawable="@drawable/ic_keyboard_arrow_right_black_24dp"
+                        app:endIconMode="dropdown_menu"
+                        app:endIconTint="@color/oranzova"
+                        app:errorIconDrawable="@null">
 
+                        <AutoCompleteTextView
+                            android:id="@+id/tvSeason"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/fialova"
+                            android:textSize="15sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="70dp">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:text="@string/match_players"
+                        android:textColor="@color/svetleCerna"
+                        android:textSize="16sp" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/textPlayers"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:boxBackgroundColor="@color/bila"
+                        app:endIconDrawable="@drawable/ic_keyboard_arrow_right_black_24dp"
+                        app:endIconMode="custom"
+                        app:endIconTint="@color/oranzova"
+                        app:errorIconDrawable="@null">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/tvPlayers"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/fialova"
+                            android:textSize="15sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="70dp">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:text="@string/match_fans"
+                        android:textColor="@color/svetleCerna"
+                        android:textSize="16sp" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/textFans"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:boxBackgroundColor="@color/bila"
+                        app:endIconDrawable="@drawable/ic_keyboard_arrow_right_black_24dp"
+                        app:endIconMode="custom"
+                        app:endIconTint="@color/oranzova"
+                        app:errorIconDrawable="@null">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/tvFans"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/fialova"
+                            android:textSize="15sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnCommit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_button"
+                    android:text="@string/commit" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnDelete"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_button"
+                    android:text="@string/match_delete" />
             </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnCommit"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:text="@string/commit"
-                android:background="@drawable/rounded_button" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnDelete"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:text="@string/match_delete"
-                android:background="@drawable/rounded_button" />
         </LinearLayout>
 
-    </LinearLayout>
+    </ScrollView>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ProgressBar
+            android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/progress_bar"
             android:layout_centerInParent="true"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </RelativeLayout>
 
 

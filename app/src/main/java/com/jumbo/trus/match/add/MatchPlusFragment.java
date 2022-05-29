@@ -123,14 +123,28 @@ public class MatchPlusFragment extends MatchHelperFragment {
         textPlayers.setEndIconOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                displayPlayersDialog(matchPlusViewModel.getCheckedPlayers().getValue(), matchPlusViewModel.getPlayers().getValue(), matchPlusViewModel);
+                displayPlayersDialog(matchPlusViewModel.getCheckedPlayers().getValue(), matchPlusViewModel.getPlayers().getValue(), matchPlusViewModel, true);
             }
         });
         tvPlayers.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (b) {
-                    displayPlayersDialog(matchPlusViewModel.getCheckedPlayers().getValue(), matchPlusViewModel.getPlayers().getValue(), matchPlusViewModel);
+                    displayPlayersDialog(matchPlusViewModel.getCheckedPlayers().getValue(), matchPlusViewModel.getPlayers().getValue(), matchPlusViewModel, true);
+                }
+            }
+        });
+        textFans.setEndIconOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                displayPlayersDialog(matchPlusViewModel.getCheckedFans().getValue(), matchPlusViewModel.getFans().getValue(), matchPlusViewModel, false);
+            }
+        });
+        tvFans.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b) {
+                    displayPlayersDialog(matchPlusViewModel.getCheckedFans().getValue(), matchPlusViewModel.getFans().getValue(), matchPlusViewModel, false);
                 }
             }
         });

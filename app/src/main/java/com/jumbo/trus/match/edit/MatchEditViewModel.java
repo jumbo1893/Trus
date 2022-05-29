@@ -32,6 +32,7 @@ public class MatchEditViewModel extends MatchViewModelHelper implements ChangeLi
 
     private MutableLiveData<List<Season>> seasons;
     private MutableLiveData<List<Player>> players;
+    private MutableLiveData<List<Player>> fans = new MutableLiveData<>();
     private Match pickedMatch;
     private MutableLiveData<Match> match = new MutableLiveData<>();
     private FirebaseRepository firebaseRepository;
@@ -70,7 +71,7 @@ public class MatchEditViewModel extends MatchViewModelHelper implements ChangeLi
         match.setOpponent(opponent);
         match.setHomeMatch(homeMatch);
         Log.d(TAG, "editMatchInRepository: " + checkedPlayers.getValue() + "\n" + players.getValue());
-        match.createListOfPlayersWithOriginalPlayers(checkedPlayers.getValue(), Objects.requireNonNull(players.getValue()));
+        match.createListOfPlayers(mergeArrayLists(checkedPlayers.getValue(), checkedFans.getValue()), mergeArrayLists(players.getValue(), fans.getValue()));
         try {
             long millis = date.convertTextDateToMillis(datum);
             match.setDateOfMatch(millis);
@@ -110,6 +111,10 @@ public class MatchEditViewModel extends MatchViewModelHelper implements ChangeLi
         return players;
     }
 
+    public LiveData<List<Player>> getFans() {
+        return fans;
+    }
+
     public LiveData<List<Season>> getSeasons() {
         return seasons;
     }
@@ -134,8 +139,10 @@ public class MatchEditViewModel extends MatchViewModelHelper implements ChangeLi
     }
 
     private void setPlayerList(Match match) {
-        List<Player> selectedPlayers = match.returnPlayerListOnlyWithParticipants();
+        List<Player> selectedPlayers = match.returnPlayerOrFansListOnlyWithParticipants(false);
+        List<Player> selectedFans = match.returnPlayerOrFansListOnlyWithParticipants(true);
         checkedPlayers.setValue(selectedPlayers);
+        checkedFans.setValue(selectedFans);
     }
 
     public void removeReg() {
@@ -153,6 +160,27 @@ public class MatchEditViewModel extends MatchViewModelHelper implements ChangeLi
 
     private void setMatch(Match match) {
         this.match.setValue(match);
+    }
+
+    private void filterPlayersAndFans(List<Player> list) {
+        Collections.sort(list, new Comparator<Player>() {
+            @Override
+            public int compare(Player o1, Player o2) {
+                return o1.getName().compareToIgnoreCase(o2.getName());
+            }
+        });
+        List<Player> fansList = new ArrayList<>();
+        List<Player> playerList = new ArrayList<>();
+        for (Player player : list) {
+            if (player.isFan()) {
+                fansList.add(player);
+            }
+            else {
+                playerList.add(player);
+            }
+        }
+        players.setValue(playerList);
+        fans.setValue(fansList);
     }
 
     @Override
@@ -186,7 +214,7 @@ public class MatchEditViewModel extends MatchViewModelHelper implements ChangeLi
                 }
             });
             pickedMatch.mergePlayerListsWithoutReplace(list);
-            players.setValue(pickedMatch.getPlayerList());
+            filterPlayersAndFans(pickedMatch.getPlayerList());
         } else if (flag.equals(Flag.SEASON)) {
             list.add(0, new Season().automaticSeason());
             seasons.setValue(list);

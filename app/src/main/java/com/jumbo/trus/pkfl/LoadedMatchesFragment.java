@@ -3,6 +3,7 @@ package com.jumbo.trus.pkfl;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,7 @@ import java.util.List;
 
 public class LoadedMatchesFragment extends CustomUserFragment {
 
-    private static final String TAG = "SeasonsFragment";
+    private static final String TAG = "LoadedMatchesFragment";
 
     private RecyclerView rc_pkfl_matches;
     private ProgressBar progress_bar;
@@ -64,6 +65,25 @@ public class LoadedMatchesFragment extends CustomUserFragment {
                 //podmínka aby se upozornění nezobrazovalo vždy když se mění fragment
                 if (getViewLifecycleOwner().getLifecycle().getCurrentState() == Lifecycle.State.RESUMED) {
                     Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        pkflViewModel.getMatchDetail().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                //podmínka aby se upozornění nezobrazovalo vždy když se mění fragment
+                if (getViewLifecycleOwner().getLifecycle().getCurrentState() == Lifecycle.State.RESUMED) {
+                    showDialog(s);
+                }
+            }
+        });
+        pkflViewModel.getmatchSecondDetail().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                //podmínka aby se upozornění nezobrazovalo vždy když se mění fragment
+                if (getViewLifecycleOwner().getLifecycle().getCurrentState() == Lifecycle.State.RESUMED) {
+                    showDialogDetail(s);
                 }
             }
         });
@@ -106,28 +126,48 @@ public class LoadedMatchesFragment extends CustomUserFragment {
         rc_pkfl_matches.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
-    @Override
-    protected void itemClick(int position) {
-        PkflMatch pkflMatch = pkflViewModel.getMatches().getValue().get(position);
+    private void showDialog(String message) {
         final AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-        alert.setTitle(pkflMatch.toStringNameWithOpponent());
-        String result;
-        if (pkflMatch.getResult().equals(":")) {
-            result = "Zápas se ještě nehrál";
+        alert.setTitle(pkflViewModel.getMatchName());
+        if (pkflViewModel.isDetailEnabled()) {
+            alert.setNeutralButton("detail", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    pkflViewModel.setMatchSecondDetail();
+                }
+            });
         }
-        else {
-            result = pkflMatch.getResult();
-        }
-        alert.setMessage(pkflMatch.getRound() + ". kolo " + pkflMatch.getLeague() + " hrané " + pkflMatch.getDateAndTimeOfMatchInStringFormat()+"\n" +
-        "Stadion: " + pkflMatch.getStadium() + "\n" +
-        "Rozhodčí: " + pkflMatch.getReferee() + "\n" +
-        "Výsledek: " + result);
-
+        alert.setMessage(message);
         alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                dialog.dismiss();
+                Log.d(TAG, "onClick: positive");
             }
         });
         alert.show();
+    }
+
+    private void showDialogDetail(String message) {
+        Log.d(TAG, "showDialogDetail: ");
+        final AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+        alert.setTitle(pkflViewModel.getMatchName());
+        alert.setNeutralButton("zpět", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                pkflViewModel.setMatchDetailData();
+            }
+        });
+        alert.setMessage(message);
+
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                Log.d(TAG, "onClick: positive");
+            }
+        });
+        alert.show();
+    }
+
+    @Override
+    protected void itemClick(final int position) {
+        pkflViewModel.setPickedPkflMatch(position);
     }
 }

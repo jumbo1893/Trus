@@ -56,6 +56,7 @@
     <string name="match_opponent"><font color='#FF0000'>*</font>Jméno soupeře</string>
     <string name="match_date"><font color='#FF0000'>*</font>Datum zápasu</string>
     <string name="match_players"><font color='#FF0000'>*</font>Vyber hráče</string>
+    <string name="match_fans">Vyber fans</string>
     <string name="fine_name"><font color='#FF0000'>*</font>Název pokuty</string>
     <string name="fine_amount"><font color='#FF0000'>*</font>Výše pokuty</string>
     <string name="fine_allplayers">Pro všechny hráče</string>
@@ -75,6 +76,7 @@
 
     <string name="nav_group_matches">ZÁPASY</string>
     <string name="nav_group_players">HRÁČI</string>
+    <string name="nav_group_pkfl">PKFL</string>
     <string name="nav_group_fines">POKUTY</string>
     <string name="nav_group_beer">PIVA</string>
     <string name="nav_group_settings">NASTAVENÍ</string>
@@ -84,6 +86,7 @@
     <string name="nav_match_plus">Přidat zápas</string>
     <string name="nav_match_all">Seznam zápasů</string>
     <string name="nav_match_pkfl">Seznam PKFL zápasů</string>
+    <string name="nav_pkfl_stats">Statistiky z PKFL</string>
     <string name="nav_player_plus">Přidat hráče</string>
     <string name="nav_player_all">Seznam hráčů</string>
     <string name="nav_player_repayment">Srovnání dluhu hráčů</string>
