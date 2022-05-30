@@ -12,6 +12,10 @@ public class PkflMatchPlayer {
     private int yellowCards;
     private int redCards;
     private boolean bestPlayer;
+    private boolean hattrick;
+    private boolean cleanSheet;
+    private String yellowCardComment;
+    private String redCardComment;
 
     public PkflMatchPlayer(String name, int goals, int receivedGoals, int ownGoals, int goalkeepingMinutes, int yellowCards, int redCards, boolean bestPlayer) {
         this.name = name;
@@ -22,6 +26,8 @@ public class PkflMatchPlayer {
         this.yellowCards = yellowCards;
         this.redCards = redCards;
         this.bestPlayer = bestPlayer;
+        hattrick = goals > 2;
+        cleanSheet = receivedGoals == 0 && goalkeepingMinutes > 0;
     }
 
     public String getName() {
@@ -54,6 +60,30 @@ public class PkflMatchPlayer {
 
     public boolean isBestPlayer() {
         return bestPlayer;
+    }
+
+    public boolean isHattrick() {
+        return hattrick;
+    }
+
+    public boolean isCleanSheet() {
+        return cleanSheet;
+    }
+
+    public String getYellowCardComment() {
+        return yellowCardComment;
+    }
+
+    public void setYellowCardComment(String yellowCardComment) {
+        this.yellowCardComment = yellowCardComment;
+    }
+
+    public String getRedCardComment() {
+        return redCardComment;
+    }
+
+    public void setRedCardComment(String redCardComment) {
+        this.redCardComment = redCardComment;
     }
 
     @Override

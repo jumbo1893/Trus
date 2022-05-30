@@ -15,6 +15,8 @@ public class PkflPlayerStats {
     private int yellowCards;
     private int redCards;
     private int bestPlayer;
+    private int hattrick;
+    private int cleanSheet;
 
     public PkflPlayerStats(String name) {
         this.name = name;
@@ -32,6 +34,12 @@ public class PkflPlayerStats {
         redCards += player.getRedCards();
         if (player.isBestPlayer()) {
             bestPlayer++;
+        }
+        if (player.isCleanSheet()) {
+            cleanSheet++;
+        }
+        if (player.isHattrick()) {
+            hattrick++;
         }
     }
 
@@ -121,6 +129,22 @@ public class PkflPlayerStats {
 
     public void setBestPlayer(int bestPlayer) {
         this.bestPlayer = bestPlayer;
+    }
+
+    public int getHattrick() {
+        return hattrick;
+    }
+
+    public void setHattrick(int hattrick) {
+        this.hattrick = hattrick;
+    }
+
+    public int getCleanSheet() {
+        return cleanSheet;
+    }
+
+    public void setCleanSheet(int cleanSheet) {
+        this.cleanSheet = cleanSheet;
     }
 
     @Override

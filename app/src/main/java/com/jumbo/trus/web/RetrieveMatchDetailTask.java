@@ -70,8 +70,32 @@ public class RetrieveMatchDetailTask implements Callable<PkflMatchDetail> {
 
     private PkflMatchPlayer initPlayerFromTds(Elements tds) {
 
-        return new PkflMatchPlayer(tds.get(0).text().trim(), Integer.parseInt(tds.get(1).text()), Integer.parseInt(tds.get(2).text()), Integer.parseInt(tds.get(3).text()),
-        getNumbersFromString(tds.get(4).text()), Integer.parseInt(tds.get(5).text()), Integer.parseInt(tds.get(6).text()), isBestPlayer(tds.get(0)));
+        PkflMatchPlayer pkflMatchPlayer = null;
+        try {
+            pkflMatchPlayer = new PkflMatchPlayer(tds.get(0).text().trim(), Integer.parseInt(tds.get(1).text()), Integer.parseInt(tds.get(2).text()), Integer.parseInt(tds.get(3).text()),
+                    getNumbersFromString(tds.get(4).text()), Integer.parseInt(tds.get(5).text()), Integer.parseInt(tds.get(6).text()), isBestPlayer(tds.get(0)));
+            if (pkflMatchPlayer.getYellowCards() > 0) {
+                pkflMatchPlayer.setYellowCardComment(returnCardComment(tds.get(5)));
+            }
+            if (pkflMatchPlayer.getRedCards() > 0) {
+                pkflMatchPlayer.setRedCardComment(returnCardComment(tds.get(6)));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return pkflMatchPlayer;
+    }
+
+    private String returnCardComment(Element td) {
+        String comment = null;
+        try {
+            comment = td.select("a").first().attr("title");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return comment;
     }
 
     private int getNumbersFromString(String number) {

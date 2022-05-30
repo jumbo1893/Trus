@@ -12,6 +12,9 @@ public enum SpinnerOption {
     RECEIVED_GOALS_RATIO("Obdržené góly/odchytané zápasy"),
     BEST_PLAYER_RATIO("Hvězda utkání/zápasy"),
     YELLOW_CARD_RATIO("Žluté karty/zápasy"),
+    HATTRICK("Hattricky"),
+    CLEAN_SHEET("Čistá konta"),
+    CARD_DETAIL("Detail karet"),
     RECEIVED_GOALS("Obdržené góly");
 
 

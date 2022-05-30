@@ -8,9 +8,11 @@ import androidx.lifecycle.ViewModel;
 
 import com.jumbo.trus.comparator.pkfl.OrderByBestPlayerNumber;
 import com.jumbo.trus.comparator.pkfl.OrderByBestPlayerRatio;
+import com.jumbo.trus.comparator.pkfl.OrderByCleanSheetNumber;
 import com.jumbo.trus.comparator.pkfl.OrderByGoalMatchesRatio;
 import com.jumbo.trus.comparator.pkfl.OrderByGoalNumber;
 import com.jumbo.trus.comparator.pkfl.OrderByGoalkeepingMinutesNumber;
+import com.jumbo.trus.comparator.pkfl.OrderByHattrickNumber;
 import com.jumbo.trus.comparator.pkfl.OrderByMatchesNumber;
 import com.jumbo.trus.comparator.pkfl.OrderByOwnGoalNumber;
 import com.jumbo.trus.comparator.pkfl.OrderByReceivedGoalNumber;
@@ -66,10 +68,13 @@ public class PkflStatsViewModel extends ViewModel {
         spinnerOptionsList.add(SpinnerOption.RECEIVED_GOALS);
         spinnerOptionsList.add(SpinnerOption.GOALKEEPING_MINUTES);
         spinnerOptionsList.add(SpinnerOption.MATCHES);
+        spinnerOptionsList.add(SpinnerOption.HATTRICK);
+        spinnerOptionsList.add(SpinnerOption.CLEAN_SHEET);
         spinnerOptionsList.add(SpinnerOption.GOAL_RATIO);
         spinnerOptionsList.add(SpinnerOption.BEST_PLAYER_RATIO);
         spinnerOptionsList.add(SpinnerOption.RECEIVED_GOALS_RATIO);
         spinnerOptionsList.add(SpinnerOption.YELLOW_CARD_RATIO);
+        spinnerOptionsList.add(SpinnerOption.CARD_DETAIL);
         spinnerOptions.setValue(spinnerOptionsList);
     }
 
@@ -224,6 +229,15 @@ public class PkflStatsViewModel extends ViewModel {
             case RECEIVED_GOALS_RATIO:
                 showReceivedGoalsRatio();
                 break;
+            case HATTRICK:
+                showHattrickStatistics();
+                break;
+            case CLEAN_SHEET:
+                showCleanSheetStatistics();
+                break;
+            case CARD_DETAIL:
+                showCardComment();
+                break;
         }
     }
 
@@ -252,7 +266,7 @@ public class PkflStatsViewModel extends ViewModel {
         Collections.sort(playerStats, new OrderByReceivedGoalNumber(descendingOrder));
         List<ListTexts> listTexts = new ArrayList<>();
         for (PkflPlayerStats player : playerStats) {
-            listTexts.add(new ListTexts(player.getName(), "počet obdržených gólů " + player.getReceivedGoals() + ", počet zápasů " + player.getMatches()));
+            listTexts.add(new ListTexts(player.getName(), "počet obdržených gólů " + player.getReceivedGoals() + ", počet odchytaných zápasů " + player.getGoalkeepingMinutes() / 60));
         }
         recycleViewList.setValue(listTexts);
     }
@@ -345,6 +359,45 @@ public class PkflStatsViewModel extends ViewModel {
         List<ListTexts> listTexts = new ArrayList<>();
         for (PkflPlayerStats player : playerStats) {
             listTexts.add(new ListTexts(player.getName(), "počet žlutých na zápas " + player.getYellowCardMatchesRatio() + ", počet zápasů " + player.getMatches()));
+        }
+        recycleViewList.setValue(listTexts);
+    }
+
+    private void showHattrickStatistics() {
+        List<PkflPlayerStats> playerStats = new ArrayList<>(pkflPlayerStatsHashMap.values());
+        Collections.sort(playerStats, new OrderByHattrickNumber(descendingOrder));
+        List<ListTexts> listTexts = new ArrayList<>();
+        for (PkflPlayerStats player : playerStats) {
+            listTexts.add(new ListTexts(player.getName(), "počet hattricků " + player.getHattrick() + ", počet zápasů " + player.getMatches()));
+        }
+        recycleViewList.setValue(listTexts);
+    }
+
+    private void showCleanSheetStatistics() {
+        List<PkflPlayerStats> playerStats = new ArrayList<>(pkflPlayerStatsHashMap.values());
+        Collections.sort(playerStats, new OrderByCleanSheetNumber(descendingOrder));
+        List<ListTexts> listTexts = new ArrayList<>();
+        for (PkflPlayerStats player : playerStats) {
+            if (player.getGoalkeepingMinutes() != 0) {
+                listTexts.add(new ListTexts(player.getName(), "počet čistejch kont " + player.getCleanSheet() + ", počet odchytaných zápasů " + (float)player.getGoalkeepingMinutes() / 60));
+            }
+        }
+        recycleViewList.setValue(listTexts);
+    }
+
+    private void showCardComment() {
+        List<ListTexts> listTexts = new ArrayList<>();
+        for (PkflMatch pkflMatch : matches) {
+            for (PkflMatchPlayer pkflMatchPlayer : pkflMatch.getPkflMatchDetail().getPkflPlayers()) {
+                if (pkflMatchPlayer.getRedCardComment() != null && !pkflMatchPlayer.getRedCardComment().isEmpty()) {
+                    listTexts.add(new ListTexts(pkflMatchPlayer.getName(), "Červená karta v zápase " + pkflMatch.toStringNameWithOpponent() + ", hraném " + pkflMatch.getDateAndTimeOfMatchInStringFormat() + " s konečným výsledkem " + pkflMatch.getResult() +
+                            ".\n Komentář sudího: " + pkflMatchPlayer.getRedCardComment()));
+                }
+                if (pkflMatchPlayer.getYellowCardComment() != null && !pkflMatchPlayer.getYellowCardComment().isEmpty()) {
+                    listTexts.add(new ListTexts(pkflMatchPlayer.getName(), "Žlutá karta v zápase " + pkflMatch.toStringNameWithOpponent() + ", hraném " + pkflMatch.getDateAndTimeOfMatchInStringFormat() + " s konečným výsledkem " + pkflMatch.getResult() +
+                            ".\n Komentář sudího: " + pkflMatchPlayer.getYellowCardComment()));
+                }
+            }
         }
         recycleViewList.setValue(listTexts);
     }
