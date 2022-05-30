@@ -16,12 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class RetrieveMatchDetail implements Callable<PkflMatchDetail> {
+public class RetrieveMatchDetailTask implements Callable<PkflMatchDetail> {
 
     private final String url;
     private static final String TAG = "RetrieveMatchDetail";
 
-    public RetrieveMatchDetail(String url) {
+    public RetrieveMatchDetailTask(String url) {
         this.url = url;
         Log.d(TAG, "RetrieveMatchDetail: " + url);
     }
@@ -44,12 +44,13 @@ public class RetrieveMatchDetail implements Callable<PkflMatchDetail> {
     }
 
     private String getRefereeComment(Elements ps) {
-
-        return ps.get(6).text();
+        if (ps.size() > 6 && ps.get(6).text().toLowerCase().contains("komentář")) {
+            return ps.get(6).text();
+        }
+        else return "Bez komentáře rozhodčího";
     }
 
     private Boolean isHomeMatch(Elements ps) {
-
         String name = ps.get(0).text().split("/")[1].trim().toLowerCase();
         Log.d(TAG, "isHomeMatch: " + name);
         return !name.equals("liščí trus");

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +32,7 @@ public class StatisticsHelperFragment extends CustomUserFragment {
     protected AutoCompleteTextView tvSeason;
     protected TextInputLayout textSeason, textSearch;
     protected TextInputEditText tvSearch;
+    protected TextView tv_loading;
 
     protected SeasonArrayAdapter seasonArrayAdapter;
 
@@ -47,6 +49,7 @@ public class StatisticsHelperFragment extends CustomUserFragment {
         tvSearch = view.findViewById(R.id.tvSearch);
         textSearch = view.findViewById(R.id.textSearch);
         progress_bar = view.findViewById(R.id.progress_bar);
+        tv_loading = view.findViewById(R.id.tv_loading);
         return view;
     }
 

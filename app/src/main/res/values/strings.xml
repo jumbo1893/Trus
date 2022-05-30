@@ -35,6 +35,10 @@
     <string name="tab_table_fine_match">"Pokuty zápasy"</string>
     <string name="tab_table_fine_detail">Pokuty detail</string>
 
+    <!-- taby pkfl statistik -->
+    <string name="tab_current_season">"Aktuální sezona"</string>
+    <string name="tab_all_seasons">"Všechny zápasy"</string>
+
     <!-- HINTY -->
     <string name="hint_mandatory"><font color='#FF0000'>*</font></string>
     <string name="hint_repayment_amount">v Kč</string>

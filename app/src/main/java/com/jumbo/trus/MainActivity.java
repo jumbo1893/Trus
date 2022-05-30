@@ -38,7 +38,8 @@ import com.jumbo.trus.match.list.MatchFragment;
 import com.jumbo.trus.notification.Notification;
 import com.jumbo.trus.notification.NotificationFragment;
 import com.jumbo.trus.notification.NotificationViewModel;
-import com.jumbo.trus.pkfl.LoadedMatchesFragment;
+import com.jumbo.trus.pkfl.list.LoadedMatchesFragment;
+import com.jumbo.trus.pkfl.stats.PkflStatisticsFragment;
 import com.jumbo.trus.player.add.PlayerPlusFragment;
 import com.jumbo.trus.player.edit.PlayerEditFragment;
 import com.jumbo.trus.player.list.PlayerFragment;
@@ -293,6 +294,9 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
             case R.id.nav_settings_info:
                 fragmentNumber = 29;
                 break;
+            case R.id.nav_pkfl_stats:
+                fragmentNumber = 33;
+                break;
             default:
                 return false;
         }
@@ -384,6 +388,8 @@ public class MainActivity extends AppCompatActivity implements INavigationDrawer
         adapter.addFragment(new ApprovePasswordsFragment(), "Schválení uživatelů"); //30
         adapter.addFragment(new ResetPasswordsFragment(), "Reset hesel"); //31
         adapter.addFragment(new AdminInteracionFragment(), "Změna uživatelů"); //32
+        adapter.addFragment(new PkflStatisticsFragment(), "Statistiky PKFL"); //32
+
 
         viewPager.setAdapter(adapter);
     }

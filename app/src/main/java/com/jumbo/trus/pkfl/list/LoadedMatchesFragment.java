@@ -1,4 +1,4 @@
-package com.jumbo.trus.pkfl;
+package com.jumbo.trus.pkfl.list;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -21,6 +21,7 @@ import com.jumbo.trus.CustomUserFragment;
 import com.jumbo.trus.R;
 import com.jumbo.trus.SimpleDividerItemDecoration;
 import com.jumbo.trus.adapters.recycleview.SimpleRecycleViewAdapter;
+import com.jumbo.trus.pkfl.PkflMatch;
 
 import java.util.List;
 
