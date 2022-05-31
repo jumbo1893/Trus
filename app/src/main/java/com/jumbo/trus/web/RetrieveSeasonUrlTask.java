@@ -43,7 +43,6 @@ public class RetrieveSeasonUrlTask implements Callable<List<PkflSeason>> {
             if (currentSeason) {
                 for (Element spinnerButton : spinnerSeason) {
                     Element seasonButton = document.getElementsByClass("dropbtn").get(0);
-                    Log.d(TAG, "seasonButton: " + seasonButton);
                     if (spinnerButton.text().contains(getCurrentSeason(seasonButton))) {
                         returnSeasons.add(returnPkflSeason(spinnerButton));
                     }
@@ -67,7 +66,6 @@ public class RetrieveSeasonUrlTask implements Callable<List<PkflSeason>> {
 
     private PkflSeason returnPkflSeason(Element spinnerButton) {
         PkflSeason pkflSeason = null;
-        Log.d(TAG, "returnPkflSeason: " + spinnerButton);
         try {
             pkflSeason = new PkflSeason(BASE_URL + spinnerButton.select("a[href]").attr("href"), spinnerButton.text());
         } catch (Exception e) {
