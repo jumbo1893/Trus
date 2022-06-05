@@ -56,6 +56,8 @@ public class PkflStatsViewModel extends ViewModel {
     protected FirebaseRepository firebaseRepository;
     protected String pkflUrl = null;
     protected boolean waitingForLoad = true;
+    private int matchNumber = 0;
+    private int allMatchesNumber;
 
 
     private void initSpinnerOptions() {
@@ -87,8 +89,10 @@ public class PkflStatsViewModel extends ViewModel {
                 public void onComplete(List<PkflSeason> result) {
                     if (result == null || result.size() == 0) {
                         alert.setValue("Nelze načíst zápasy. Je zadaná správná url nebo nemá web pkfl výpadek?");
+                        isUpdating.setValue(false);
                     } else {
                         pkflSeasons = result;
+                        allMatchesNumber = calculateApproximateNumberOfMatches(result.size());
                         loadMatchesFromSeasons();
                         Log.d(TAG, "onComplete: " + pkflSeasons);
                     }
@@ -144,8 +148,7 @@ public class PkflStatsViewModel extends ViewModel {
         Log.d(TAG, "loadMatchDetails: ");
         for (PkflMatch pkflMatch : pkflMatches) {
             if (pkflMatch.getPkflMatchDetail() == null) {
-
-                loadingAlert.setValue(baseLoadingAlert + "\n zápas: " + pkflMatch.getOpponent());
+                loadingAlert.setValue(baseLoadingAlert + "\n zápas: " + pkflMatch.getOpponent() + "\n" + calculateLoadPercentage() + " %");
                 loadMatchDetailFromPkfl(pkflMatch);
                 return;
             }
@@ -182,6 +185,20 @@ public class PkflStatsViewModel extends ViewModel {
                 }
             }
         });
+    }
+
+    private int calculateApproximateNumberOfMatches(int seasonNumber) {
+        int NUMBER_OF_MATCHES_IN_SEASON = 11; //konstanta
+        return seasonNumber*NUMBER_OF_MATCHES_IN_SEASON;
+    }
+
+    private int calculateLoadPercentage() {
+        matchNumber++;
+        int percentage = 100*matchNumber/allMatchesNumber;
+        if (percentage > 100) {
+            return 100;
+        }
+        return percentage;
     }
 
     public void setSpinnerOption(SpinnerOption spinnerOption) {

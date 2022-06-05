@@ -30,7 +30,7 @@ public class RetrieveMatchesTask implements Callable<List<PkflMatch>> {
         List<PkflMatch> returnMatches = new ArrayList<>();
         try {
             //Connect to the website
-            Document document = Jsoup.connect(url).get();
+            Document document = Jsoup.connect(url).ignoreHttpErrors(true).validateTLSCertificates(false).get();
             Elements table = document.getElementsByClass("dataTable table table-bordered table-striped");
             Elements trs = table.select("tr");
             for (Element tr : trs) {

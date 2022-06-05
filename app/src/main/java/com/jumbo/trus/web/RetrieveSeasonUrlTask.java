@@ -33,8 +33,7 @@ public class RetrieveSeasonUrlTask implements Callable<List<PkflSeason>> {
         List<PkflSeason> returnSeasons = new ArrayList<>();
         try {
             //Connect to the website
-            Document document = Jsoup.connect(url).get();
-
+            Document document = Jsoup.connect(url).ignoreHttpErrors(true).validateTLSCertificates(false).get();
 
             Element matchesSpinnerDiv = document.getElementsByClass("dropdown-content").get(0);
             Elements spinnerSeason = matchesSpinnerDiv.select("a[href]");

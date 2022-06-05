@@ -31,7 +31,7 @@ public class RetrieveMatchDetailTask implements Callable<PkflMatchDetail> {
         PkflMatchDetail pkflMatchDetail = null;
         try {
             //Connect to the website
-            Document document = Jsoup.connect(url).get();
+            Document document = Jsoup.connect(url).ignoreHttpErrors(true).validateTLSCertificates(false).get();
             Elements matches = document.getElementsByClass("matches");
             Elements ps = matches.select("p");
             Elements tables = document.getElementsByClass("dataTable table table-striped no-footer");
