@@ -336,7 +336,6 @@ public class BeerLayout extends View {
         }
     }
 
-
     /**
      * rozkouskuje čáru pro nakreslení na dílčích 50 kusů, které se pak budou poatupně kreslit
      */
@@ -384,7 +383,7 @@ public class BeerLayout extends View {
             onLineFinishedListener.drawFinished(true);
         }
         //text tvrdýho
-        if (playerLines.isLiquorImage()) {
+        if (playerLines.isLiquorImage() || liquerDraw || playerLines.isLiquerLinesDrawed()) { //buď má uloženo liquerImage (= již má z dřívějška panáky || na předchozím hráči se dávaly panáky, automaticky se počítá s tím, že budou pokračovat || má načmárané panáky, které ještě nejsou uloženy
             liquorImage.setBounds(5, (layoutHeight - 5) - (layoutWidth / 9) * 2, layoutWidth / 3, layoutHeight - 5);
             liquorImage.draw(canvas);
             //onLineFinishedListener.drawFinished(true);

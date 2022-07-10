@@ -51,7 +51,7 @@ public class PlayerLines {
     }
 
     public void removeLastLiquorPosition() {
-        if (liquor_x1.size() > 0) {
+        if (isLiquerLinesDrawed()) {
             liquor_x1.remove(liquor_x1.size() - 1);
             liquor_x2.remove(liquor_x2.size() - 1);
             liquor_y1.remove(liquor_y1.size() - 1);
@@ -113,5 +113,9 @@ public class PlayerLines {
 
     public void setLiquorImage(boolean liquorImage) {
         isLiquorImage = liquorImage;
+    }
+
+    public boolean isLiquerLinesDrawed() {
+        return liquor_x1.size() > 0;
     }
 }
