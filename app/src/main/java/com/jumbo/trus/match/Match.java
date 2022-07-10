@@ -453,13 +453,15 @@ public class Match extends Model {
 
     public void createListOfPlayers(List<Player> playerList, List<Player> allPlayerList) {//nový, původní
         this.playerList.clear();
-        for (Player player : allPlayerList) {
-            if (playerList.contains(player)) {
-                player.setMatchParticipant(true);
-            } else {
-                player.setMatchParticipant(false);
-            }
+        for (Player player : playerList) {
+            player.setMatchParticipant(true);
             this.playerList.add(player);
+        }
+        for (Player player : allPlayerList) {
+            if (!this.playerList.contains(player)) {
+                player.setMatchParticipant(false);
+                this.playerList.add(player);
+            }
         }
         Log.d(TAG, "createListOfPlayers: " + this.playerList);
     }
